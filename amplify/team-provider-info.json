@@ -9,7 +9,20 @@
       "UnauthRoleName": "amplify-refind2-staging-78a18-unauthRole",
       "StackName": "amplify-refind2-staging-78a18",
       "StackId": "arn:aws:cloudformation:ap-northeast-3:590183797717:stack/amplify-refind2-staging-78a18/73de54d0-e2a0-11ef-a7a6-0a7cfabb4481",
-      "AmplifyAppId": "d1dhf2a9qlh2ez"
+      "AmplifyAppId": "d1dhf2a9qlh2ez",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-refind2-staging-78a18-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
+    },
+    "categories": {
+      "auth": {
+        "refind2753f1552": {},
+        "userPoolGroups": {}
+      },
+      "function": {
+        "refind2753f1552PreTokenGeneration": {
+          "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
+          "s3Key": "amplify-builds/refind2753f1552PreTokenGeneration-41547a38644f306b6c35-build.zip"
+        }
+      }
     }
   }
 }

@@ -1,1 +1,80 @@
-{}
+{
+  "auth": {
+    "refind2753f1552": {
+      "customAuth": false,
+      "dependsOn": [
+        {
+          "attributes": [
+            "Arn",
+            "Name"
+          ],
+          "category": "function",
+          "resourceName": "refind2753f1552PreTokenGeneration",
+          "triggerProvider": "Cognito"
+        }
+      ],
+      "frontendAuthConfig": {
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyCharacters": [],
+          "passwordPolicyMinLength": 8
+        },
+        "signupAttributes": [
+          "EMAIL",
+          "NAME"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito"
+    },
+    "userPoolGroups": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId",
+            "AppClientIDWeb",
+            "AppClientID",
+            "IdentityPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "refind2753f1552"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito-UserPool-Groups"
+    }
+  },
+  "function": {
+    "refind2753f1552PreTokenGeneration": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_refind2753f1552PreTokenGeneration_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2753f1552PreTokenGeneration"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2753f1552PreTokenGeneration_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2753f1552PreTokenGeneration"
+        }
+      ]
+    }
+  }
+}
