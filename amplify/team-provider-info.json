@@ -1,0 +1,15 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-refind2-staging-78a18-authRole",
+      "UnauthRoleArn": "arn:aws:iam::590183797717:role/amplify-refind2-staging-78a18-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::590183797717:role/amplify-refind2-staging-78a18-authRole",
+      "Region": "ap-northeast-3",
+      "DeploymentBucketName": "amplify-refind2-staging-78a18-deployment",
+      "UnauthRoleName": "amplify-refind2-staging-78a18-unauthRole",
+      "StackName": "amplify-refind2-staging-78a18",
+      "StackId": "arn:aws:cloudformation:ap-northeast-3:590183797717:stack/amplify-refind2-staging-78a18/73de54d0-e2a0-11ef-a7a6-0a7cfabb4481",
+      "AmplifyAppId": "d1dhf2a9qlh2ez"
+    }
+  }
+}
