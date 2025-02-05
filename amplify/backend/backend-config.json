@@ -126,6 +126,22 @@
     }
   },
   "parameters": {
+    "AMPLIFY_function_AdminQueries7c6d4bef_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "AdminQueries7c6d4bef"
+        }
+      ]
+    },
+    "AMPLIFY_function_AdminQueries7c6d4bef_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "AdminQueries7c6d4bef"
+        }
+      ]
+    },
     "AMPLIFY_function_refind2a0622a88PreTokenGeneration_deploymentBucketName": {
       "usedBy": [
         {
