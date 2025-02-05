@@ -1,6 +1,12 @@
 export type AmplifyDependentResourcesAttributes = {
+  "api": {
+    "refind2": {
+      "GraphQLAPIEndpointOutput": "string",
+      "GraphQLAPIIdOutput": "string"
+    }
+  },
   "auth": {
-    "refind2753f1552": {
+    "refind2a0622a88": {
       "AppClientID": "string",
       "AppClientIDWeb": "string",
       "IdentityPoolId": "string",
@@ -16,7 +22,7 @@ export type AmplifyDependentResourcesAttributes = {
     }
   },
   "function": {
-    "refind2753f1552PreTokenGeneration": {
+    "refind2a0622a88PreTokenGeneration": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",

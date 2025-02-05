@@ -1,6 +1,36 @@
 {
+  "api": {
+    "refind2": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "refind2a0622a88"
+        }
+      ],
+      "output": {
+        "authConfig": {
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "AWS_IAM"
+            }
+          ],
+          "defaultAuthentication": {
+            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+            "userPoolConfig": {
+              "userPoolId": "authrefind2a0622a88"
+            }
+          }
+        }
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "AppSync"
+    }
+  },
   "auth": {
-    "refind2753f1552": {
+    "refind2a0622a88": {
       "customAuth": false,
       "dependsOn": [
         {
@@ -9,7 +39,7 @@
             "Name"
           ],
           "category": "function",
-          "resourceName": "refind2753f1552PreTokenGeneration",
+          "resourceName": "refind2a0622a88PreTokenGeneration",
           "triggerProvider": "Cognito"
         }
       ],
@@ -45,7 +75,7 @@
             "IdentityPoolId"
           ],
           "category": "auth",
-          "resourceName": "refind2753f1552"
+          "resourceName": "refind2a0622a88"
         }
       ],
       "providerPlugin": "awscloudformation",
@@ -53,26 +83,26 @@
     }
   },
   "function": {
-    "refind2753f1552PreTokenGeneration": {
+    "refind2a0622a88PreTokenGeneration": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     }
   },
   "parameters": {
-    "AMPLIFY_function_refind2753f1552PreTokenGeneration_deploymentBucketName": {
+    "AMPLIFY_function_refind2a0622a88PreTokenGeneration_deploymentBucketName": {
       "usedBy": [
         {
           "category": "function",
-          "resourceName": "refind2753f1552PreTokenGeneration"
+          "resourceName": "refind2a0622a88PreTokenGeneration"
         }
       ]
     },
-    "AMPLIFY_function_refind2753f1552PreTokenGeneration_s3Key": {
+    "AMPLIFY_function_refind2a0622a88PreTokenGeneration_s3Key": {
       "usedBy": [
         {
           "category": "function",
-          "resourceName": "refind2753f1552PreTokenGeneration"
+          "resourceName": "refind2a0622a88PreTokenGeneration"
         }
       ]
     }

@@ -1,0 +1,57 @@
+
+# テナントマスタ
+type Tenant @model @auth (
+  rules: [
+    {
+      allow: groups,
+      provider: userPools,
+      groupClaim: "cognito:groups",
+      groups: ["sysAdmins"],
+      operations: [create, update, delete, read]
+    }
+  ]
+) {
+  # id
+  id: ID!
+
+  # 名前
+  name: String!
+}
+
+# フロアマスタ
+type Floor @model @auth (
+  rules: [
+    {
+      allow: groups,
+      provider: userPools,
+      groupClaim: "cognito:groups",
+      groups: ["sysAdmins"],
+      operations: [create, update, delete, read]
+    },
+    {
+      allow: groups,
+      provider: userPools,
+      groupClaim: "cognito:groups",
+      groupsField: "tenantId",
+      operations: [read]
+    }
+  ]
+) {
+  # id
+  id: ID!
+
+  # 組織ID
+  tenantId: String!
+
+  # 名前
+  name: String!
+
+  # ストレージ上での画像ファイルのパス
+  imagePath: String!
+
+  # 画像幅
+  imageWidth: Int!
+
+  # 画像高さ
+  imageHeight: Int!
+}

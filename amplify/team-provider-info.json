@@ -14,14 +14,17 @@
     },
     "categories": {
       "auth": {
-        "refind2753f1552": {},
+        "refind2a0622a88": {},
         "userPoolGroups": {}
       },
       "function": {
-        "refind2753f1552PreTokenGeneration": {
+        "refind2a0622a88PreTokenGeneration": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
-          "s3Key": "amplify-builds/refind2753f1552PreTokenGeneration-41547a38644f306b6c35-build.zip"
+          "s3Key": "amplify-builds/refind2a0622a88PreTokenGeneration-7636677133654b647a54-build.zip"
         }
+      },
+      "api": {
+        "refind2": {}
       }
     }
   }
