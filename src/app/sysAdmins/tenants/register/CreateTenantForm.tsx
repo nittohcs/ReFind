@@ -1,17 +1,18 @@
 "use client";
 
 import { FC, useCallback, useMemo } from "react";
+import { Box } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
-import { useEnqueueSnackbar } from "@/hooks/ui";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@/services/queryKeys";
-import { Box } from "@mui/material";
 import MiraCalTextField from "@/components/MiraCalTextField";
 import MiraCalCheckbox from "@/components/MiraCalCheckbox";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalFormAction from "@/components/MiraCalFormAction";
 import MiraCalButton from "@/components/MiraCalButton";
+import { useEnqueueSnackbar } from "@/hooks/ui";
+import { queryKeys } from "@/services/queryKeys";
+import { graphqlCreateTenant } from "../operation";
 
 type FormValues = {
     id: string,
@@ -40,7 +41,21 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
     const queryClient = useQueryClient();
     const mutation = useMutation({
         async mutationFn(values: FormValues) {
+            // テーブルに登録
+            const tenant = await graphqlCreateTenant({
+                ...(values.id && { id: values.id }),
+                name: values.name,
+                isSuspended: values.isSuspended,
+            });
 
+            // テナントID
+            const tenantId = tenant.id;
+
+            // テナントの管理者ユーザーを追加
+
+            return {
+                tenant,
+            };
         },
         onSuccess(_data, _variables, _context) {
             enqueueSnackbar("登録しました。", { variant: "success" });
