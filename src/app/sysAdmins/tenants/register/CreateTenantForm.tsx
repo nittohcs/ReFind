@@ -51,7 +51,7 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
             // テナントID
             const tenantId = tenant.id;
 
-            // テナントの管理者ユーザーを追加
+            // TODO テナントの管理者ユーザーを追加
 
             return {
                 tenant,

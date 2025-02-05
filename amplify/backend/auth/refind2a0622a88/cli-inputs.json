@@ -81,6 +81,7 @@
     "authTriggerConnections": "[\n  {\n    \"triggerType\": \"PreTokenGeneration\",\n    \"lambdaFunctionName\": \"refind2a0622a88PreTokenGeneration\"\n  }\n]",
     "parentStack": {
       "Ref": "AWS::StackId"
-    }
+    },
+    "adminQueryGroup": "admins"
   }
 }
