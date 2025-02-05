@@ -13,13 +13,24 @@ import MiraCalTable from "@/components/MiraCalTable";
 import { useTable, useTableOption } from "@/hooks/table";
 import { useListAllTenants } from "@/services/graphql";
 
-const columnHelper = createColumnHelper<Tenant>();
+type TableColumn = Tenant & {
+    isSuspendedString: string,
+};
+
+function ToTableColumn(tenant: Tenant): TableColumn {
+    return {
+        ...tenant,
+        isSuspendedString: tenant.isSuspended ? "利用停止中" : "",
+    };
+}
+
+const columnHelper = createColumnHelper<TableColumn>();
 
 export default function TenantsTable() {
     const router = useRouter();
 
     const query = useListAllTenants();
-    const data = useMemo(() => query.data ?? [], [query.data]);
+    const data = useMemo(() => (query.data ?? []).map(x => ToTableColumn(x)), [query.data]);
 
     const columns = useMemo(() => [
         columnHelper.accessor("id", {
@@ -29,12 +40,12 @@ export default function TenantsTable() {
         columnHelper.accessor("name", {
             header: "名前",
         }),
-        columnHelper.accessor("isSuspended", {
+        columnHelper.accessor("isSuspendedString", {
             header: "利用停止中",
         }),
     ], []);
 
-    const options = useTableOption<Tenant>({
+    const options = useTableOption<TableColumn>({
         sorting: [{
             id: "name",
             desc: false,

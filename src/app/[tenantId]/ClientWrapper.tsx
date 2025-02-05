@@ -1,10 +1,10 @@
 "use client";
 
-import { useAutoReloadSeatOccupancies } from "@/hooks/graphql";
 import { FC, PropsWithChildren } from "react";
+import { useAutoReloadSeatOccupancies } from "@/hooks/graphql";
 
 export const ClientWrapper: FC<PropsWithChildren> = ({ children }) => {
-    //useAutoReloadSeatOccupancies();
+    useAutoReloadSeatOccupancies();
     
     return (
         <>
