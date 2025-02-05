@@ -2,24 +2,18 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
-export type CreateFloorInput = {
+export type CreateTenantInput = {
   id?: string | null,
-  tenantId: string,
   name: string,
-  imagePath: string,
-  imageWidth: number,
-  imageHeight: number,
+  isSuspended: boolean,
 };
 
-export type ModelFloorConditionInput = {
-  tenantId?: ModelStringInput | null,
+export type ModelTenantConditionInput = {
   name?: ModelStringInput | null,
-  imagePath?: ModelStringInput | null,
-  imageWidth?: ModelIntInput | null,
-  imageHeight?: ModelIntInput | null,
-  and?: Array< ModelFloorConditionInput | null > | null,
-  or?: Array< ModelFloorConditionInput | null > | null,
-  not?: ModelFloorConditionInput | null,
+  isSuspended?: ModelBooleanInput | null,
+  and?: Array< ModelTenantConditionInput | null > | null,
+  or?: Array< ModelTenantConditionInput | null > | null,
+  not?: ModelTenantConditionInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
 };
@@ -64,6 +58,54 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
+export type ModelBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
+export type Tenant = {
+  __typename: "Tenant",
+  id: string,
+  name: string,
+  isSuspended: boolean,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type UpdateTenantInput = {
+  id: string,
+  name?: string | null,
+  isSuspended?: boolean | null,
+};
+
+export type DeleteTenantInput = {
+  id: string,
+};
+
+export type CreateFloorInput = {
+  id?: string | null,
+  tenantId: string,
+  name: string,
+  imagePath: string,
+  imageWidth: number,
+  imageHeight: number,
+};
+
+export type ModelFloorConditionInput = {
+  tenantId?: ModelStringInput | null,
+  name?: ModelStringInput | null,
+  imagePath?: ModelStringInput | null,
+  imageWidth?: ModelIntInput | null,
+  imageHeight?: ModelIntInput | null,
+  and?: Array< ModelFloorConditionInput | null > | null,
+  or?: Array< ModelFloorConditionInput | null > | null,
+  not?: ModelFloorConditionInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+};
+
 export type ModelIntInput = {
   ne?: number | null,
   eq?: number | null,
@@ -101,18 +143,15 @@ export type DeleteFloorInput = {
   id: string,
 };
 
-export type ModelFloorFilterInput = {
+export type ModelTenantFilterInput = {
   id?: ModelIDInput | null,
-  tenantId?: ModelStringInput | null,
   name?: ModelStringInput | null,
-  imagePath?: ModelStringInput | null,
-  imageWidth?: ModelIntInput | null,
-  imageHeight?: ModelIntInput | null,
+  isSuspended?: ModelBooleanInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
-  and?: Array< ModelFloorFilterInput | null > | null,
-  or?: Array< ModelFloorFilterInput | null > | null,
-  not?: ModelFloorFilterInput | null,
+  and?: Array< ModelTenantFilterInput | null > | null,
+  or?: Array< ModelTenantFilterInput | null > | null,
+  not?: ModelTenantFilterInput | null,
 };
 
 export type ModelIDInput = {
@@ -131,10 +170,59 @@ export type ModelIDInput = {
   size?: ModelSizeInput | null,
 };
 
+export type ModelTenantConnection = {
+  __typename: "ModelTenantConnection",
+  items:  Array<Tenant | null >,
+  nextToken?: string | null,
+};
+
+export type ModelFloorFilterInput = {
+  id?: ModelIDInput | null,
+  tenantId?: ModelStringInput | null,
+  name?: ModelStringInput | null,
+  imagePath?: ModelStringInput | null,
+  imageWidth?: ModelIntInput | null,
+  imageHeight?: ModelIntInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelFloorFilterInput | null > | null,
+  or?: Array< ModelFloorFilterInput | null > | null,
+  not?: ModelFloorFilterInput | null,
+};
+
 export type ModelFloorConnection = {
   __typename: "ModelFloorConnection",
   items:  Array<Floor | null >,
   nextToken?: string | null,
+};
+
+export type ModelSubscriptionTenantFilterInput = {
+  name?: ModelSubscriptionStringInput | null,
+  isSuspended?: ModelSubscriptionBooleanInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionTenantFilterInput | null > | null,
+  or?: Array< ModelSubscriptionTenantFilterInput | null > | null,
+};
+
+export type ModelSubscriptionStringInput = {
+  ne?: string | null,
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  contains?: string | null,
+  notContains?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+  in?: Array< string | null > | null,
+  notIn?: Array< string | null > | null,
+};
+
+export type ModelSubscriptionBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
 };
 
 export type ModelSubscriptionFloorFilterInput = {
@@ -164,21 +252,6 @@ export type ModelSubscriptionIDInput = {
   notIn?: Array< string | null > | null,
 };
 
-export type ModelSubscriptionStringInput = {
-  ne?: string | null,
-  eq?: string | null,
-  le?: string | null,
-  lt?: string | null,
-  ge?: string | null,
-  gt?: string | null,
-  contains?: string | null,
-  notContains?: string | null,
-  between?: Array< string | null > | null,
-  beginsWith?: string | null,
-  in?: Array< string | null > | null,
-  notIn?: Array< string | null > | null,
-};
-
 export type ModelSubscriptionIntInput = {
   ne?: number | null,
   eq?: number | null,
@@ -189,6 +262,54 @@ export type ModelSubscriptionIntInput = {
   between?: Array< number | null > | null,
   in?: Array< number | null > | null,
   notIn?: Array< number | null > | null,
+};
+
+export type CreateTenantMutationVariables = {
+  input: CreateTenantInput,
+  condition?: ModelTenantConditionInput | null,
+};
+
+export type CreateTenantMutation = {
+  createTenant?:  {
+    __typename: "Tenant",
+    id: string,
+    name: string,
+    isSuspended: boolean,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type UpdateTenantMutationVariables = {
+  input: UpdateTenantInput,
+  condition?: ModelTenantConditionInput | null,
+};
+
+export type UpdateTenantMutation = {
+  updateTenant?:  {
+    __typename: "Tenant",
+    id: string,
+    name: string,
+    isSuspended: boolean,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type DeleteTenantMutationVariables = {
+  input: DeleteTenantInput,
+  condition?: ModelTenantConditionInput | null,
+};
+
+export type DeleteTenantMutation = {
+  deleteTenant?:  {
+    __typename: "Tenant",
+    id: string,
+    name: string,
+    isSuspended: boolean,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
 };
 
 export type CreateFloorMutationVariables = {
@@ -248,6 +369,42 @@ export type DeleteFloorMutation = {
   } | null,
 };
 
+export type GetTenantQueryVariables = {
+  id: string,
+};
+
+export type GetTenantQuery = {
+  getTenant?:  {
+    __typename: "Tenant",
+    id: string,
+    name: string,
+    isSuspended: boolean,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type ListTenantsQueryVariables = {
+  filter?: ModelTenantFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListTenantsQuery = {
+  listTenants?:  {
+    __typename: "ModelTenantConnection",
+    items:  Array< {
+      __typename: "Tenant",
+      id: string,
+      name: string,
+      isSuspended: boolean,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
 export type GetFloorQueryVariables = {
   id: string,
 };
@@ -287,6 +444,51 @@ export type ListFloorsQuery = {
       updatedAt: string,
     } | null >,
     nextToken?: string | null,
+  } | null,
+};
+
+export type OnCreateTenantSubscriptionVariables = {
+  filter?: ModelSubscriptionTenantFilterInput | null,
+};
+
+export type OnCreateTenantSubscription = {
+  onCreateTenant?:  {
+    __typename: "Tenant",
+    id: string,
+    name: string,
+    isSuspended: boolean,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnUpdateTenantSubscriptionVariables = {
+  filter?: ModelSubscriptionTenantFilterInput | null,
+};
+
+export type OnUpdateTenantSubscription = {
+  onUpdateTenant?:  {
+    __typename: "Tenant",
+    id: string,
+    name: string,
+    isSuspended: boolean,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnDeleteTenantSubscriptionVariables = {
+  filter?: ModelSubscriptionTenantFilterInput | null,
+};
+
+export type OnDeleteTenantSubscription = {
+  onDeleteTenant?:  {
+    __typename: "Tenant",
+    id: string,
+    name: string,
+    isSuspended: boolean,
+    createdAt: string,
+    updatedAt: string,
   } | null,
 };
 

@@ -20,7 +20,7 @@
       "function": {
         "refind2a0622a88PreTokenGeneration": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
-          "s3Key": "amplify-builds/refind2a0622a88PreTokenGeneration-7636677133654b647a54-build.zip"
+          "s3Key": "amplify-builds/refind2a0622a88PreTokenGeneration-77536378745655367139-build.zip"
         }
       },
       "api": {

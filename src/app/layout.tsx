@@ -9,7 +9,6 @@ import APIClientProvider from "@/components/APIClientProvider";
 import MiraCalQueryClientProvider from "@/components/MiraCalQueryClientProvider";
 import MiraCalSnackbarProvider from "@/components/MiraCalSnackbarProvider";
 import MiraCalFavicon from "@/components/MiraCalFavicon";
-import ClientWrapper from "./ClientWrapper";
 import MiraCalMainUI3 from "@/components/MiraCalMainUI3";
 
 export const metadata: Metadata = {
@@ -35,11 +34,9 @@ export default function RootLayout({
                 <AuthProvider>
                   <APIClientProvider>
                     <MiraCalQueryClientProvider>
-                      <ClientWrapper>
-                        <MiraCalMainUI3>
+                      <MiraCalMainUI3>
                         {children}
-                        </MiraCalMainUI3>
-                      </ClientWrapper>
+                      </MiraCalMainUI3>
                     </MiraCalQueryClientProvider>
                   </APIClientProvider>
                 </AuthProvider>

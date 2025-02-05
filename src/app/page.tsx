@@ -1,17 +1,17 @@
 "use client"
 
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthState } from "@/hooks/auth";
-import { useEffect } from "react";
 
 export default function Home() {
   const router = useRouter();
   const authState = useAuthState();
   
   useEffect(() => {
-    if (authState.username && !authState.groups?.sysAdmins) {
+    if (authState.username) {
       if (authState.groups?.sysAdmins) {
-        router.push("/sysAdmin");
+        router.push("/sysAdmins");
       } else {
         router.push(`/${authState.tenantId}/`);
       }

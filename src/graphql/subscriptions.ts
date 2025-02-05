@@ -8,6 +8,48 @@ type GeneratedSubscription<InputType, OutputType> = string & {
   __generatedSubscriptionOutput: OutputType;
 };
 
+export const onCreateTenant = /* GraphQL */ `subscription OnCreateTenant($filter: ModelSubscriptionTenantFilterInput) {
+  onCreateTenant(filter: $filter) {
+    id
+    name
+    isSuspended
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnCreateTenantSubscriptionVariables,
+  APITypes.OnCreateTenantSubscription
+>;
+export const onUpdateTenant = /* GraphQL */ `subscription OnUpdateTenant($filter: ModelSubscriptionTenantFilterInput) {
+  onUpdateTenant(filter: $filter) {
+    id
+    name
+    isSuspended
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnUpdateTenantSubscriptionVariables,
+  APITypes.OnUpdateTenantSubscription
+>;
+export const onDeleteTenant = /* GraphQL */ `subscription OnDeleteTenant($filter: ModelSubscriptionTenantFilterInput) {
+  onDeleteTenant(filter: $filter) {
+    id
+    name
+    isSuspended
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnDeleteTenantSubscriptionVariables,
+  APITypes.OnDeleteTenantSubscription
+>;
 export const onCreateFloor = /* GraphQL */ `subscription OnCreateFloor($filter: ModelSubscriptionFloorFilterInput) {
   onCreateFloor(filter: $filter) {
     id

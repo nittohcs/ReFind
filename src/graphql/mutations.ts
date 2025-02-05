@@ -8,6 +8,57 @@ type GeneratedMutation<InputType, OutputType> = string & {
   __generatedMutationOutput: OutputType;
 };
 
+export const createTenant = /* GraphQL */ `mutation CreateTenant(
+  $input: CreateTenantInput!
+  $condition: ModelTenantConditionInput
+) {
+  createTenant(input: $input, condition: $condition) {
+    id
+    name
+    isSuspended
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateTenantMutationVariables,
+  APITypes.CreateTenantMutation
+>;
+export const updateTenant = /* GraphQL */ `mutation UpdateTenant(
+  $input: UpdateTenantInput!
+  $condition: ModelTenantConditionInput
+) {
+  updateTenant(input: $input, condition: $condition) {
+    id
+    name
+    isSuspended
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateTenantMutationVariables,
+  APITypes.UpdateTenantMutation
+>;
+export const deleteTenant = /* GraphQL */ `mutation DeleteTenant(
+  $input: DeleteTenantInput!
+  $condition: ModelTenantConditionInput
+) {
+  deleteTenant(input: $input, condition: $condition) {
+    id
+    name
+    isSuspended
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteTenantMutationVariables,
+  APITypes.DeleteTenantMutation
+>;
 export const createFloor = /* GraphQL */ `mutation CreateFloor(
   $input: CreateFloorInput!
   $condition: ModelFloorConditionInput

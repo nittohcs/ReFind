@@ -17,9 +17,10 @@ export default function Layout({ children, params}: LayoutProps) {
     const router = useRouter();
     
     // URLのテナントIDがユーザーのテナントIDと異なっていたら正しいURLに飛ばす
+    // sysAdminsの場合は飛ばさない
     useEffect(() => {
         if (authState.username) {
-            if (tenantId !== authState.tenantId) {
+            if (tenantId !== authState.tenantId && !authState.groups?.sysAdmins) {
                 router.push(`/${authState.tenantId}`);
             }
         }
@@ -31,7 +32,7 @@ export default function Layout({ children, params}: LayoutProps) {
     }
 
     // テナントIDが異なる場合は何も返さない
-    if (authState.tenantId !== tenantId) {
+    if (authState.tenantId !== tenantId && !authState.groups?.sysAdmins) {
         return null;
     }
 

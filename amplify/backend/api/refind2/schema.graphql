@@ -8,6 +8,13 @@ type Tenant @model @auth (
       groupClaim: "cognito:groups",
       groups: ["sysAdmins"],
       operations: [create, update, delete, read]
+    },
+    {
+      allow: groups,
+      provider: userPools,
+      groupClaim: "cognito:groups",
+      groupsField: "id",
+      operations: [read]
     }
   ]
 ) {
@@ -16,6 +23,9 @@ type Tenant @model @auth (
 
   # 名前
   name: String!
+
+  # 利用停止中かどうか
+  isSuspended: Boolean!
 }
 
 # フロアマスタ
