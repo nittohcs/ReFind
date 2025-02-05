@@ -25,10 +25,97 @@ const {
   ListGroupsCommand,
   ListUsersCommand,
   ListUsersInGroupCommand,
+  AdminCreateUserCommand,
+  AdminDeleteUserCommand,
+  AdminUpdateUserAttributesCommand,
+  AdminSetUserPasswordCommand ,
 } = require('@aws-sdk/client-cognito-identity-provider');
 
 const cognitoIdentityProviderClient = new CognitoIdentityProviderClient({});
 const userPoolId = process.env.USERPOOL;
+const initialPassword = process.env.INITIAL_PASSWORD;
+
+async function setUserPassword(username, password) {
+  const input = {
+    UserPoolId: userPoolId,
+    Username: username,
+    Password: password,
+    Permanent: false,
+  };
+
+  console.log(`Attempting to set user password: ${username}`);
+
+  try {
+    await cognitoIdentityProviderClient.send(new AdminSetUserPasswordCommand(input));
+    return {
+      message: `Set user password: ${username}`,
+    };
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+async function updateUserAttributes(username, attributes) {
+  const input = {
+    UserPoolId: userPoolId,
+    Username: username,
+    UserAttributes: attributes,
+  };
+
+  console.log(`Attempting to update userAttributes: ${username}`);
+
+  try {
+    await cognitoIdentityProviderClient.send(new AdminUpdateUserAttributesCommand(input));
+    return {
+      message: `Update userAttributes: ${username}`,
+    };
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+async function createUser(username, attributes, messageAction) {
+  const input = {
+    UserPoolId: userPoolId,
+    Username: username,
+    UserAttributes: attributes,
+    MessageAction: messageAction,
+    TemporaryPassword: initialPassword,
+  };
+
+  console.log(`Attempting to create user: ${username}`);
+
+  try {
+    await cognitoIdentityProviderClient.send(new AdminCreateUserCommand(input));
+    return {
+      message: `Created ${username}`,
+    };
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+async function deleteUser(username) {
+  const input = {
+    UserPoolId: userPoolId,
+    Username: username,
+  };
+
+  console.log(`Attempting to delete user: ${username}`);
+
+  try {
+    await cognitoIdentityProviderClient.send(new AdminDeleteUserCommand(input));
+    return {
+      message: `Deleted ${username}`,
+    };
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
 
 async function addUserToGroup(username, groupname) {
   const params = {
@@ -167,6 +254,38 @@ async function listUsers(Limit, PaginationToken) {
   }
 }
 
+async function listAllUsers() {
+  try {
+    const users = [];
+
+    /** @type {string | undefined} */
+    let PaginationToken = undefined;
+    do {
+      const params = {
+        UserPoolId: userPoolId,
+        ...(PaginationToken && { PaginationToken }),
+      };
+
+      const result = await cognitoIdentityProviderClient.send(new ListUsersCommand(params));
+
+      for (const user of result.Users) {
+        users.push({
+          id: user.Username,
+          email: user.Attributes.find(x => x.Name === "email")?.Value ?? "",
+          name: user.Attributes.find(x => x.Name === "name")?.Value ?? "",
+        });
+      }
+
+      PaginationToken = result.PaginationToken;
+    } while (!!PaginationToken);
+
+    return users;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
 async function listGroups(Limit, NextToken) {
   const params = {
     UserPoolId: userPoolId,
@@ -232,6 +351,39 @@ async function listUsersInGroup(groupname, Limit, NextToken) {
   }
 }
 
+async function listAllUsersInGroup(groupname) {
+  try {
+    const users = [];
+
+    /** @type {string | undefined} */
+    let NextToken = undefined;
+    do {
+      const params = {
+        GroupName: groupname,
+        UserPoolId: userPoolId,
+        ...(NextToken && { NextToken }),
+      };
+
+      const result = await cognitoIdentityProviderClient.send(new ListUsersInGroupCommand(params));
+
+      for (const user of result.Users) {
+        users.push({
+          id: user.Username,
+          email: user.Attributes.find(x => x.Name === "email")?.Value ?? "",
+          name: user.Attributes.find(x => x.Name === "name")?.Value ?? "",
+        });
+      }
+
+      NextToken = result.NextToken;
+    } while (!!NextToken);
+
+    return users;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
 // Signs out from all devices, as an administrator.
 async function signUserOut(username) {
   const params = {
@@ -254,6 +406,10 @@ async function signUserOut(username) {
 }
 
 module.exports = {
+  setUserPassword,
+  updateUserAttributes,
+  createUser,
+  deleteUser,
   addUserToGroup,
   removeUserFromGroup,
   confirmUserSignUp,
@@ -261,8 +417,10 @@ module.exports = {
   enableUser,
   getUser,
   listUsers,
+  listAllUsers,
   listGroups,
   listGroupsForUser,
   listUsersInGroup,
+  listAllUsersInGroup,
   signUserOut,
 };

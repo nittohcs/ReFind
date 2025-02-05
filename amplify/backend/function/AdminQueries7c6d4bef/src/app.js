@@ -16,6 +16,10 @@ const bodyParser = require('body-parser');
 const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware');
 
 const {
+  setUserPassword,
+  updateUserAttributes,
+  createUser,
+  deleteUser,
   addUserToGroup,
   removeUserFromGroup,
   confirmUserSignUp,
@@ -23,9 +27,11 @@ const {
   enableUser,
   getUser,
   listUsers,
+  listAllUsers,
   listGroups,
   listGroupsForUser,
   listUsersInGroup,
+  listAllUsersInGroup,
   signUserOut,
 } = require('./cognitoActions');
 
@@ -45,7 +51,10 @@ app.use((req, res, next) => {
 const allowedGroup = process.env.GROUP;
 
 const checkGroup = function (req, res, next) {
-  if (req.path == '/signUserOut') {
+  // 通常のAdminQueriesでは'/signUserOut'のみ全ユーザーに許可されているが
+  // '/listAllUsers'と'/listAllUsersInGroup'も許可する
+  const allowedPaths = ['/signUserOut', '/listAllUsers', '/listAllUsersInGroup']
+  if (allowedPaths.includes(req.path)) {
     return next();
   }
 
@@ -69,6 +78,66 @@ const checkGroup = function (req, res, next) {
 };
 
 app.all('*', checkGroup);
+
+app.post('/setUserPassword', async (req, res, next) => {
+  if (!req.body.username || !req.body.password) {
+    const err = new Error('username and password are required');
+    err.statusCode = 400;
+    return next(err);
+  }
+
+  try {
+    const response = await setUserPassword(req.body.username, req.body.password);
+    res.status(200).json(response);
+  } catch(err) {
+    next(err);
+  }
+});
+
+app.post('/updateUserAttributes', async (req, res, next) => {
+  if (!req.body.username || !req.body.attributes) {
+    const err = new Error('username and attributes are required');
+    err.statusCode = 400;
+    return next(err);
+  }
+
+  try {
+    const response = await updateUserAttributes(req.body.username, req.body.attributes);
+    res.status(200).json(response);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/createUser', async (req, res, next) => {
+  if (!req.body.username || !req.body.attributes) {
+    const err = new Error('username and attributes are required');
+    err.statusCode = 400;
+    return next(err);
+  }
+
+  try {
+    const response = await createUser(req.body.username, req.body.attributes, req.body.messageAction);
+    res.status(200).json(response);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/deleteUser', async (req, res, next) => {
+  if (!req.body.username) {
+    const err = new Error('username is required');
+    err.statusCode = 400;
+    return next(err);
+  }
+
+  try {
+    const response = await deleteUser(req.body.username);
+    res.status(200).json(response);
+  } catch (err) {
+    next(err);
+  }
+});
 
 app.post('/addUserToGroup', async (req, res, next) => {
   if (!req.body.username || !req.body.groupname) {
@@ -170,6 +239,15 @@ app.get('/listUsers', async (req, res, next) => {
   }
 });
 
+app.get('/listAllUsers', async (req, res, next) => {
+  try {
+    const response = await listAllUsers();
+    res.status(200).json(response);
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.get('/listGroups', async (req, res, next) => {
   try {
     const limit = req.query.limit ? parseInt(req.query.limit) : 25;
@@ -206,6 +284,21 @@ app.get('/listUsersInGroup', async (req, res, next) => {
   try {
     const limit = req.query.limit ? parseInt(req.query.limit) : 25;
     const response = await listUsersInGroup(req.query.groupname, limit, req.query.token);
+    res.status(200).json(response);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/listAllUsersInGroup', async (req, res, next) => {
+  if (!req.query.groupname) {
+    const err = new Error('groupname is required');
+    err.statusCode = 400;
+    return next(err);
+  }
+
+  try {
+    const response = await listAllUsersInGroup(req.query.groupname);
     res.status(200).json(response);
   } catch (err) {
     next(err);
