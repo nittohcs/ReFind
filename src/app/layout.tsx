@@ -9,7 +9,6 @@ import APIClientProvider from "@/components/APIClientProvider";
 import MiraCalQueryClientProvider from "@/components/MiraCalQueryClientProvider";
 import MiraCalSnackbarProvider from "@/components/MiraCalSnackbarProvider";
 import MiraCalFavicon from "@/components/MiraCalFavicon";
-import MiraCalMainUI3 from "@/components/MiraCalMainUI3";
 
 export const metadata: Metadata = {
   title: "ReFind",
@@ -34,9 +33,7 @@ export default function RootLayout({
                 <AuthProvider>
                   <APIClientProvider>
                     <MiraCalQueryClientProvider>
-                      <MiraCalMainUI3>
-                        {children}
-                      </MiraCalMainUI3>
+                      {children}
                     </MiraCalQueryClientProvider>
                   </APIClientProvider>
                 </AuthProvider>

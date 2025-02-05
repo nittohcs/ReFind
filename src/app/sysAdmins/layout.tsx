@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthState } from "@/hooks/auth";
+import SysAdminsMainUI from "./SysAdminsMainUI";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
@@ -26,8 +27,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }
 
     return (
-        <>
+        <SysAdminsMainUI>
             {children}
-        </>
+        </SysAdminsMainUI>
     );
 }
