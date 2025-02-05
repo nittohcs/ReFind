@@ -5,6 +5,7 @@ import { Box } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Tenant } from "@/API";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalTextField from "@/components/MiraCalTextField";
 import MiraCalCheckbox from "@/components/MiraCalCheckbox";
@@ -56,11 +57,14 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
                 isSuspended: values.isSuspended,
             });
         },
-        onSuccess(_data, _variables, _context) {
+        onSuccess(data, _variables, _context) {
             enqueueSnackbar("テナントを更新しました。", { variant: "success" });
 
             // クエリを無効化して再取得されるようにする
-            queryClient.invalidateQueries({ queryKey: queryKeys.listAllTenants });
+            //queryClient.invalidateQueries({ queryKey: queryKeys.listAllTenants });
+
+            // 更新したテナントだけキャッシュを更新
+            queryClient.setQueryData(queryKeys.listAllTenants, (items: Tenant[]) => items.map(item => item.id === data.id ? data : item));
 
             // コンポーネントを再生成
             update();
