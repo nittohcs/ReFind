@@ -5,6 +5,7 @@ export type AdminQueriesUser = {
     id: string,
     email: string,
     name: string,
+    tenantId: string,
 };
 
 export type ReFindUser = AdminQueriesUser & {

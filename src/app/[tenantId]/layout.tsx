@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthState } from "@/hooks/auth";
+import CheckSuspend from "./CheckSuspend";
 
 type LayoutProps = {
     children: React.ReactNode,
@@ -38,7 +39,9 @@ export default function Layout({ children, params}: LayoutProps) {
 
     return (
         <>
-            {children}
+            <CheckSuspend tenantId={tenantId}>
+                {children}
+            </CheckSuspend>
         </>
     );
 }

@@ -11,13 +11,18 @@ import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalFormAction from "@/components/MiraCalFormAction";
 import MiraCalButton from "@/components/MiraCalButton";
 import { useEnqueueSnackbar } from "@/hooks/ui";
+import { addUserToGroup, createUser, deleteUser } from "@/services/AdminQueries";
 import { queryKeys } from "@/services/queryKeys";
-import { graphqlCreateTenant } from "../operation";
+import { AdminQueriesUser } from "@/types/user";
+import { graphqlCreateTenant, graphqlDeleteTenant } from "../operation";
 
 type FormValues = {
     id: string,
     name: string,
     isSuspended: boolean,
+    adminUserId: string,
+    adminEmail: string,
+    adminName: string,
 };
 
 type CreateTenantFormProps = {
@@ -31,6 +36,9 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
         id: yup.string().default(""),
         name: yup.string().required().default(""),
         isSuspended: yup.bool().required().default(false),
+        adminUserId: yup.string().required().default(""),
+        adminEmail: yup.string().required().default("").email(),
+        adminName: yup.string().required().default(""),
     }), []);
 
     const initialValues: FormValues = useMemo(() => validationSchema.cast({
@@ -48,14 +56,34 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
                 isSuspended: values.isSuspended,
             });
 
-            // テナントID
-            const tenantId = tenant.id;
+            try {
+                const adminUser: AdminQueriesUser = {
+                    id: values.adminUserId,
+                    email: values.adminEmail,
+                    name: values.adminName,
+                    tenantId: tenant.id,
+                };
 
-            // TODO テナントの管理者ユーザーを追加
+                // テナントの管理者ユーザーを追加
+                await createUser(adminUser);
 
-            return {
-                tenant,
-            };
+                // テナントの管理者ユーザーを管理者にする
+                try {
+                    await addUserToGroup(adminUser, "admins");
+                } catch (error) {
+                    await deleteUser(adminUser);
+
+                    throw error;
+                }
+            } catch(error) {
+                await graphqlDeleteTenant({
+                    id: tenant.id,
+                });
+
+                throw error;
+            }
+
+            return tenant;
         },
         onSuccess(_data, _variables, _context) {
             enqueueSnackbar("登録しました。", { variant: "success" });
@@ -103,6 +131,21 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
                     <MiraCalCheckbox
                         name="isSuspended"
                         label="利用停止中"
+                    />
+                    <MiraCalTextField
+                        name="adminUserId"
+                        label="管理者ID"
+                        type="text"
+                    />
+                    <MiraCalTextField
+                        name="adminEmail"
+                        label="管理者メールアドレス"
+                        type="email"
+                    />
+                    <MiraCalTextField
+                        name="adminName"
+                        label="管理者名"
+                        type="text"
                     />
                     <MiraCalFormAction>
                         <MiraCalButton

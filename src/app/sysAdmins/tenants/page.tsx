@@ -10,11 +10,11 @@ export default function Page() {
         <>
             <MiraCalBreadcrumbs>
                 <Link href="/sysAdmins">ホーム</Link>
-                <Typography>テナント編集</Typography>
+                <Typography>テナント</Typography>
             </MiraCalBreadcrumbs>
             <Toolbar sx={{ pt: 2 }}>
                 <Box display="flex" flexGrow={1} gap={1}>
-                    <Typography variant="h5" flexGrow={1}>テナント編集</Typography>
+                    <Typography variant="h5" flexGrow={1}>テナント</Typography>
                 </Box>
             </Toolbar>
             <Box>

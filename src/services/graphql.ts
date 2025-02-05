@@ -1,11 +1,11 @@
 "use client";
 
 import { GraphQLResult, graphqlOperation } from "@aws-amplify/api-graphql";
-import { ListTenantsQuery, ListTenantsQueryVariables, Tenant } from "@/API";
+import { GetTenantQuery, GetTenantQueryVariables, ListTenantsQuery, ListTenantsQueryVariables, Tenant } from "@/API";
 import { client } from "@/components/APIClientProvider";
 import { NextToken } from "@/types/graphql";
 import { useQuery } from "@tanstack/react-query";
-import { listTenants } from "@/graphql/queries";
+import { getTenant, listTenants } from "@/graphql/queries";
 import { queryKeys } from "./queryKeys";
 
 export function useListAllTenants(staleTime?: number) {
@@ -39,4 +39,26 @@ async function graphqlListAllTenants() {
     } while(nextToken);
 
     return tenants;
+}
+
+export function useGetTenant(tenantId: string, staleTime?: number) {
+    return useQuery({
+        queryKey: queryKeys.getTenant(tenantId),
+        queryFn: async () => { return await graphqlGetTenant(tenantId); },
+        ...(!!staleTime && {staleTime }),
+    })
+}
+
+async function graphqlGetTenant(tenantId: string) {
+    const result = await client.graphql(
+        graphqlOperation(
+            getTenant,
+            {
+                id: tenantId,
+            } as GetTenantQueryVariables
+        )
+    ) as GraphQLResult<GetTenantQuery>;
+    if (result.errors) { throw new Error(JSON.stringify(result.errors)); }
+    if (!result.data) { throw new Error(`テナントの取得に失敗しました(id=「${tenantId}」)。`); }
+    return result.data.getTenant;
 }

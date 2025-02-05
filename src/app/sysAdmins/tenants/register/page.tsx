@@ -13,7 +13,7 @@ export default function Page() {
         <>
             <MiraCalBreadcrumbs>
                 <Link href="/sysAdmins">ホーム</Link>
-                <Link href="/sysAdmins/tenants">テナント編集</Link>
+                <Link href="/sysAdmins/tenants">テナント</Link>
                 <Typography>登録</Typography>
             </MiraCalBreadcrumbs>
             <Toolbar sx={{ pt: 2 }}>

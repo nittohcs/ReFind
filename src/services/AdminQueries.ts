@@ -150,6 +150,11 @@ export async function createUser(user: AdminQueriesUser) {
                     Name: "email_verified",
                     Value: "true",
                 },
+                // TODO tenantIdはバックエンド側でcognitoのトークンからtenantIdを取得したほうが良い
+                {
+                    Name: "custom:tenantId",
+                    Value: user.tenantId,
+                },
             ],
             // SUPPRESSで初回ログイン用パスワードのお知らせメールが送信されなくなる
             //messageAction: "SUPPRESS",
