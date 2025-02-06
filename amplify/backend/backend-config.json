@@ -119,6 +119,21 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "refind2CreateFloor": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind2"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "refind2GetFileUploadUrl": {
       "build": true,
       "dependsOn": [
@@ -153,6 +168,22 @@
         {
           "category": "function",
           "resourceName": "AdminQueries7c6d4bef"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2CreateFloor_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2CreateFloor"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2CreateFloor_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2CreateFloor"
         }
       ]
     },

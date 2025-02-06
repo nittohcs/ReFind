@@ -7,7 +7,7 @@ import * as yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { fileTypeFromBlob } from "file-type";
 import { v4 as uuidv4 } from "uuid";
-import { uploadData } from "aws-amplify/storage";
+import { Floor } from "@/API";
 import { useTenantId } from "@/app/[tenantId]/hook";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalTextField from "@/components/MiraCalTextField";
@@ -16,9 +16,7 @@ import MiraCalFormAction from "@/components/MiraCalFormAction";
 import MiraCalButton from "@/components/MiraCalButton";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { queryKeys } from "@/services/queryKeys";
-import { graphqlCreateFloor } from "../operation";
-import { Floor } from "@/API";
-import { graphqlGetFileUploadUrl } from "@/services/graphql";
+import { graphqlCreateFloor, graphqlGetFileUploadUrl } from "../operation";
 
 type FormValues = {
     name: string,
@@ -83,17 +81,15 @@ export const CreateFloorForm: FC<CreateFloorFormProps> = ({
                 }
             }
             
-            // // テーブル登録
-            // return await graphqlCreateFloor({
-            //     id,
-            //     tenantId,
-            //     name: values.name,
-            //     imagePath,
-            //     imageWidth: values.imageWidth,
-            //     imageHeight: values.imageHeight,
-            // });
-            
-            // TODO フロア登録用のfunctionを呼び出す
+            // テーブル登録
+            return await graphqlCreateFloor({
+                id,
+                tenantId,
+                name: values.name,
+                imagePath,
+                imageWidth: values.imageWidth,
+                imageHeight: values.imageHeight,
+            });
         },
         onSuccess(data, _variables, _context) {
             enqueueSnackbar("登録しました。", { variant: "success" });

@@ -2,6 +2,27 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
+export type funcCreateFloorInput = {
+  id?: string | null,
+  tenantId: string,
+  name: string,
+  imagePath: string,
+  imageWidth: number,
+  imageHeight: number,
+};
+
+export type Floor = {
+  __typename: "Floor",
+  id: string,
+  tenantId: string,
+  name: string,
+  imagePath: string,
+  imageWidth: number,
+  imageHeight: number,
+  createdAt: string,
+  updatedAt: string,
+};
+
 export type CreateTenantInput = {
   id?: string | null,
   name: string,
@@ -116,18 +137,6 @@ export type ModelIntInput = {
   between?: Array< number | null > | null,
   attributeExists?: boolean | null,
   attributeType?: ModelAttributeTypes | null,
-};
-
-export type Floor = {
-  __typename: "Floor",
-  id: string,
-  tenantId: string,
-  name: string,
-  imagePath: string,
-  imageWidth: number,
-  imageHeight: number,
-  createdAt: string,
-  updatedAt: string,
 };
 
 export type UpdateFloorInput = {
@@ -268,6 +277,24 @@ export type ModelSubscriptionIntInput = {
   between?: Array< number | null > | null,
   in?: Array< number | null > | null,
   notIn?: Array< number | null > | null,
+};
+
+export type FuncCreateFloorMutationVariables = {
+  input: funcCreateFloorInput,
+};
+
+export type FuncCreateFloorMutation = {
+  funcCreateFloor?:  {
+    __typename: "Floor",
+    id: string,
+    tenantId: string,
+    name: string,
+    imagePath: string,
+    imageWidth: number,
+    imageHeight: number,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
 };
 
 export type CreateTenantMutationVariables = {

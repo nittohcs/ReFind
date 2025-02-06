@@ -71,6 +71,21 @@ type Floor @model @auth (
   imageHeight: Int!
 }
 
+input funcCreateFloorInput {
+  id: ID
+  tenantId: String!
+  name: String!
+  imagePath: String!
+  imageWidth: Int!
+  imageHeight: Int!
+}
+
 type Query {
-  getFileUploadUrl(filePath: String!): String @function(name: "refind2GetFileUploadUrl-${env}")
+  getFileUploadUrl(filePath: String!): String
+  @function(name: "refind2GetFileUploadUrl-${env}")
+}
+
+type Mutation {
+  funcCreateFloor(input: funcCreateFloorInput!): Floor
+  @function(name: "refind2CreateFloor-${env}")
 }

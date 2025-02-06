@@ -2,9 +2,9 @@
 
 import { GraphQLResult, graphqlOperation } from "@aws-amplify/api-graphql";
 import { useQuery } from "@tanstack/react-query";
-import { Floor, FloorsByTenantIdQuery, FloorsByTenantIdQueryVariables, GetFileUploadUrlQuery, GetFileUploadUrlQueryVariables, GetTenantQuery, GetTenantQueryVariables, ListTenantsQuery, ListTenantsQueryVariables, Tenant } from "@/API";
+import { Floor, FloorsByTenantIdQuery, FloorsByTenantIdQueryVariables, GetTenantQuery, GetTenantQueryVariables, ListTenantsQuery, ListTenantsQueryVariables, Tenant } from "@/API";
 import { client } from "@/components/APIClientProvider";
-import { floorsByTenantId, getFileUploadUrl, getTenant, listTenants } from "@/graphql/queries";
+import { floorsByTenantId, getTenant, listTenants } from "@/graphql/queries";
 import { NextToken } from "@/types/graphql";
 import { queryKeys } from "./queryKeys";
 
@@ -97,16 +97,3 @@ async function graphqlFloorsByTenantId(tenantId: string) {
     return floors;
 }
 
-export async function graphqlGetFileUploadUrl(filePath: string) {
-    const result = await client.graphql(
-        graphqlOperation(
-            getFileUploadUrl,
-            {
-                filePath,
-            } as GetFileUploadUrlQueryVariables
-        )
-    ) as GraphQLResult<GetFileUploadUrlQuery>;
-    if (result.errors) { throw new Error(JSON.stringify(result.errors)); }
-    if (!result.data) { throw new Error("ファイルアップロード用URLの取得に失敗しました。"); }
-    return result.data.getFileUploadUrl;
-}

@@ -34,6 +34,13 @@ export type AmplifyDependentResourcesAttributes = {
       "Name": "string",
       "Region": "string"
     },
+    "refind2CreateFloor": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    },
     "refind2GetFileUploadUrl": {
       "Arn": "string",
       "LambdaExecutionRole": "string",

@@ -8,6 +8,23 @@ type GeneratedMutation<InputType, OutputType> = string & {
   __generatedMutationOutput: OutputType;
 };
 
+export const funcCreateFloor = /* GraphQL */ `mutation FuncCreateFloor($input: funcCreateFloorInput!) {
+  funcCreateFloor(input: $input) {
+    id
+    tenantId
+    name
+    imagePath
+    imageWidth
+    imageHeight
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.FuncCreateFloorMutationVariables,
+  APITypes.FuncCreateFloorMutation
+>;
 export const createTenant = /* GraphQL */ `mutation CreateTenant(
   $input: CreateTenantInput!
   $condition: ModelTenantConditionInput

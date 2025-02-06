@@ -1,9 +1,10 @@
 "use client";
 
 import { graphqlOperation, GraphQLResult } from "@aws-amplify/api-graphql";
-import { CreateFloorInput, CreateFloorMutation, CreateFloorMutationVariables, DeleteFloorInput, DeleteFloorMutation, DeleteFloorMutationVariables, UpdateFloorInput, UpdateFloorMutation, UpdateFloorMutationVariables } from "@/API";
+import { DeleteFloorInput, DeleteFloorMutation, DeleteFloorMutationVariables, funcCreateFloorInput, FuncCreateFloorMutation, FuncCreateFloorMutationVariables, GetFileUploadUrlQuery, GetFileUploadUrlQueryVariables, UpdateFloorInput, UpdateFloorMutation, UpdateFloorMutationVariables } from "@/API";
 import { client } from "@/components/APIClientProvider";
-import { createFloor, deleteFloor, updateFloor } from "@/graphql/mutations";
+import { deleteFloor, funcCreateFloor, updateFloor } from "@/graphql/mutations";
+import { getFileUploadUrl } from "@/graphql/queries";
 
 export async function graphqlUpdateFloor(input: UpdateFloorInput) {
     const result = await client.graphql(
@@ -19,18 +20,18 @@ export async function graphqlUpdateFloor(input: UpdateFloorInput) {
     return result.data.updateFloor;
 }
 
-export async function graphqlCreateFloor(input: CreateFloorInput) {
+export async function graphqlCreateFloor(input: funcCreateFloorInput) {
     const result = await client.graphql(
         graphqlOperation(
-            createFloor,
+            funcCreateFloor,
             {
                 input,
-            } as CreateFloorMutationVariables
+            } as FuncCreateFloorMutationVariables
         )
-    ) as GraphQLResult<CreateFloorMutation>;
+    ) as GraphQLResult<FuncCreateFloorMutation>;
     if (result.errors) { throw new Error(JSON.stringify(result.errors)); }
-    if (!result.data.createFloor) { throw new Error("フロアの登録に失敗しました。"); }
-    return result.data.createFloor;
+    if (!result.data.funcCreateFloor) { throw new Error("フロアの登録に失敗しました。"); }
+    return result.data.funcCreateFloor;
 }
 
 export async function graphqlDeleteFloor(input: DeleteFloorInput) {
@@ -45,4 +46,18 @@ export async function graphqlDeleteFloor(input: DeleteFloorInput) {
     if (result.errors) { throw new Error(JSON.stringify(result.errors)); }
     if (!result.data.deleteFloor) { throw new Error("フロアの削除に失敗しました。"); }
     return result.data.deleteFloor;
+}
+
+export async function graphqlGetFileUploadUrl(filePath: string) {
+    const result = await client.graphql(
+        graphqlOperation(
+            getFileUploadUrl,
+            {
+                filePath,
+            } as GetFileUploadUrlQueryVariables
+        )
+    ) as GraphQLResult<GetFileUploadUrlQuery>;
+    if (result.errors) { throw new Error(JSON.stringify(result.errors)); }
+    if (!result.data) { throw new Error("ファイルアップロード用URLの取得に失敗しました。"); }
+    return result.data.getFileUploadUrl;
 }
