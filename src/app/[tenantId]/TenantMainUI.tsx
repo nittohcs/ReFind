@@ -18,6 +18,7 @@ import UserMenu from "@/components/UserMenu";
 import { useAuthState } from "@/hooks/auth";
 import { SideBarOpenContext } from "@/hooks/sideBar";
 import { useEnvName } from "@/hooks/ui";
+import { useTenantId } from "./hook";
 
 // 次のページを参考にして作成した
 // https://mui.com/material-ui/react-drawer/#persistent-drawer
@@ -97,12 +98,7 @@ const LinkItem: FC<LinkItemProps> = ({ href, text, icon }) => {
     );
 };
 
-type TenantMainUIProps = {
-    tenantId: string,
-};
-
-export const TenantMainUI: FC<PropsWithChildren<TenantMainUIProps>> = ({
-    tenantId,
+export const TenantMainUI: FC<PropsWithChildren> = ({
     children,
 }) => {
     const isWideEnough = useMediaQuery("(min-width:1000px)", { noSsr: true });
@@ -115,6 +111,7 @@ export const TenantMainUI: FC<PropsWithChildren<TenantMainUIProps>> = ({
         setOpen(false);
     }, [setOpen]);
     const env = useEnvName();
+    const tenantId = useTenantId();
 
     return (
         <Box sx={{ display: "flex" }}>

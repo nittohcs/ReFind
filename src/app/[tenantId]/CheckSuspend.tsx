@@ -1,16 +1,13 @@
 "use client";
 
-import { useGetTenant } from "@/services/graphql";
 import { FC, PropsWithChildren } from "react";
+import { useGetTenant } from "@/services/graphql";
+import { useTenantId } from "./hook";
 
-type CheckSuspendProps = {
-    tenantId: string,
-};
-
-export const CheckSuspend: FC<PropsWithChildren<CheckSuspendProps>> = ({
-    tenantId,
+export const CheckSuspend: FC<PropsWithChildren> = ({
     children,
 }) => {
+    const tenantId = useTenantId();
     const query = useGetTenant(tenantId);
 
     // データ取得中
