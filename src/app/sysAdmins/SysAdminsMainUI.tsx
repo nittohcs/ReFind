@@ -12,7 +12,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import HomeIcon from "@mui/icons-material/Home"
 import BusinessIcon from "@mui/icons-material/Business";
 import UserMenu from "@/components/UserMenu";
-import { useAuthState } from "@/hooks/auth";
+//import { useAuthState } from "@/hooks/auth";
 import { SideBarOpenContext } from "@/hooks/sideBar";
 import { useEnvName } from "@/hooks/ui";
 
@@ -98,7 +98,7 @@ export const SysAdminsMainUI: FC<PropsWithChildren> = ({
     children,
 }) => {
     const isWideEnough = useMediaQuery("(min-width:1000px)", { noSsr: true });
-    const authState = useAuthState();
+    //const authState = useAuthState();
     const [open, setOpen] = useState(isWideEnough);
     const handleDrawerOpen = useCallback(() => {
         setOpen(true);

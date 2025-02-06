@@ -110,14 +110,42 @@ app.post('/updateUserAttributes', async (req, res, next) => {
 });
 
 app.post('/createUser', async (req, res, next) => {
-  if (!req.body.username || !req.body.attributes) {
-    const err = new Error('username and attributes are required');
+  if (!req.body.username || !req.body.email || !req.body.name) {
+    const err = new Error('username, email and name are required');
     err.statusCode = 400;
     return next(err);
   }
 
   try {
-    const response = await createUser(req.body.username, req.body.attributes, req.body.messageAction);
+    let tenantId = req.body.tenantId;
+
+    // sysAdminsでない場合、groupに格納されたtenantIdを使用する
+    const groups = req.apiGateway.event.requestContext.authorizer.claims['cognito:groups'].split(',');
+    if (groups.indexOf("sysAdmins") < 0) {
+      // sysAdmins,admins,usersではないものがtenantId
+      tenantId = groups.find(x => x !== "sysAdmins" && x !== "admins" && x !== "users");
+      console.log(`createUser: tenantId=${tenantId}`);
+    }
+
+    const attributes = [
+      {
+        Name: "email",
+        Value: req.body.email,
+      },
+      {
+        Name: "name",
+        Value: req.body.name,
+      },
+      {
+        Name: "email_verified",
+        Value: "true",
+      },
+      {
+        Name: "custom:tenantId",
+        Value: tenantId,
+      }
+    ];
+    const response = await createUser(req.body.username, attributes, req.body.messageAction);
     res.status(200).json(response);
   } catch (err) {
     next(err);

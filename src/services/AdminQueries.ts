@@ -123,7 +123,7 @@ export async function adminUpdateUserAttributes(user: AdminQueriesUser) {
  * Cognitoのユーザーを追加する。
  * 既に存在するユーザーと同じIDで追加しようとするとエラー。
  */
-export async function createUser(user: AdminQueriesUser) {
+export async function createUser(user: AdminQueriesUser, isSuppress: boolean = true) {
     const authSession = await fetchAuthSession();
     const accessToken = authSession.tokens?.accessToken?.toString() ?? "";
     const apiName = "AdminQueries";
@@ -135,29 +135,13 @@ export async function createUser(user: AdminQueriesUser) {
         },
         body: {
             username: user.id,
-            attributes: [
-                {
-                    Name: "email",
-                    Value: user.email,
-                },
-                {
-                    Name: "name",
-                    Value: user.name,
-                },
-                // email_verifiedがTrueでない場合、初回ログインでパスワード変更後に無駄にメールアドレスの確認コードを入力させられる
-                // メールアドレスが間違っていた場合、パスワードが届かずログインできないためcognitoのコンソールで確認ステータスが「パスワードを強制的に変更」のままとなる
-                {
-                    Name: "email_verified",
-                    Value: "true",
-                },
-                // TODO tenantIdはバックエンド側でcognitoのトークンからtenantIdを取得したほうが良い
-                {
-                    Name: "custom:tenantId",
-                    Value: user.tenantId,
-                },
-            ],
+            email: user.email,
+            name: user.name,
+            email_verified: "true",
+            tenantId: user.tenantId,
+
             // SUPPRESSで初回ログイン用パスワードのお知らせメールが送信されなくなる
-            //messageAction: "SUPPRESS",
+            ...(isSuppress && { messageAction: "SUPPRESS" }),
         },
     };
     const operation = post({ apiName, path, options });

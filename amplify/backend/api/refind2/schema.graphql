@@ -36,7 +36,7 @@ type Floor @model @auth (
       provider: userPools,
       groupClaim: "cognito:groups",
       groups: ["sysAdmins"],
-      operations: [create, update, delete, read]
+      operations: [read]
     },
     {
       allow: groups,
@@ -44,6 +44,11 @@ type Floor @model @auth (
       groupClaim: "cognito:groups",
       groupsField: "tenantId",
       operations: [read]
+    },
+    {
+      allow: private,
+      provider: iam,
+      operations: [create, update, delete, read]
     }
   ]
 ) {
