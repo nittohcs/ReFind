@@ -15,7 +15,7 @@ export function useStorageFileURL(filePath: string | null, expiresIn: number = 9
             if (!filePath) {
                 return null;
             }
-            const url = await graphqlGetFileDownloadUrl(filePath, expiresIn) ?? null;
+            const url = await graphqlGetFileDownloadUrl(filePath, expiresIn);
             return url;
         },
         staleTime: expiresIn * 1000,    // ミリ秒なので1000倍する
@@ -33,6 +33,6 @@ async function graphqlGetFileDownloadUrl(filePath: string, expiresIn: number) {
         )
     ) as GraphQLResult<GetFileDownloadUrlQuery>;
     if (result.errors) { throw new Error(JSON.stringify(result.errors)); }
-    if (!result.data) { throw new Error("ダウンロードURLの取得に失敗しました。"); }
+    if (!result.data.getFileDownloadUrl) { throw new Error("ダウンロードURLの取得に失敗しました。"); }
     return result.data.getFileDownloadUrl;
 }

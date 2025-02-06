@@ -85,7 +85,7 @@ export const EditFloorForm: FC<EditFloorFormProps> = ({
                 }
             }
 
-            // TODO テーブル更新
+            // テーブル更新
             return await graphqlUpdateFloor({
                 id: values.id,
                 tenantId: tenantId,

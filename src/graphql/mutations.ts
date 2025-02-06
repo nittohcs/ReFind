@@ -25,6 +25,23 @@ export const funcCreateFloor = /* GraphQL */ `mutation FuncCreateFloor($input: f
   APITypes.FuncCreateFloorMutationVariables,
   APITypes.FuncCreateFloorMutation
 >;
+export const funcUpdateFloor = /* GraphQL */ `mutation FuncUpdateFloor($input: funcUpdateFloorInput!) {
+  funcUpdateFloor(input: $input) {
+    id
+    tenantId
+    name
+    imagePath
+    imageWidth
+    imageHeight
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.FuncUpdateFloorMutationVariables,
+  APITypes.FuncUpdateFloorMutation
+>;
 export const createTenant = /* GraphQL */ `mutation CreateTenant(
   $input: CreateTenantInput!
   $condition: ModelTenantConditionInput

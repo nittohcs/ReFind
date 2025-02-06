@@ -15,8 +15,8 @@ export const getFileUploadUrl = /* GraphQL */ `query GetFileUploadUrl($filePath:
   APITypes.GetFileUploadUrlQueryVariables,
   APITypes.GetFileUploadUrlQuery
 >;
-export const getFileDownloadUrl = /* GraphQL */ `query GetFileDownloadUrl($filePath: String!) {
-  getFileDownloadUrl(filePath: $filePath)
+export const getFileDownloadUrl = /* GraphQL */ `query GetFileDownloadUrl($filePath: String!, $expiresIn: Int) {
+  getFileDownloadUrl(filePath: $filePath, expiresIn: $expiresIn)
 }
 ` as GeneratedQuery<
   APITypes.GetFileDownloadUrlQueryVariables,

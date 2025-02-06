@@ -162,6 +162,21 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "refind2UpdateFloor": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind2"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "refind2a0622a88PreTokenGeneration": {
       "build": true,
       "providerPlugin": "awscloudformation",
@@ -230,6 +245,22 @@
         {
           "category": "function",
           "resourceName": "refind2GetFileUploadUrl"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2UpdateFloor_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2UpdateFloor"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2UpdateFloor_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2UpdateFloor"
         }
       ]
     },

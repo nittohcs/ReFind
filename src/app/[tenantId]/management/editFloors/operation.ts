@@ -1,23 +1,23 @@
 "use client";
 
 import { graphqlOperation, GraphQLResult } from "@aws-amplify/api-graphql";
-import { DeleteFloorInput, DeleteFloorMutation, DeleteFloorMutationVariables, funcCreateFloorInput, FuncCreateFloorMutation, FuncCreateFloorMutationVariables, GetFileUploadUrlQuery, GetFileUploadUrlQueryVariables, UpdateFloorInput, UpdateFloorMutation, UpdateFloorMutationVariables } from "@/API";
+import { DeleteFloorInput, DeleteFloorMutation, DeleteFloorMutationVariables, funcCreateFloorInput, FuncCreateFloorMutation, FuncCreateFloorMutationVariables, funcUpdateFloorInput, FuncUpdateFloorMutation, FuncUpdateFloorMutationVariables, GetFileUploadUrlQuery, GetFileUploadUrlQueryVariables } from "@/API";
 import { client } from "@/components/APIClientProvider";
-import { deleteFloor, funcCreateFloor, updateFloor } from "@/graphql/mutations";
+import { deleteFloor, funcCreateFloor, funcUpdateFloor } from "@/graphql/mutations";
 import { getFileUploadUrl } from "@/graphql/queries";
 
-export async function graphqlUpdateFloor(input: UpdateFloorInput) {
+export async function graphqlUpdateFloor(input: funcUpdateFloorInput) {
     const result = await client.graphql(
         graphqlOperation(
-            updateFloor,
+            funcUpdateFloor,
             {
                 input,
-            } as UpdateFloorMutationVariables
+            } as FuncUpdateFloorMutationVariables
         )
-    ) as GraphQLResult<UpdateFloorMutation>;
+    ) as GraphQLResult<FuncUpdateFloorMutation>;
     if (result.errors) { throw new Error(JSON.stringify(result.errors)); }
-    if (!result.data.updateFloor) { throw new Error("フロアの更新に失敗しました"); }
-    return result.data.updateFloor;
+    if (!result.data.funcUpdateFloor) { throw new Error("フロアの更新に失敗しました"); }
+    return result.data.funcUpdateFloor;
 }
 
 export async function graphqlCreateFloor(input: funcCreateFloorInput) {
@@ -58,6 +58,6 @@ export async function graphqlGetFileUploadUrl(filePath: string) {
         )
     ) as GraphQLResult<GetFileUploadUrlQuery>;
     if (result.errors) { throw new Error(JSON.stringify(result.errors)); }
-    if (!result.data) { throw new Error("ファイルアップロード用URLの取得に失敗しました。"); }
+    if (!result.data.getFileUploadUrl) { throw new Error("ファイルアップロード用URLの取得に失敗しました。"); }
     return result.data.getFileUploadUrl;
 }

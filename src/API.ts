@@ -23,6 +23,15 @@ export type Floor = {
   updatedAt: string,
 };
 
+export type funcUpdateFloorInput = {
+  id: string,
+  tenantId?: string | null,
+  name?: string | null,
+  imagePath?: string | null,
+  imageWidth?: number | null,
+  imageHeight?: number | null,
+};
+
 export type CreateTenantInput = {
   id?: string | null,
   name: string,
@@ -297,6 +306,24 @@ export type FuncCreateFloorMutation = {
   } | null,
 };
 
+export type FuncUpdateFloorMutationVariables = {
+  input: funcUpdateFloorInput,
+};
+
+export type FuncUpdateFloorMutation = {
+  funcUpdateFloor?:  {
+    __typename: "Floor",
+    id: string,
+    tenantId: string,
+    name: string,
+    imagePath: string,
+    imageWidth: number,
+    imageHeight: number,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
 export type CreateTenantMutationVariables = {
   input: CreateTenantInput,
   condition?: ModelTenantConditionInput | null,
@@ -412,6 +439,7 @@ export type GetFileUploadUrlQuery = {
 
 export type GetFileDownloadUrlQueryVariables = {
   filePath: string,
+  expiresIn?: number | null,
 };
 
 export type GetFileDownloadUrlQuery = {
