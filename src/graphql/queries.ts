@@ -15,6 +15,13 @@ export const getFileUploadUrl = /* GraphQL */ `query GetFileUploadUrl($filePath:
   APITypes.GetFileUploadUrlQueryVariables,
   APITypes.GetFileUploadUrlQuery
 >;
+export const getFileDownloadUrl = /* GraphQL */ `query GetFileDownloadUrl($filePath: String!) {
+  getFileDownloadUrl(filePath: $filePath)
+}
+` as GeneratedQuery<
+  APITypes.GetFileDownloadUrlQueryVariables,
+  APITypes.GetFileDownloadUrlQuery
+>;
 export const getTenant = /* GraphQL */ `query GetTenant($id: ID!) {
   getTenant(id: $id) {
     id

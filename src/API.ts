@@ -410,6 +410,14 @@ export type GetFileUploadUrlQuery = {
   getFileUploadUrl?: string | null,
 };
 
+export type GetFileDownloadUrlQueryVariables = {
+  filePath: string,
+};
+
+export type GetFileDownloadUrlQuery = {
+  getFileDownloadUrl?: string | null,
+};
+
 export type GetTenantQueryVariables = {
   id: string,
 };

@@ -83,6 +83,9 @@ input funcCreateFloorInput {
 type Query {
   getFileUploadUrl(filePath: String!): String
   @function(name: "refind2GetFileUploadUrl-${env}")
+
+  getFileDownloadUrl(filePath: String!, expiresIn: Int): String
+  @function(name: "refind2GetFileDownloadUrl-${env}")
 }
 
 type Mutation {

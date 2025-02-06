@@ -5,8 +5,8 @@ import { Box } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { uploadData } from 'aws-amplify/storage';
 import { fileTypeFromBlob } from "file-type";
+import { useTenantId } from "@/app/[tenantId]/hook";
 import { Floor } from "@/API";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalTextField from "@/components/MiraCalTextField";
@@ -15,9 +15,9 @@ import MiraCalButton from "@/components/MiraCalButton";
 import MiraCalFormAction from "@/components/MiraCalFormAction";
 import { useConfirmDialogState } from "@/hooks/confirmDialogState";
 import { useEnqueueSnackbar } from "@/hooks/ui";
-import { useListAllFloors } from "@/services/graphql";
+import { useFloorsByTenantId } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
-import { graphqlUpdateFloor } from "../operation";
+import { graphqlGetFileUploadUrl, graphqlUpdateFloor } from "../operation";
 import DeleteFloorDialog from "./DeleteFloorDialog";
 
 type FormValues = {
@@ -37,7 +37,8 @@ export const EditFloorForm: FC<EditFloorFormProps> = ({
     floorId,
     update,
 }) => {
-    const query = useListAllFloors();
+    const tenantId = useTenantId();
+    const query = useFloorsByTenantId(tenantId);
     const floor = useMemo(() => (query.data ?? []).find(x => x.id === floorId) ?? null, [query.data, floorId]);
 
     const validationSchema = useMemo(() => yup.object().shape({
@@ -69,20 +70,25 @@ export const EditFloorForm: FC<EditFloorFormProps> = ({
 
             let imagePath: string | undefined = undefined;
             if (values.image === ImageUploadState.Upload && file) {
-                imagePath = `public/floors/${values.id}`;
+                imagePath = `public/${tenantId}/floors/${values.id}`;
                 const fileTypeResult = await fileTypeFromBlob(file);
-                const _result = await uploadData({
-                    path: imagePath,
-                    data: file,
-                    options: {
-                        contentType: fileTypeResult?.mime,
+                const presignedUrl = await graphqlGetFileUploadUrl(imagePath) ?? "";
+                const response = await fetch(presignedUrl, {
+                    method: "PUT",
+                    body: file,
+                    headers: {
+                        "Content-Type": fileTypeResult?.mime ?? "", // ファイルのMIMEタイプを指定
                     },
-                }).result;
+                });
+                if (!response.ok) {
+                    throw new Error("登録に失敗しました。");
+                }
             }
 
-            // テーブル更新
+            // TODO テーブル更新
             return await graphqlUpdateFloor({
                 id: values.id,
+                tenantId: tenantId,
                 name: values.name,
                 ...(!!imagePath && { imagePath }),
                 imageWidth: values.imageWidth,
@@ -92,8 +98,11 @@ export const EditFloorForm: FC<EditFloorFormProps> = ({
         onSuccess(data, _variables, _context) {
             enqueueSnackbar("フロアを更新しました。", { variant: "success" });
 
-            // フロア取得クエリを無効化して再取得されるようにする
-            queryClient.invalidateQueries({ queryKey: queryKeys.graphqlListAllFloors });
+            // // フロア取得クエリを無効化して再取得されるようにする
+            // queryClient.invalidateQueries({ queryKey: queryKeys.graphqlListAllFloors });
+
+            // 登録したフロアをキャッシュに追加
+            queryClient.setQueryData(queryKeys.graphqlFloorsByTenantId(tenantId), (items: Floor[] = []) => items.map(item => item.id === data.id ? data : item));
 
             // 画像取得クエリを無効化して再取得されるようにする
             if (data.imagePath) {

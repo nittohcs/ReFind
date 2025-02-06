@@ -28,11 +28,15 @@
         },
         "refind2GetFileUploadUrl": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
-          "s3Key": "amplify-builds/refind2GetFileUploadUrl-79694f6a3153754d5a6d-build.zip"
+          "s3Key": "amplify-builds/refind2GetFileUploadUrl-48724c584b6f785a7674-build.zip"
         },
         "refind2CreateFloor": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
           "s3Key": "amplify-builds/refind2CreateFloor-75493354507067783649-build.zip"
+        },
+        "refind2GetFileDownloadUrl": {
+          "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
+          "s3Key": "amplify-builds/refind2GetFileDownloadUrl-50546f72474d6f764c4f-build.zip"
         }
       },
       "api": {

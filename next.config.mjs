@@ -1,4 +1,19 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+    images: {
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "refind266091c0821a8489db49f16b2384bf22778a18-staging.s3.ap-northeast-3.amazonaws.com",
+                pathname: "/**"
+            },
+            {
+                protocol: "https",
+                hostname: "refind266091c0821a8489db49f16b2384bf22778a18-main.s3.ap-northeast-3.amazonaws.com",
+                pathname: "/**"
+            },
+        ],
+    },
+};
 
 export default nextConfig;

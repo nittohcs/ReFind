@@ -2,20 +2,22 @@
 
 import Link from "next/link";
 import { Box, Toolbar, Typography } from "@mui/material";
+import { useTenantId } from "@/app/[tenantId]/hook";
 import MiraCalBreadcrumbs from "@/components/MiraCalBreadcrumbs";
-import EditFloorForm from "./EditFloorForm";
 import { useUpdatedAt } from "@/hooks/ui";
+import EditFloorForm from "./EditFloorForm";
 
 export default function Page({ params }: { params: { floorId: string } }) {
+    const tenantId = useTenantId();
     const floorId = decodeURIComponent(params.floorId);
     const [updatedAt, update] = useUpdatedAt("editFloor");
 
     return (
         <>
             <MiraCalBreadcrumbs>
-                <Link href="/">ホーム</Link>
-                <Link href="/management">管理</Link>
-                <Link href="/management/editFloors">フロア編集</Link>
+                <Link href={`/${tenantId}`}>ホーム</Link>
+                <Link href={`/${tenantId}/management`}>管理</Link>
+                <Link href={`/${tenantId}/management/editFloors`}>フロア編集</Link>
                 <Typography>{floorId}</Typography>
             </MiraCalBreadcrumbs>
             <Toolbar sx={{ pt: 2 }}>

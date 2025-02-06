@@ -4,7 +4,7 @@
 	STORAGE_REFIND2STORAGE_BUCKETNAME
 Amplify Params - DO NOT EDIT */
 
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 const REGION = process.env.REGION;
@@ -15,34 +15,28 @@ const BUCKETNAME = process.env.STORAGE_REFIND2STORAGE_BUCKETNAME;
  */
 export const handler = async (event) => {
     console.log(`EVENT: ${JSON.stringify(event)}`);
-
+    
     const filePath = event.arguments?.filePath ?? "";
+    const expiresIn = event.arguments?.expiresIn ?? 900;
 
     const groups = event.identity?.groups;
-    if (groups.indexOf("admins") < 0) {
-        throw new Error("User does not have permissions to upload files");
-    }
-
     // sysAdminsじゃないならtenantIdをチェックする
     if (groups.indexOf("sysAdmins") < 0) {
         const tenantId = groups.find(x => x !== "sysAdmins" && x !== "admins" && x !== "users") ?? "";
         if (!tenantId) {
             throw new Error("Empty tenantId");
         }
-
+        
         if (!filePath.startsWith(`public/${tenantId}/`)) {
             throw new Error("Invalid tenantId");
         }
     }
 
     const s3Client = new S3Client({ region: REGION });
-
-    const command = new PutObjectCommand({
+    const command = new GetObjectCommand({
         Bucket: BUCKETNAME,
-        Key: filePath,
+        Key: filePath
     });
-
-    const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 60 });
-    
-    return signedUrl;
+    const url = await getSignedUrl(s3Client, command, { expiresIn });
+    return url;
 };

@@ -6,11 +6,10 @@
   "guestAccess": [],
   "authAccess": [],
   "groupAccess": {
-    "admins": [
-      "READ"
-    ],
-    "users": [
-      "READ"
+    "sysAdmins": [
+      "CREATE_AND_UPDATE",
+      "READ",
+      "DELETE"
     ]
   }
 }
