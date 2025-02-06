@@ -15,6 +15,7 @@ import { addUserToGroup, createUser, deleteUser } from "@/services/AdminQueries"
 import { queryKeys } from "@/services/queryKeys";
 import { AdminQueriesUser } from "@/types/user";
 import { graphqlCreateTenant, graphqlDeleteTenant } from "../operation";
+import { Tenant } from "@/API";
 
 type FormValues = {
     id: string,
@@ -85,11 +86,14 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
 
             return tenant;
         },
-        onSuccess(_data, _variables, _context) {
+        onSuccess(data, _variables, _context) {
             enqueueSnackbar("登録しました。", { variant: "success" });
 
             // フロア一覧取得クエリを無効化して再取得されるようにする
-            queryClient.invalidateQueries({ queryKey: queryKeys.listAllTenants });
+            //queryClient.invalidateQueries({ queryKey: queryKeys.listAllTenants });
+
+            // 登録したテナントをキャッシュに追加
+            queryClient.setQueryData(queryKeys.listAllTenants, (items: Tenant[] = []) => [...items, data]);
 
             // このコンポーネントを再表示させる
             update();
