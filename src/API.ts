@@ -196,6 +196,12 @@ export type ModelFloorConnection = {
   nextToken?: string | null,
 };
 
+export enum ModelSortDirection {
+  ASC = "ASC",
+  DESC = "DESC",
+}
+
+
 export type ModelSubscriptionTenantFilterInput = {
   name?: ModelSubscriptionStringInput | null,
   isSuspended?: ModelSubscriptionBooleanInput | null,
@@ -369,6 +375,14 @@ export type DeleteFloorMutation = {
   } | null,
 };
 
+export type GetFileUploadUrlQueryVariables = {
+  filePath: string,
+};
+
+export type GetFileUploadUrlQuery = {
+  getFileUploadUrl?: string | null,
+};
+
 export type GetTenantQueryVariables = {
   id: string,
 };
@@ -431,6 +445,32 @@ export type ListFloorsQueryVariables = {
 
 export type ListFloorsQuery = {
   listFloors?:  {
+    __typename: "ModelFloorConnection",
+    items:  Array< {
+      __typename: "Floor",
+      id: string,
+      tenantId: string,
+      name: string,
+      imagePath: string,
+      imageWidth: number,
+      imageHeight: number,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type FloorsByTenantIdQueryVariables = {
+  tenantId: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelFloorFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type FloorsByTenantIdQuery = {
+  floorsByTenantId?:  {
     __typename: "ModelFloorConnection",
     items:  Array< {
       __typename: "Floor",

@@ -1,16 +1,16 @@
 "use client";
 
 import { GraphQLResult, graphqlOperation } from "@aws-amplify/api-graphql";
-import { GetTenantQuery, GetTenantQueryVariables, ListTenantsQuery, ListTenantsQueryVariables, Tenant } from "@/API";
-import { client } from "@/components/APIClientProvider";
-import { NextToken } from "@/types/graphql";
 import { useQuery } from "@tanstack/react-query";
-import { getTenant, listTenants } from "@/graphql/queries";
+import { Floor, FloorsByTenantIdQuery, FloorsByTenantIdQueryVariables, GetFileUploadUrlQuery, GetFileUploadUrlQueryVariables, GetTenantQuery, GetTenantQueryVariables, ListTenantsQuery, ListTenantsQueryVariables, Tenant } from "@/API";
+import { client } from "@/components/APIClientProvider";
+import { floorsByTenantId, getFileUploadUrl, getTenant, listTenants } from "@/graphql/queries";
+import { NextToken } from "@/types/graphql";
 import { queryKeys } from "./queryKeys";
 
 export function useListAllTenants(staleTime?: number) {
     return useQuery({
-        queryKey: queryKeys.listAllTenants,
+        queryKey: queryKeys.graphqlListAllTenants,
         queryFn: graphqlListAllTenants,
         ...(!!staleTime && {staleTime }),
     });
@@ -43,7 +43,7 @@ async function graphqlListAllTenants() {
 
 export function useGetTenant(tenantId: string, staleTime?: number) {
     return useQuery({
-        queryKey: queryKeys.getTenant(tenantId),
+        queryKey: queryKeys.graphqlGetTenant(tenantId),
         queryFn: async () => { return await graphqlGetTenant(tenantId); },
         ...(!!staleTime && {staleTime }),
     })
@@ -61,4 +61,52 @@ async function graphqlGetTenant(tenantId: string) {
     if (result.errors) { throw new Error(JSON.stringify(result.errors)); }
     if (!result.data) { throw new Error(`テナントの取得に失敗しました(id=「${tenantId}」)。`); }
     return result.data.getTenant;
+}
+
+export function useFloorsByTenantId(tenantId: string, staleTime?: number) {
+    return useQuery({
+        queryKey: queryKeys.graphqlFloorsByTenantId(tenantId),
+        queryFn: async () => { return await graphqlFloorsByTenantId(tenantId); },
+        ...(!!staleTime && {staleTime }),
+    });
+}
+
+async function graphqlFloorsByTenantId(tenantId: string) {
+    const floors: Floor[] = [];
+
+    let nextToken: NextToken = undefined;
+    do {
+        const result = await client.graphql(
+            graphqlOperation(
+                floorsByTenantId,
+                {
+                    tenantId,
+                    nextToken,
+                } as FloorsByTenantIdQueryVariables
+            )
+        ) as GraphQLResult<FloorsByTenantIdQuery>;
+        if (result.errors || !result.data) { throw new Error(JSON.stringify(result.errors)); }
+        for(const item of result.data?.floorsByTenantId?.items ?? []) {
+            if (item) {
+                floors.push(item);
+            }
+        }
+        nextToken = result.data.floorsByTenantId?.nextToken;
+    } while(nextToken);
+
+    return floors;
+}
+
+export async function graphqlGetFileUploadUrl(filePath: string) {
+    const result = await client.graphql(
+        graphqlOperation(
+            getFileUploadUrl,
+            {
+                filePath,
+            } as GetFileUploadUrlQueryVariables
+        )
+    ) as GraphQLResult<GetFileUploadUrlQuery>;
+    if (result.errors) { throw new Error(JSON.stringify(result.errors)); }
+    if (!result.data) { throw new Error("ファイルアップロード用URLの取得に失敗しました。"); }
+    return result.data.getFileUploadUrl;
 }

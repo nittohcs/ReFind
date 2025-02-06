@@ -8,6 +8,13 @@ type GeneratedQuery<InputType, OutputType> = string & {
   __generatedQueryOutput: OutputType;
 };
 
+export const getFileUploadUrl = /* GraphQL */ `query GetFileUploadUrl($filePath: String!) {
+  getFileUploadUrl(filePath: $filePath)
+}
+` as GeneratedQuery<
+  APITypes.GetFileUploadUrlQueryVariables,
+  APITypes.GetFileUploadUrlQuery
+>;
 export const getTenant = /* GraphQL */ `query GetTenant($id: ID!) {
   getTenant(id: $id) {
     id
@@ -79,4 +86,37 @@ export const listFloors = /* GraphQL */ `query ListFloors(
 ` as GeneratedQuery<
   APITypes.ListFloorsQueryVariables,
   APITypes.ListFloorsQuery
+>;
+export const floorsByTenantId = /* GraphQL */ `query FloorsByTenantId(
+  $tenantId: String!
+  $sortDirection: ModelSortDirection
+  $filter: ModelFloorFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  floorsByTenantId(
+    tenantId: $tenantId
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      tenantId
+      name
+      imagePath
+      imageWidth
+      imageHeight
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.FloorsByTenantIdQueryVariables,
+  APITypes.FloorsByTenantIdQuery
 >;

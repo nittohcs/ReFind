@@ -64,7 +64,7 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
             //queryClient.invalidateQueries({ queryKey: queryKeys.listAllTenants });
 
             // 更新したテナントだけキャッシュを更新
-            queryClient.setQueryData(queryKeys.listAllTenants, (items: Tenant[]) => items.map(item => item.id === data.id ? data : item));
+            queryClient.setQueryData(queryKeys.graphqlListAllTenants, (items: Tenant[]) => items.map(item => item.id === data.id ? data : item));
 
             // コンポーネントを再生成
             update();

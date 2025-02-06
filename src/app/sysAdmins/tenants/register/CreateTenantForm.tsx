@@ -93,7 +93,7 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
             //queryClient.invalidateQueries({ queryKey: queryKeys.listAllTenants });
 
             // 登録したテナントをキャッシュに追加
-            queryClient.setQueryData(queryKeys.listAllTenants, (items: Tenant[] = []) => [...items, data]);
+            queryClient.setQueryData(queryKeys.graphqlListAllTenants, (items: Tenant[] = []) => [...items, data]);
 
             // このコンポーネントを再表示させる
             update();

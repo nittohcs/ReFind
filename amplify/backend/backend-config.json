@@ -119,6 +119,20 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "refind2GetFileUploadUrl": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "BucketName"
+          ],
+          "category": "storage",
+          "resourceName": "ReFind2Storage"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "refind2a0622a88PreTokenGeneration": {
       "build": true,
       "providerPlugin": "awscloudformation",
@@ -142,6 +156,22 @@
         }
       ]
     },
+    "AMPLIFY_function_refind2GetFileUploadUrl_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2GetFileUploadUrl"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2GetFileUploadUrl_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2GetFileUploadUrl"
+        }
+      ]
+    },
     "AMPLIFY_function_refind2a0622a88PreTokenGeneration_deploymentBucketName": {
       "usedBy": [
         {
@@ -157,6 +187,35 @@
           "resourceName": "refind2a0622a88PreTokenGeneration"
         }
       ]
+    }
+  },
+  "storage": {
+    "ReFind2Storage": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "refind2a0622a88"
+        },
+        {
+          "attributes": [
+            "adminsGroupRole"
+          ],
+          "category": "auth",
+          "resourceName": "userPoolGroups"
+        },
+        {
+          "attributes": [
+            "usersGroupRole"
+          ],
+          "category": "auth",
+          "resourceName": "userPoolGroups"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "S3"
     }
   }
 }

@@ -56,7 +56,7 @@ type Floor @model @auth (
   id: ID!
 
   # 組織ID
-  tenantId: String!
+  tenantId: String! @index(name: "byTenantId")
 
   # 名前
   name: String!
@@ -69,4 +69,8 @@ type Floor @model @auth (
 
   # 画像高さ
   imageHeight: Int!
+}
+
+type Query {
+  getFileUploadUrl(filePath: String!): String @function(name: "refind2GetFileUploadUrl-${env}")
 }
