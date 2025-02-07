@@ -1,0 +1,41 @@
+"use client";
+
+import { QueryClient } from "@tanstack/react-query";
+import { addUserToGroup, createUser, deleteUser } from "@/services/AdminQueries";
+import { releaseSeatBySeatId } from "@/services/occupancyUtil";
+import { queryKeys } from "@/services/queryKeys";
+import { ReFindUser } from "@/types/user";
+
+export async function createReFindUser(user: ReFindUser) {
+    // TODO ユーザー作成時にcognitoがメールを送るようにしているが、自前でメールを送るようにするかも
+    // cognitoユーザー作成
+    await createUser(user);
+
+    try {
+        // cognitoのグループに追加
+        await addUserToGroup(user, user.isAdmin ? "admins" : "users");
+
+        return user;
+    } catch (err) {
+        // cognitoユーザー作成後にエラー発生したらユーザーを削除する
+        await deleteUser(user);
+
+        throw err;
+    }
+}
+
+export async function deleteReFindUser(user: ReFindUser) {
+    // 使用中の座席がある場合、座席を解放
+    if (user.seatId) {
+        await releaseSeatBySeatId(user.tenantId, user.seatId);
+    }
+
+    // cognitoのユーザーを削除
+    await deleteUser(user);
+
+    return user;
+}
+
+export function invalidateReFindUserQuery(queryClient: QueryClient) {
+    queryClient.invalidateQueries({ queryKey: queryKeys.listAllUsers });
+}

@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useMemo } from "react";
 import { Floor, Seat, SeatOccupancy } from "@/API";
-import { useFloorsByTenantId, useListSeatOccupanciesByDateAndTenantId, useSeatsByTenantId } from "@/services/graphql";
+import { useFloorsByTenantId, useSeatOccupanciesByDateAndTenantId, useSeatsByTenantId } from "@/services/graphql";
 import { getLatestOccupancyMap } from "@/services/occupancyUtil";
 import { useAuthState } from "./auth";
 import { useTodayYYYYMMDD } from "./util";
@@ -30,7 +30,7 @@ export const useSeatOccupancy = () => useContext(SeatOccupancyContext);
 
 export const useSeatOccupancyValue = (tenantId: string): UseSeatOccupancyValue => {
     const today = useTodayYYYYMMDD();
-    const qOccupancies = useListSeatOccupanciesByDateAndTenantId(today, tenantId);
+    const qOccupancies = useSeatOccupanciesByDateAndTenantId(today, tenantId);
     const qSeats = useSeatsByTenantId(tenantId);
     const qFloors = useFloorsByTenantId(tenantId);
     const authState = useAuthState();

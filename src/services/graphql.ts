@@ -131,7 +131,7 @@ async function graphqlSeatsByTenantId(tenantId: string) {
     return seats;
 }
 
-export function useListSeatOccupanciesByDateAndTenantId(date: string, tenantId: string, staleTime?: number) {
+export function useSeatOccupanciesByDateAndTenantId(date: string, tenantId: string, staleTime?: number) {
     return useQuery({
         queryKey: queryKeys.graphqlSeatOccupanciesByDateAndTenantId(date, tenantId),
         async queryFn() { return await graphqlSeatOccupanciesByDateAndTenantId(date, tenantId); },
