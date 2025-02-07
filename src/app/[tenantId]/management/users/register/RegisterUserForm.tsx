@@ -5,6 +5,7 @@ import { Box } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useMutation, useQueryClient  } from "@tanstack/react-query";
+import { useTenantId } from "@/app/[tenantId]/hook";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalTextField from "@/components/MiraCalTextField";
 import MiraCalCheckbox from "@/components/MiraCalCheckbox";
@@ -25,6 +26,8 @@ type RegisterUserFormProps = {
 };
 
 export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
+    const tenantId = useTenantId();
+
     const validationSchema = useMemo(() => yup.object().shape({
         id: yup.string().required().default(""),
         name: yup.string().required().default(""),
@@ -41,6 +44,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
         async mutationFn(values: FormValues) {
             return await createReFindUser({
                 ...values,
+                tenantId: tenantId,
                 seatId: "",
                 seatName: "",
                 floorId: "",

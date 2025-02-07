@@ -45,7 +45,7 @@ export function UserMenu() {
                 {isReady && mySeat && myFloor && (
                     <MenuItem onClick={menu.withClose(() => confirmDialogState.open("座席解放", `フロア「${myFloor.name}」の座席「${mySeat.name}」を解放します。`, mySeat))}>座席解放</MenuItem>
                 )}
-                <Link href="/userSettings">
+                <Link href={`/${tenantId}/userSettings`}>
                     <MenuItem onClick={menu.closeHandler}>設定</MenuItem>
                 </Link>
                 <MenuItem onClick={() => signOut()}>ログアウト</MenuItem>

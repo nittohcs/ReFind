@@ -63,7 +63,7 @@ export default function Page() {
         queryClient.setQueryData(queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId), (items: SeatOccupancy[] = []) => [...items, ...occupancies]);
         router.push(`/${tenantId}/floors/${floor.id}`);
         return true;
-    }, [allSeats, authState.name, authState.username, enqueueSnackbar, myOccupancy, mySeat, router, seatOccupancyMap, queryClient, today, allFloors, myFloor]);
+    }, [allSeats, authState.name, authState.username, enqueueSnackbar, myOccupancy, mySeat, router, seatOccupancyMap, queryClient, today, allFloors, myFloor, tenantId]);
 
     return (
         <>

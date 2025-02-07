@@ -5,6 +5,7 @@ import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } 
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { SeatOccupancy } from "@/API";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalTextField from "@/components/MiraCalTextField";
 import MiraCalButton from "@/components/MiraCalButton";
@@ -15,8 +16,7 @@ import { useTodayYYYYMMDD } from "@/hooks/util";
 import { queryKeys } from "@/services/queryKeys";
 import { AdminQueriesUser, ReFindUser } from "@/types/user";
 import { useTenantId } from "../../hook";
-import { deleteReFindUser, invalidateReFindUserQuery } from "./user";
-import { SeatOccupancy } from "@/API";
+import { deleteReFindUser } from "./user";
 
 type FormValues = {
     key: string,

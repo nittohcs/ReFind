@@ -273,6 +273,7 @@ async function listAllUsers() {
           id: user.Username,
           email: user.Attributes.find(x => x.Name === "email")?.Value ?? "",
           name: user.Attributes.find(x => x.Name === "name")?.Value ?? "",
+          tenantId: user.Attributes.find(x => x.Name === "custom:tenantId")?.Value ?? "",
         });
       }
 
@@ -371,6 +372,7 @@ async function listAllUsersInGroup(groupname) {
           id: user.Username,
           email: user.Attributes.find(x => x.Name === "email")?.Value ?? "",
           name: user.Attributes.find(x => x.Name === "name")?.Value ?? "",
+          tenantId: user.Attributes.find(x => x.Name === "custom:tenantId")?.Value ?? "",
         });
       }
 
