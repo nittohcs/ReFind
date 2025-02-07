@@ -57,6 +57,15 @@ export type Seat = {
   updatedAt: string,
 };
 
+export type funcUpdateSeatInput = {
+  id: string,
+  tenantId?: string | null,
+  floorId?: string | null,
+  name?: string | null,
+  posX?: number | null,
+  posY?: number | null,
+};
+
 export type funcCreateSeatOccupancyInput = {
   id?: string | null,
   tenantId: string,
@@ -546,6 +555,24 @@ export type FuncCreateSeatMutationVariables = {
 
 export type FuncCreateSeatMutation = {
   funcCreateSeat?:  {
+    __typename: "Seat",
+    id: string,
+    tenantId: string,
+    floorId: string,
+    name: string,
+    posX: number,
+    posY: number,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type FuncUpdateSeatMutationVariables = {
+  input: funcUpdateSeatInput,
+};
+
+export type FuncUpdateSeatMutation = {
+  funcUpdateSeat?:  {
     __typename: "Seat",
     id: string,
     tenantId: string,

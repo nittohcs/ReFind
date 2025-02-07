@@ -197,6 +197,15 @@ input funcCreateSeatOccupancyInput {
   date: String!
 }
 
+input funcUpdateSeatInput {
+  id: ID!
+  tenantId: ID
+  floorId: ID
+  name: String
+  posX: Int
+  posY: Int
+}
+
 type Query {
   # ファイルアップロード用URLの取得
   getFileUploadUrl(filePath: String!): String
@@ -227,6 +236,10 @@ type Mutation {
   # 座席登録
   funcCreateSeat(input: funcCreateSeatInput!): Seat
   @function(name: "refind2CreateSeat-${env}")
+
+  # 座席更新
+  funcUpdateSeat(input: funcUpdateSeatInput!): Seat
+  @function(name: "refind2UpdateSeat-${env}")
 
   # 座席確保情報登録
   funcCreateSeatOccupancy(input: funcCreateSeatOccupancyInput!): SeatOccupancy

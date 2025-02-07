@@ -236,6 +236,21 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "refind2UpdateSeat": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind2"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "refind2a0622a88PreTokenGeneration": {
       "build": true,
       "providerPlugin": "awscloudformation",
@@ -384,6 +399,22 @@
         {
           "category": "function",
           "resourceName": "refind2UpdateFloor"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2UpdateSeat_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2UpdateSeat"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2UpdateSeat_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2UpdateSeat"
         }
       ]
     },

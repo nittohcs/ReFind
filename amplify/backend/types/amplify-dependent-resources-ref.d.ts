@@ -90,6 +90,13 @@ export type AmplifyDependentResourcesAttributes = {
       "Name": "string",
       "Region": "string"
     },
+    "refind2UpdateSeat": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    },
     "refind2a0622a88PreTokenGeneration": {
       "Arn": "string",
       "LambdaExecutionRole": "string",

@@ -6,6 +6,7 @@ import * as yup from "yup";
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Seat } from "@/API";
+import { useTenantId } from "@/app/[tenantId]/hook";
 import MiraCalButton from "@/components/MiraCalButton";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalTextField from "@/components/MiraCalTextField";
@@ -39,6 +40,7 @@ export const EditSeatDialog: FC<EditSeatDialogProps> = ({
     imageWidth,
     imageHeight,
 }) => {
+    const tenantId = useTenantId();
     const validationSchema = useMemo(() => yup.object().shape({
         id: yup.string().required(),
         floorId: yup.string().required(),
@@ -71,8 +73,8 @@ export const EditSeatDialog: FC<EditSeatDialogProps> = ({
         onSuccess(data, _variables, _context) {
             enqueueSnackbar(`座席「${data.name}」を更新しました。`, { variant: "success" });
 
-            // 座席取得クエリを無効化して再取得されるようにする
-            queryClient.invalidateQueries({ queryKey: queryKeys.graphqlListAllSeats });
+            // クエリのキャッシュを更新
+            queryClient.setQueryData(queryKeys.graphqlSeatsByTenantId(tenantId), (items: Seat[] = []) => items.map(item => item.id === data.id ? data : item));
 
             // ダイアログを閉じる
             close();

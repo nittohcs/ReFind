@@ -83,6 +83,23 @@ export const funcCreateSeat = /* GraphQL */ `mutation FuncCreateSeat($input: fun
   APITypes.FuncCreateSeatMutationVariables,
   APITypes.FuncCreateSeatMutation
 >;
+export const funcUpdateSeat = /* GraphQL */ `mutation FuncUpdateSeat($input: funcUpdateSeatInput!) {
+  funcUpdateSeat(input: $input) {
+    id
+    tenantId
+    floorId
+    name
+    posX
+    posY
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.FuncUpdateSeatMutationVariables,
+  APITypes.FuncUpdateSeatMutation
+>;
 export const funcCreateSeatOccupancy = /* GraphQL */ `mutation FuncCreateSeatOccupancy($input: funcCreateSeatOccupancyInput!) {
   funcCreateSeatOccupancy(input: $input) {
     id
