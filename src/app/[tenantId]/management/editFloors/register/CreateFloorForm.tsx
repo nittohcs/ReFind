@@ -94,9 +94,6 @@ export const CreateFloorForm: FC<CreateFloorFormProps> = ({
         onSuccess(data, _variables, _context) {
             enqueueSnackbar("登録しました。", { variant: "success" });
 
-            // フロア一覧取得クエリを無効化して再取得されるようにする
-            //queryClient.invalidateQueries({ queryKey: queryKeys.graphqlListAllFloors });
-
             // 登録したフロアをキャッシュに追加
             queryClient.setQueryData(queryKeys.graphqlFloorsByTenantId(tenantId), (items: Floor[] = []) => [...items, data]);
 

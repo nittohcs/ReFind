@@ -41,6 +41,14 @@
         "refind2UpdateFloor": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
           "s3Key": "amplify-builds/refind2UpdateFloor-62784e66424d64775155-build.zip"
+        },
+        "refind2DeleteFile": {
+          "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
+          "s3Key": "amplify-builds/refind2DeleteFile-5574527333726f314b65-build.zip"
+        },
+        "refind2DeleteFloor": {
+          "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
+          "s3Key": "amplify-builds/refind2DeleteFloor-416d306d4d7146557278-build.zip"
         }
       },
       "api": {

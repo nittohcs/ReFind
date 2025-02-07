@@ -98,9 +98,6 @@ export const EditFloorForm: FC<EditFloorFormProps> = ({
         onSuccess(data, _variables, _context) {
             enqueueSnackbar("フロアを更新しました。", { variant: "success" });
 
-            // // フロア取得クエリを無効化して再取得されるようにする
-            // queryClient.invalidateQueries({ queryKey: queryKeys.graphqlListAllFloors });
-
             // 登録したフロアをキャッシュに追加
             queryClient.setQueryData(queryKeys.graphqlFloorsByTenantId(tenantId), (items: Floor[] = []) => items.map(item => item.id === data.id ? data : item));
 

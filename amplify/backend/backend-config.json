@@ -134,6 +134,35 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "refind2DeleteFile": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "BucketName"
+          ],
+          "category": "storage",
+          "resourceName": "ReFind2Storage"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refind2DeleteFloor": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind2"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "refind2GetFileDownloadUrl": {
       "build": true,
       "dependsOn": [
@@ -213,6 +242,38 @@
         {
           "category": "function",
           "resourceName": "refind2CreateFloor"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2DeleteFile_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2DeleteFile"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2DeleteFile_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2DeleteFile"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2DeleteFloor_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2DeleteFloor"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2DeleteFloor_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2DeleteFloor"
         }
       ]
     },

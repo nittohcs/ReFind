@@ -32,6 +32,10 @@ export type funcUpdateFloorInput = {
   imageHeight?: number | null,
 };
 
+export type funcDeleteFloorInput = {
+  id: string,
+};
+
 export type CreateTenantInput = {
   id?: string | null,
   name: string,
@@ -288,6 +292,14 @@ export type ModelSubscriptionIntInput = {
   notIn?: Array< number | null > | null,
 };
 
+export type DeleteFileMutationVariables = {
+  filePath: string,
+};
+
+export type DeleteFileMutation = {
+  deleteFile?: boolean | null,
+};
+
 export type FuncCreateFloorMutationVariables = {
   input: funcCreateFloorInput,
 };
@@ -312,6 +324,24 @@ export type FuncUpdateFloorMutationVariables = {
 
 export type FuncUpdateFloorMutation = {
   funcUpdateFloor?:  {
+    __typename: "Floor",
+    id: string,
+    tenantId: string,
+    name: string,
+    imagePath: string,
+    imageWidth: number,
+    imageHeight: number,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type FuncDeleteFloorMutationVariables = {
+  input: funcDeleteFloorInput,
+};
+
+export type FuncDeleteFloorMutation = {
+  funcDeleteFloor?:  {
     __typename: "Floor",
     id: string,
     tenantId: string,

@@ -89,6 +89,10 @@ input funcUpdateFloorInput {
   imageHeight: Int
 }
 
+input funcDeleteFloorInput {
+  id: ID!
+}
+
 type Query {
   # ファイルアップロード用URLの取得
   getFileUploadUrl(filePath: String!): String
@@ -100,6 +104,10 @@ type Query {
 }
 
 type Mutation {
+  # ファイル削除
+  deleteFile(filePath: String!): Boolean
+  @function(name: "refind2DeleteFile-${env}")
+
   # フロア登録
   funcCreateFloor(input: funcCreateFloorInput!): Floor
   @function(name: "refind2CreateFloor-${env}")
@@ -107,4 +115,8 @@ type Mutation {
   # フロア更新
   funcUpdateFloor(input: funcUpdateFloorInput!): Floor
   @function(name: "refind2UpdateFloor-${env}")
+
+  # フロア削除
+  funcDeleteFloor(input: funcDeleteFloorInput!): Floor
+  @function(name: "refind2DeleteFloor-${env}")
 }

@@ -8,6 +8,13 @@ type GeneratedMutation<InputType, OutputType> = string & {
   __generatedMutationOutput: OutputType;
 };
 
+export const deleteFile = /* GraphQL */ `mutation DeleteFile($filePath: String!) {
+  deleteFile(filePath: $filePath)
+}
+` as GeneratedMutation<
+  APITypes.DeleteFileMutationVariables,
+  APITypes.DeleteFileMutation
+>;
 export const funcCreateFloor = /* GraphQL */ `mutation FuncCreateFloor($input: funcCreateFloorInput!) {
   funcCreateFloor(input: $input) {
     id
@@ -41,6 +48,23 @@ export const funcUpdateFloor = /* GraphQL */ `mutation FuncUpdateFloor($input: f
 ` as GeneratedMutation<
   APITypes.FuncUpdateFloorMutationVariables,
   APITypes.FuncUpdateFloorMutation
+>;
+export const funcDeleteFloor = /* GraphQL */ `mutation FuncDeleteFloor($input: funcDeleteFloorInput!) {
+  funcDeleteFloor(input: $input) {
+    id
+    tenantId
+    name
+    imagePath
+    imageWidth
+    imageHeight
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.FuncDeleteFloorMutationVariables,
+  APITypes.FuncDeleteFloorMutation
 >;
 export const createTenant = /* GraphQL */ `mutation CreateTenant(
   $input: CreateTenantInput!
