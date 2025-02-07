@@ -8,6 +8,23 @@ type GeneratedSubscription<InputType, OutputType> = string & {
   __generatedSubscriptionOutput: OutputType;
 };
 
+export const onCreateSeatOccupancyByTenantId = /* GraphQL */ `subscription OnCreateSeatOccupancyByTenantId($tenantId: String!) {
+  onCreateSeatOccupancyByTenantId(tenantId: $tenantId) {
+    id
+    tenantId
+    seatId
+    userId
+    userName
+    date
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnCreateSeatOccupancyByTenantIdSubscriptionVariables,
+  APITypes.OnCreateSeatOccupancyByTenantIdSubscription
+>;
 export const onCreateTenant = /* GraphQL */ `subscription OnCreateTenant($filter: ModelSubscriptionTenantFilterInput) {
   onCreateTenant(filter: $filter) {
     id

@@ -7,6 +7,7 @@ import CheckSuspend from "./CheckSuspend";
 import TenantMainUI from "./TenantMainUI";
 import { TenantIdContext } from "./hook";
 import { ReFindProvider } from "./ReFindProvider";
+import AutoReloadSeatOccupancies from "./AutoReloadSeatOccupancies";
 
 type LayoutProps = {
     children: React.ReactNode,
@@ -45,7 +46,9 @@ export default function Layout({ children, params}: LayoutProps) {
             <ReFindProvider>
                 <TenantMainUI>
                     <CheckSuspend>
-                        {children}
+                        <AutoReloadSeatOccupancies>
+                            {children}
+                        </AutoReloadSeatOccupancies>
                     </CheckSuspend>
                 </TenantMainUI>
             </ReFindProvider>

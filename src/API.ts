@@ -1128,6 +1128,24 @@ export type SeatOccupanciesByDateAndTenantIdQuery = {
   } | null,
 };
 
+export type OnCreateSeatOccupancyByTenantIdSubscriptionVariables = {
+  tenantId: string,
+};
+
+export type OnCreateSeatOccupancyByTenantIdSubscription = {
+  onCreateSeatOccupancyByTenantId?:  {
+    __typename: "SeatOccupancy",
+    id: string,
+    tenantId: string,
+    seatId: string,
+    userId?: string | null,
+    userName?: string | null,
+    date: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
 export type OnCreateTenantSubscriptionVariables = {
   filter?: ModelSubscriptionTenantFilterInput | null,
 };

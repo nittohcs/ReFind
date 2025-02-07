@@ -253,3 +253,8 @@ type Mutation {
   funcCreateSeatOccupancy(input: funcCreateSeatOccupancyInput!): SeatOccupancy
   @function(name: "refind2CreateSeatOccupancy-${env}")
 }
+
+type Subscription {
+  onCreateSeatOccupancyByTenantId(tenantId: String!): SeatOccupancy
+  @aws_subscribe(mutations: ["createSeatOccupancy"])
+}
