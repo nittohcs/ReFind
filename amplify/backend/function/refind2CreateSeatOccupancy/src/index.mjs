@@ -39,8 +39,8 @@ const createSeatOccupancy = /* GraphQL */ `mutation CreateSeatOccupancy(
  export const handler = async (event) => {
   console.log(`EVENT: ${JSON.stringify(event)}`);
 
+  const groups = event.identity?.groups;
   // 管理者以外でも書き込み可能なのでコメントアウト 
-  //const groups = event.identity?.groups;
   //if (groups.indexOf("admins") < 0) {
   //  throw new Error("User does not have permissions to create seatOccupancies");
   //}

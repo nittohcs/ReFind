@@ -38,19 +38,19 @@ export const ConfirmDialog: FC<ConfirmDialogProps> = ({
     const mutation = useMutation({
         async mutationFn() {
             if (!dialogData) {
-                return;
+                throw new Error("ダイアログのデータが設定されていません。");
             }
 
-            let seatOccupancy: SeatOccupancy | null = null;
+            const ret: SeatOccupancy[] = [];
             if (dialogData.oldSeat) {
-                seatOccupancy = await releaseSeat(dialogData.oldSeat);
+                ret.push(await releaseSeat(dialogData.oldSeat));
             }
 
             if (dialogData.newSeat) {
-                seatOccupancy = await occupySeat(dialogData.newSeat, dialogData.userId, dialogData.userName);
+                ret.push(await occupySeat(dialogData.newSeat, dialogData.userId, dialogData.userName));
             }
 
-            return seatOccupancy;
+            return ret;
         },
         onSuccess(data, _variables, _context) {
             if (dialogData?.oldSeat) {
@@ -64,7 +64,7 @@ export const ConfirmDialog: FC<ConfirmDialogProps> = ({
             }
 
             // クエリのキャッシュに登録したデータを追加
-            queryClient.setQueryData(queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId), (items: SeatOccupancy[] = []) => [...items, data]);
+            queryClient.setQueryData(queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId), (items: SeatOccupancy[] = []) => [...items, ...data]);
 
             // ダイアログを閉じる
             close();

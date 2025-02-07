@@ -42,13 +42,13 @@ export default function Layout({ children, params}: LayoutProps) {
 
     return (
         <TenantIdContext.Provider value={tenantId}>
-            <TenantMainUI>
-                <CheckSuspend>
-                    <ReFindProvider>
+            <ReFindProvider>
+                <TenantMainUI>
+                    <CheckSuspend>
                         {children}
-                    </ReFindProvider>
-                </CheckSuspend>
-            </TenantMainUI>
+                    </CheckSuspend>
+                </TenantMainUI>
+            </ReFindProvider>
         </TenantIdContext.Provider>
     );
 }
