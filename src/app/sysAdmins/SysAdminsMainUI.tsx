@@ -11,10 +11,10 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import HomeIcon from "@mui/icons-material/Home"
 import BusinessIcon from "@mui/icons-material/Business";
-import UserMenu from "@/components/UserMenu";
 //import { useAuthState } from "@/hooks/auth";
 import { SideBarOpenContext } from "@/hooks/sideBar";
 import { useEnvName } from "@/hooks/ui";
+import UserMenu from "./UserMenu";
 
 // 次のページを参考にして作成した
 // https://mui.com/material-ui/react-drawer/#persistent-drawer
