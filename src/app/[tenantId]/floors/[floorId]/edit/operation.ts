@@ -1,9 +1,9 @@
 "use client";
 
 import { graphqlOperation, GraphQLResult } from "@aws-amplify/api-graphql";
-import { DeleteSeatInput, DeleteSeatMutation, DeleteSeatMutationVariables, funcCreateSeatInput, FuncCreateSeatMutation, FuncCreateSeatMutationVariables, funcUpdateSeatInput, FuncUpdateSeatMutation, FuncUpdateSeatMutationVariables } from "@/API";
+import { funcCreateSeatInput, FuncCreateSeatMutation, FuncCreateSeatMutationVariables, funcDeleteSeatInput, FuncDeleteSeatMutation, FuncDeleteSeatMutationVariables, funcUpdateSeatInput, FuncUpdateSeatMutation, FuncUpdateSeatMutationVariables } from "@/API";
 import { client } from "@/components/APIClientProvider";
-import { deleteSeat, funcCreateSeat, funcUpdateSeat } from "@/graphql/mutations";
+import { funcCreateSeat, funcDeleteSeat, funcUpdateSeat } from "@/graphql/mutations";
 
 export async function graphqlCreateSeat(input: funcCreateSeatInput) {
     const result = await client.graphql(
@@ -33,16 +33,16 @@ export async function graphqlUpdateSeat(input: funcUpdateSeatInput) {
     return result.data.funcUpdateSeat;
 }
 
-export async function graphqlDeleteSeat(input: DeleteSeatInput) {
+export async function graphqlDeleteSeat(input: funcDeleteSeatInput) {
     const result = await client.graphql(
         graphqlOperation(
-            deleteSeat,
+            funcDeleteSeat,
             {
                 input,
-            } as DeleteSeatMutationVariables
+            } as FuncDeleteSeatMutationVariables
         )
-    ) as GraphQLResult<DeleteSeatMutation>;
+    ) as GraphQLResult<FuncDeleteSeatMutation>;
     if (result.errors) { throw new Error(JSON.stringify(result.errors)); }
-    if (!result.data.deleteSeat) { throw new Error("座席の削除に失敗しました。"); }
-    return result.data.deleteSeat;
+    if (!result.data.funcDeleteSeat) { throw new Error("座席の削除に失敗しました。"); }
+    return result.data.funcDeleteSeat;
 }

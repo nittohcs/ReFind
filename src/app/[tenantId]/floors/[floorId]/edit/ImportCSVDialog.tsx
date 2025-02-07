@@ -83,7 +83,7 @@ export const ImportCSVDialog: FC<ImportCSVDialogProps> = ({
                         const seat: Seat = {
                             __typename: "Seat",
                             id: row["id"] ?? "",
-                            tenantId: tenantId,
+                            tenantId: row["tenantId"] ?? "",
                             floorId: row["floorId"] ?? "",
                             name: row["name"] ?? "",
                             posX: parseInt(row["posX"] ?? ""),

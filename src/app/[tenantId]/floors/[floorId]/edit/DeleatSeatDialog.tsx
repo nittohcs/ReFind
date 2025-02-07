@@ -2,6 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Seat } from "@/API";
+import { useTenantId } from "@/app/[tenantId]/hook";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { ConfirmDialogState } from "@/hooks/confirmDialogState";
 import { useEnqueueSnackbar } from "@/hooks/ui";
@@ -15,6 +16,7 @@ type DeleteSeatDialogProps = ConfirmDialogState<Seat> & {
 export default function DeleteSeatDialog(
    state: DeleteSeatDialogProps
 ) {
+    const tenantId = useTenantId();
     const enqueueSnackbar = useEnqueueSnackbar();
     const queryClient = useQueryClient();
     const mutation = useMutation({
@@ -27,8 +29,8 @@ export default function DeleteSeatDialog(
         onSuccess(data, _variables, _context) {
             enqueueSnackbar(`座席「${data.name}」を削除しました。`, { variant: "success" });
 
-            // 座席取得クエリを無効化して再取得されるようにする
-            queryClient.invalidateQueries({ queryKey: queryKeys.graphqlListAllSeats });
+            // クエリのキャッシュから削除したデータを除外する
+            queryClient.setQueryData(queryKeys.graphqlSeatsByTenantId(tenantId), (items: Seat[] = []) => items.filter(x => x.id !== data.id));
 
             // ダイアログを閉じる
             state.close();

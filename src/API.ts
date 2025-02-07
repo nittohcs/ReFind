@@ -66,6 +66,10 @@ export type funcUpdateSeatInput = {
   posY?: number | null,
 };
 
+export type funcDeleteSeatInput = {
+  id: string,
+};
+
 export type funcCreateSeatOccupancyInput = {
   id?: string | null,
   tenantId: string,
@@ -573,6 +577,24 @@ export type FuncUpdateSeatMutationVariables = {
 
 export type FuncUpdateSeatMutation = {
   funcUpdateSeat?:  {
+    __typename: "Seat",
+    id: string,
+    tenantId: string,
+    floorId: string,
+    name: string,
+    posX: number,
+    posY: number,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type FuncDeleteSeatMutationVariables = {
+  input: funcDeleteSeatInput,
+};
+
+export type FuncDeleteSeatMutation = {
+  funcDeleteSeat?:  {
     __typename: "Seat",
     id: string,
     tenantId: string,

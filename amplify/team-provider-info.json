@@ -61,6 +61,10 @@
         "refind2UpdateSeat": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
           "s3Key": "amplify-builds/refind2UpdateSeat-723764354e54724b6978-build.zip"
+        },
+        "refind2DeleteSeat": {
+          "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
+          "s3Key": "amplify-builds/refind2DeleteSeat-444d6678674443667332-build.zip"
         }
       },
       "api": {

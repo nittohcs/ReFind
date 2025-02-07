@@ -193,6 +193,21 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "refind2DeleteSeat": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind2"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "refind2GetFileDownloadUrl": {
       "build": true,
       "dependsOn": [
@@ -351,6 +366,22 @@
         {
           "category": "function",
           "resourceName": "refind2DeleteFloor"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2DeleteSeat_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2DeleteSeat"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2DeleteSeat_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2DeleteSeat"
         }
       ]
     },
