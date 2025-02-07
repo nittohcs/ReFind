@@ -134,6 +134,21 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "refind2CreateSeat": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind2"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "refind2CreateSeatOccupancy": {
       "build": true,
       "dependsOn": [
@@ -273,6 +288,22 @@
         {
           "category": "function",
           "resourceName": "refind2CreateSeatOccupancy"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2CreateSeat_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2CreateSeat"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2CreateSeat_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2CreateSeat"
         }
       ]
     },

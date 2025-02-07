@@ -179,6 +179,15 @@ input funcDeleteFloorInput {
   id: ID!
 }
 
+input funcCreateSeatInput {
+  id: ID
+  tenantId: ID!
+  floorId: ID!
+  name: String!
+  posX: Int!
+  posY: Int!
+}
+
 input funcCreateSeatOccupancyInput {
   id: ID
   tenantId: ID!
@@ -214,6 +223,10 @@ type Mutation {
   # フロア削除
   funcDeleteFloor(input: funcDeleteFloorInput!): Floor
   @function(name: "refind2DeleteFloor-${env}")
+
+  # 座席登録
+  funcCreateSeat(input: funcCreateSeatInput!): Seat
+  @function(name: "refind2CreateSeat-${env}")
 
   # 座席確保情報登録
   funcCreateSeatOccupancy(input: funcCreateSeatOccupancyInput!): SeatOccupancy

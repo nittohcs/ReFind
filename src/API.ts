@@ -36,6 +36,27 @@ export type funcDeleteFloorInput = {
   id: string,
 };
 
+export type funcCreateSeatInput = {
+  id?: string | null,
+  tenantId: string,
+  floorId: string,
+  name: string,
+  posX: number,
+  posY: number,
+};
+
+export type Seat = {
+  __typename: "Seat",
+  id: string,
+  tenantId: string,
+  floorId: string,
+  name: string,
+  posX: number,
+  posY: number,
+  createdAt: string,
+  updatedAt: string,
+};
+
 export type funcCreateSeatOccupancyInput = {
   id?: string | null,
   tenantId: string,
@@ -222,18 +243,6 @@ export type ModelSeatConditionInput = {
   not?: ModelSeatConditionInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
-};
-
-export type Seat = {
-  __typename: "Seat",
-  id: string,
-  tenantId: string,
-  floorId: string,
-  name: string,
-  posX: number,
-  posY: number,
-  createdAt: string,
-  updatedAt: string,
 };
 
 export type UpdateSeatInput = {
@@ -526,6 +535,24 @@ export type FuncDeleteFloorMutation = {
     imagePath: string,
     imageWidth: number,
     imageHeight: number,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type FuncCreateSeatMutationVariables = {
+  input: funcCreateSeatInput,
+};
+
+export type FuncCreateSeatMutation = {
+  funcCreateSeat?:  {
+    __typename: "Seat",
+    id: string,
+    tenantId: string,
+    floorId: string,
+    name: string,
+    posX: number,
+    posY: number,
     createdAt: string,
     updatedAt: string,
   } | null,

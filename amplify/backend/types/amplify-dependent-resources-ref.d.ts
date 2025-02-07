@@ -41,6 +41,13 @@ export type AmplifyDependentResourcesAttributes = {
       "Name": "string",
       "Region": "string"
     },
+    "refind2CreateSeat": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    },
     "refind2CreateSeatOccupancy": {
       "Arn": "string",
       "LambdaExecutionRole": "string",

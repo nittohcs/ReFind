@@ -53,6 +53,10 @@
         "refind2CreateSeatOccupancy": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
           "s3Key": "amplify-builds/refind2CreateSeatOccupancy-42385a36684930357330-build.zip"
+        },
+        "refind2CreateSeat": {
+          "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
+          "s3Key": "amplify-builds/refind2CreateSeat-48773942363067585542-build.zip"
         }
       },
       "api": {
