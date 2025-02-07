@@ -128,7 +128,7 @@ export type CreateFloorInput = {
 };
 
 export type ModelFloorConditionInput = {
-  tenantId?: ModelStringInput | null,
+  tenantId?: ModelIDInput | null,
   name?: ModelStringInput | null,
   imagePath?: ModelStringInput | null,
   imageWidth?: ModelIntInput | null,
@@ -138,6 +138,22 @@ export type ModelFloorConditionInput = {
   not?: ModelFloorConditionInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
+};
+
+export type ModelIDInput = {
+  ne?: string | null,
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  contains?: string | null,
+  notContains?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+  size?: ModelSizeInput | null,
 };
 
 export type ModelIntInput = {
@@ -165,6 +181,100 @@ export type DeleteFloorInput = {
   id: string,
 };
 
+export type CreateSeatInput = {
+  id?: string | null,
+  tenantId: string,
+  floorId: string,
+  name: string,
+  posX: number,
+  posY: number,
+};
+
+export type ModelSeatConditionInput = {
+  tenantId?: ModelIDInput | null,
+  floorId?: ModelIDInput | null,
+  name?: ModelStringInput | null,
+  posX?: ModelIntInput | null,
+  posY?: ModelIntInput | null,
+  and?: Array< ModelSeatConditionInput | null > | null,
+  or?: Array< ModelSeatConditionInput | null > | null,
+  not?: ModelSeatConditionInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+};
+
+export type Seat = {
+  __typename: "Seat",
+  id: string,
+  tenantId: string,
+  floorId: string,
+  name: string,
+  posX: number,
+  posY: number,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type UpdateSeatInput = {
+  id: string,
+  tenantId?: string | null,
+  floorId?: string | null,
+  name?: string | null,
+  posX?: number | null,
+  posY?: number | null,
+};
+
+export type DeleteSeatInput = {
+  id: string,
+};
+
+export type CreateSeatOccupancyInput = {
+  id?: string | null,
+  tenantId: string,
+  seatId: string,
+  userId?: string | null,
+  userName?: string | null,
+  date: string,
+};
+
+export type ModelSeatOccupancyConditionInput = {
+  tenantId?: ModelIDInput | null,
+  seatId?: ModelIDInput | null,
+  userId?: ModelIDInput | null,
+  userName?: ModelStringInput | null,
+  date?: ModelStringInput | null,
+  and?: Array< ModelSeatOccupancyConditionInput | null > | null,
+  or?: Array< ModelSeatOccupancyConditionInput | null > | null,
+  not?: ModelSeatOccupancyConditionInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+};
+
+export type SeatOccupancy = {
+  __typename: "SeatOccupancy",
+  id: string,
+  tenantId: string,
+  seatId: string,
+  userId?: string | null,
+  userName?: string | null,
+  date: string,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type UpdateSeatOccupancyInput = {
+  id: string,
+  tenantId?: string | null,
+  seatId?: string | null,
+  userId?: string | null,
+  userName?: string | null,
+  date?: string | null,
+};
+
+export type DeleteSeatOccupancyInput = {
+  id: string,
+};
+
 export type ModelTenantFilterInput = {
   id?: ModelIDInput | null,
   name?: ModelStringInput | null,
@@ -176,22 +286,6 @@ export type ModelTenantFilterInput = {
   not?: ModelTenantFilterInput | null,
 };
 
-export type ModelIDInput = {
-  ne?: string | null,
-  eq?: string | null,
-  le?: string | null,
-  lt?: string | null,
-  ge?: string | null,
-  gt?: string | null,
-  contains?: string | null,
-  notContains?: string | null,
-  between?: Array< string | null > | null,
-  beginsWith?: string | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-  size?: ModelSizeInput | null,
-};
-
 export type ModelTenantConnection = {
   __typename: "ModelTenantConnection",
   items:  Array<Tenant | null >,
@@ -200,7 +294,7 @@ export type ModelTenantConnection = {
 
 export type ModelFloorFilterInput = {
   id?: ModelIDInput | null,
-  tenantId?: ModelStringInput | null,
+  tenantId?: ModelIDInput | null,
   name?: ModelStringInput | null,
   imagePath?: ModelStringInput | null,
   imageWidth?: ModelIntInput | null,
@@ -223,6 +317,56 @@ export enum ModelSortDirection {
   DESC = "DESC",
 }
 
+
+export type ModelSeatFilterInput = {
+  id?: ModelIDInput | null,
+  tenantId?: ModelIDInput | null,
+  floorId?: ModelIDInput | null,
+  name?: ModelStringInput | null,
+  posX?: ModelIntInput | null,
+  posY?: ModelIntInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelSeatFilterInput | null > | null,
+  or?: Array< ModelSeatFilterInput | null > | null,
+  not?: ModelSeatFilterInput | null,
+};
+
+export type ModelSeatConnection = {
+  __typename: "ModelSeatConnection",
+  items:  Array<Seat | null >,
+  nextToken?: string | null,
+};
+
+export type ModelSeatOccupancyFilterInput = {
+  id?: ModelIDInput | null,
+  tenantId?: ModelIDInput | null,
+  seatId?: ModelIDInput | null,
+  userId?: ModelIDInput | null,
+  userName?: ModelStringInput | null,
+  date?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelSeatOccupancyFilterInput | null > | null,
+  or?: Array< ModelSeatOccupancyFilterInput | null > | null,
+  not?: ModelSeatOccupancyFilterInput | null,
+};
+
+export type ModelSeatOccupancyConnection = {
+  __typename: "ModelSeatOccupancyConnection",
+  items:  Array<SeatOccupancy | null >,
+  nextToken?: string | null,
+};
+
+export type ModelIDKeyConditionInput = {
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+};
 
 export type ModelSubscriptionTenantFilterInput = {
   name?: ModelSubscriptionStringInput | null,
@@ -290,6 +434,30 @@ export type ModelSubscriptionIntInput = {
   between?: Array< number | null > | null,
   in?: Array< number | null > | null,
   notIn?: Array< number | null > | null,
+};
+
+export type ModelSubscriptionSeatFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  floorId?: ModelSubscriptionIDInput | null,
+  name?: ModelSubscriptionStringInput | null,
+  posX?: ModelSubscriptionIntInput | null,
+  posY?: ModelSubscriptionIntInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionSeatFilterInput | null > | null,
+  or?: Array< ModelSubscriptionSeatFilterInput | null > | null,
+};
+
+export type ModelSubscriptionSeatOccupancyFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  seatId?: ModelSubscriptionIDInput | null,
+  userId?: ModelSubscriptionIDInput | null,
+  userName?: ModelSubscriptionStringInput | null,
+  date?: ModelSubscriptionStringInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionSeatOccupancyFilterInput | null > | null,
+  or?: Array< ModelSubscriptionSeatOccupancyFilterInput | null > | null,
 };
 
 export type DeleteFileMutationVariables = {
@@ -459,6 +627,120 @@ export type DeleteFloorMutation = {
   } | null,
 };
 
+export type CreateSeatMutationVariables = {
+  input: CreateSeatInput,
+  condition?: ModelSeatConditionInput | null,
+};
+
+export type CreateSeatMutation = {
+  createSeat?:  {
+    __typename: "Seat",
+    id: string,
+    tenantId: string,
+    floorId: string,
+    name: string,
+    posX: number,
+    posY: number,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type UpdateSeatMutationVariables = {
+  input: UpdateSeatInput,
+  condition?: ModelSeatConditionInput | null,
+};
+
+export type UpdateSeatMutation = {
+  updateSeat?:  {
+    __typename: "Seat",
+    id: string,
+    tenantId: string,
+    floorId: string,
+    name: string,
+    posX: number,
+    posY: number,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type DeleteSeatMutationVariables = {
+  input: DeleteSeatInput,
+  condition?: ModelSeatConditionInput | null,
+};
+
+export type DeleteSeatMutation = {
+  deleteSeat?:  {
+    __typename: "Seat",
+    id: string,
+    tenantId: string,
+    floorId: string,
+    name: string,
+    posX: number,
+    posY: number,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type CreateSeatOccupancyMutationVariables = {
+  input: CreateSeatOccupancyInput,
+  condition?: ModelSeatOccupancyConditionInput | null,
+};
+
+export type CreateSeatOccupancyMutation = {
+  createSeatOccupancy?:  {
+    __typename: "SeatOccupancy",
+    id: string,
+    tenantId: string,
+    seatId: string,
+    userId?: string | null,
+    userName?: string | null,
+    date: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type UpdateSeatOccupancyMutationVariables = {
+  input: UpdateSeatOccupancyInput,
+  condition?: ModelSeatOccupancyConditionInput | null,
+};
+
+export type UpdateSeatOccupancyMutation = {
+  updateSeatOccupancy?:  {
+    __typename: "SeatOccupancy",
+    id: string,
+    tenantId: string,
+    seatId: string,
+    userId?: string | null,
+    userName?: string | null,
+    date: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type DeleteSeatOccupancyMutationVariables = {
+  input: DeleteSeatOccupancyInput,
+  condition?: ModelSeatOccupancyConditionInput | null,
+};
+
+export type DeleteSeatOccupancyMutation = {
+  deleteSeatOccupancy?:  {
+    __typename: "SeatOccupancy",
+    id: string,
+    tenantId: string,
+    seatId: string,
+    userId?: string | null,
+    userName?: string | null,
+    date: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
 export type GetFileUploadUrlQueryVariables = {
   filePath: string,
 };
@@ -580,6 +862,169 @@ export type FloorsByTenantIdQuery = {
   } | null,
 };
 
+export type GetSeatQueryVariables = {
+  id: string,
+};
+
+export type GetSeatQuery = {
+  getSeat?:  {
+    __typename: "Seat",
+    id: string,
+    tenantId: string,
+    floorId: string,
+    name: string,
+    posX: number,
+    posY: number,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type ListSeatsQueryVariables = {
+  filter?: ModelSeatFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListSeatsQuery = {
+  listSeats?:  {
+    __typename: "ModelSeatConnection",
+    items:  Array< {
+      __typename: "Seat",
+      id: string,
+      tenantId: string,
+      floorId: string,
+      name: string,
+      posX: number,
+      posY: number,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type SeatsByTenantIdQueryVariables = {
+  tenantId: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelSeatFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type SeatsByTenantIdQuery = {
+  seatsByTenantId?:  {
+    __typename: "ModelSeatConnection",
+    items:  Array< {
+      __typename: "Seat",
+      id: string,
+      tenantId: string,
+      floorId: string,
+      name: string,
+      posX: number,
+      posY: number,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type GetSeatOccupancyQueryVariables = {
+  id: string,
+};
+
+export type GetSeatOccupancyQuery = {
+  getSeatOccupancy?:  {
+    __typename: "SeatOccupancy",
+    id: string,
+    tenantId: string,
+    seatId: string,
+    userId?: string | null,
+    userName?: string | null,
+    date: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type ListSeatOccupanciesQueryVariables = {
+  filter?: ModelSeatOccupancyFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListSeatOccupanciesQuery = {
+  listSeatOccupancies?:  {
+    __typename: "ModelSeatOccupancyConnection",
+    items:  Array< {
+      __typename: "SeatOccupancy",
+      id: string,
+      tenantId: string,
+      seatId: string,
+      userId?: string | null,
+      userName?: string | null,
+      date: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type SeatOccupanciesByTenantIdQueryVariables = {
+  tenantId: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelSeatOccupancyFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type SeatOccupanciesByTenantIdQuery = {
+  seatOccupanciesByTenantId?:  {
+    __typename: "ModelSeatOccupancyConnection",
+    items:  Array< {
+      __typename: "SeatOccupancy",
+      id: string,
+      tenantId: string,
+      seatId: string,
+      userId?: string | null,
+      userName?: string | null,
+      date: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type SeatOccupanciesByDateAndTenantIdQueryVariables = {
+  date: string,
+  tenantId?: ModelIDKeyConditionInput | null,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelSeatOccupancyFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type SeatOccupanciesByDateAndTenantIdQuery = {
+  seatOccupanciesByDateAndTenantId?:  {
+    __typename: "ModelSeatOccupancyConnection",
+    items:  Array< {
+      __typename: "SeatOccupancy",
+      id: string,
+      tenantId: string,
+      seatId: string,
+      userId?: string | null,
+      userName?: string | null,
+      date: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
 export type OnCreateTenantSubscriptionVariables = {
   filter?: ModelSubscriptionTenantFilterInput | null,
 };
@@ -674,6 +1119,114 @@ export type OnDeleteFloorSubscription = {
     imagePath: string,
     imageWidth: number,
     imageHeight: number,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnCreateSeatSubscriptionVariables = {
+  filter?: ModelSubscriptionSeatFilterInput | null,
+};
+
+export type OnCreateSeatSubscription = {
+  onCreateSeat?:  {
+    __typename: "Seat",
+    id: string,
+    tenantId: string,
+    floorId: string,
+    name: string,
+    posX: number,
+    posY: number,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnUpdateSeatSubscriptionVariables = {
+  filter?: ModelSubscriptionSeatFilterInput | null,
+};
+
+export type OnUpdateSeatSubscription = {
+  onUpdateSeat?:  {
+    __typename: "Seat",
+    id: string,
+    tenantId: string,
+    floorId: string,
+    name: string,
+    posX: number,
+    posY: number,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnDeleteSeatSubscriptionVariables = {
+  filter?: ModelSubscriptionSeatFilterInput | null,
+};
+
+export type OnDeleteSeatSubscription = {
+  onDeleteSeat?:  {
+    __typename: "Seat",
+    id: string,
+    tenantId: string,
+    floorId: string,
+    name: string,
+    posX: number,
+    posY: number,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnCreateSeatOccupancySubscriptionVariables = {
+  filter?: ModelSubscriptionSeatOccupancyFilterInput | null,
+};
+
+export type OnCreateSeatOccupancySubscription = {
+  onCreateSeatOccupancy?:  {
+    __typename: "SeatOccupancy",
+    id: string,
+    tenantId: string,
+    seatId: string,
+    userId?: string | null,
+    userName?: string | null,
+    date: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnUpdateSeatOccupancySubscriptionVariables = {
+  filter?: ModelSubscriptionSeatOccupancyFilterInput | null,
+};
+
+export type OnUpdateSeatOccupancySubscription = {
+  onUpdateSeatOccupancy?:  {
+    __typename: "SeatOccupancy",
+    id: string,
+    tenantId: string,
+    seatId: string,
+    userId?: string | null,
+    userName?: string | null,
+    date: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnDeleteSeatOccupancySubscriptionVariables = {
+  filter?: ModelSubscriptionSeatOccupancyFilterInput | null,
+};
+
+export type OnDeleteSeatOccupancySubscription = {
+  onDeleteSeatOccupancy?:  {
+    __typename: "SeatOccupancy",
+    id: string,
+    tenantId: string,
+    seatId: string,
+    userId?: string | null,
+    userName?: string | null,
+    date: string,
     createdAt: string,
     updatedAt: string,
   } | null,

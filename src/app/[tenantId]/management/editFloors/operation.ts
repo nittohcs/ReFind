@@ -1,9 +1,9 @@
 "use client";
 
 import { graphqlOperation, GraphQLResult } from "@aws-amplify/api-graphql";
-import { DeleteFileMutation, DeleteFileMutationVariables, DeleteFloorInput, DeleteFloorMutation, DeleteFloorMutationVariables, funcCreateFloorInput, FuncCreateFloorMutation, FuncCreateFloorMutationVariables, funcDeleteFloorInput, FuncDeleteFloorMutation, FuncDeleteFloorMutationVariables, funcUpdateFloorInput, FuncUpdateFloorMutation, FuncUpdateFloorMutationVariables, GetFileUploadUrlQuery, GetFileUploadUrlQueryVariables } from "@/API";
+import { DeleteFileMutation, DeleteFileMutationVariables, funcCreateFloorInput, FuncCreateFloorMutation, FuncCreateFloorMutationVariables, funcDeleteFloorInput, FuncDeleteFloorMutation, FuncDeleteFloorMutationVariables, funcUpdateFloorInput, FuncUpdateFloorMutation, FuncUpdateFloorMutationVariables, GetFileUploadUrlQuery, GetFileUploadUrlQueryVariables } from "@/API";
 import { client } from "@/components/APIClientProvider";
-import { deleteFile, deleteFloor, funcCreateFloor, funcDeleteFloor, funcUpdateFloor } from "@/graphql/mutations";
+import { deleteFile, funcCreateFloor, funcDeleteFloor, funcUpdateFloor } from "@/graphql/mutations";
 import { getFileUploadUrl } from "@/graphql/queries";
 
 export async function graphqlUpdateFloor(input: funcUpdateFloorInput) {

@@ -101,3 +101,111 @@ export const onDeleteFloor = /* GraphQL */ `subscription OnDeleteFloor($filter: 
   APITypes.OnDeleteFloorSubscriptionVariables,
   APITypes.OnDeleteFloorSubscription
 >;
+export const onCreateSeat = /* GraphQL */ `subscription OnCreateSeat($filter: ModelSubscriptionSeatFilterInput) {
+  onCreateSeat(filter: $filter) {
+    id
+    tenantId
+    floorId
+    name
+    posX
+    posY
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnCreateSeatSubscriptionVariables,
+  APITypes.OnCreateSeatSubscription
+>;
+export const onUpdateSeat = /* GraphQL */ `subscription OnUpdateSeat($filter: ModelSubscriptionSeatFilterInput) {
+  onUpdateSeat(filter: $filter) {
+    id
+    tenantId
+    floorId
+    name
+    posX
+    posY
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnUpdateSeatSubscriptionVariables,
+  APITypes.OnUpdateSeatSubscription
+>;
+export const onDeleteSeat = /* GraphQL */ `subscription OnDeleteSeat($filter: ModelSubscriptionSeatFilterInput) {
+  onDeleteSeat(filter: $filter) {
+    id
+    tenantId
+    floorId
+    name
+    posX
+    posY
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnDeleteSeatSubscriptionVariables,
+  APITypes.OnDeleteSeatSubscription
+>;
+export const onCreateSeatOccupancy = /* GraphQL */ `subscription OnCreateSeatOccupancy(
+  $filter: ModelSubscriptionSeatOccupancyFilterInput
+) {
+  onCreateSeatOccupancy(filter: $filter) {
+    id
+    tenantId
+    seatId
+    userId
+    userName
+    date
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnCreateSeatOccupancySubscriptionVariables,
+  APITypes.OnCreateSeatOccupancySubscription
+>;
+export const onUpdateSeatOccupancy = /* GraphQL */ `subscription OnUpdateSeatOccupancy(
+  $filter: ModelSubscriptionSeatOccupancyFilterInput
+) {
+  onUpdateSeatOccupancy(filter: $filter) {
+    id
+    tenantId
+    seatId
+    userId
+    userName
+    date
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnUpdateSeatOccupancySubscriptionVariables,
+  APITypes.OnUpdateSeatOccupancySubscription
+>;
+export const onDeleteSeatOccupancy = /* GraphQL */ `subscription OnDeleteSeatOccupancy(
+  $filter: ModelSubscriptionSeatOccupancyFilterInput
+) {
+  onDeleteSeatOccupancy(filter: $filter) {
+    id
+    tenantId
+    seatId
+    userId
+    userName
+    date
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnDeleteSeatOccupancySubscriptionVariables,
+  APITypes.OnDeleteSeatOccupancySubscription
+>;

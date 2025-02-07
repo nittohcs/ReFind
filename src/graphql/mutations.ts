@@ -177,3 +177,123 @@ export const deleteFloor = /* GraphQL */ `mutation DeleteFloor(
   APITypes.DeleteFloorMutationVariables,
   APITypes.DeleteFloorMutation
 >;
+export const createSeat = /* GraphQL */ `mutation CreateSeat(
+  $input: CreateSeatInput!
+  $condition: ModelSeatConditionInput
+) {
+  createSeat(input: $input, condition: $condition) {
+    id
+    tenantId
+    floorId
+    name
+    posX
+    posY
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateSeatMutationVariables,
+  APITypes.CreateSeatMutation
+>;
+export const updateSeat = /* GraphQL */ `mutation UpdateSeat(
+  $input: UpdateSeatInput!
+  $condition: ModelSeatConditionInput
+) {
+  updateSeat(input: $input, condition: $condition) {
+    id
+    tenantId
+    floorId
+    name
+    posX
+    posY
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateSeatMutationVariables,
+  APITypes.UpdateSeatMutation
+>;
+export const deleteSeat = /* GraphQL */ `mutation DeleteSeat(
+  $input: DeleteSeatInput!
+  $condition: ModelSeatConditionInput
+) {
+  deleteSeat(input: $input, condition: $condition) {
+    id
+    tenantId
+    floorId
+    name
+    posX
+    posY
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteSeatMutationVariables,
+  APITypes.DeleteSeatMutation
+>;
+export const createSeatOccupancy = /* GraphQL */ `mutation CreateSeatOccupancy(
+  $input: CreateSeatOccupancyInput!
+  $condition: ModelSeatOccupancyConditionInput
+) {
+  createSeatOccupancy(input: $input, condition: $condition) {
+    id
+    tenantId
+    seatId
+    userId
+    userName
+    date
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateSeatOccupancyMutationVariables,
+  APITypes.CreateSeatOccupancyMutation
+>;
+export const updateSeatOccupancy = /* GraphQL */ `mutation UpdateSeatOccupancy(
+  $input: UpdateSeatOccupancyInput!
+  $condition: ModelSeatOccupancyConditionInput
+) {
+  updateSeatOccupancy(input: $input, condition: $condition) {
+    id
+    tenantId
+    seatId
+    userId
+    userName
+    date
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateSeatOccupancyMutationVariables,
+  APITypes.UpdateSeatOccupancyMutation
+>;
+export const deleteSeatOccupancy = /* GraphQL */ `mutation DeleteSeatOccupancy(
+  $input: DeleteSeatOccupancyInput!
+  $condition: ModelSeatOccupancyConditionInput
+) {
+  deleteSeatOccupancy(input: $input, condition: $condition) {
+    id
+    tenantId
+    seatId
+    userId
+    userName
+    date
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteSeatOccupancyMutationVariables,
+  APITypes.DeleteSeatOccupancyMutation
+>;

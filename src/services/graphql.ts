@@ -2,9 +2,9 @@
 
 import { GraphQLResult, graphqlOperation } from "@aws-amplify/api-graphql";
 import { useQuery } from "@tanstack/react-query";
-import { Floor, FloorsByTenantIdQuery, FloorsByTenantIdQueryVariables, GetTenantQuery, GetTenantQueryVariables, ListTenantsQuery, ListTenantsQueryVariables, Tenant } from "@/API";
+import { Floor, FloorsByTenantIdQuery, FloorsByTenantIdQueryVariables, GetTenantQuery, GetTenantQueryVariables, ListTenantsQuery, ListTenantsQueryVariables, Seat, SeatOccupanciesByDateAndTenantIdQuery, SeatOccupanciesByDateAndTenantIdQueryVariables, SeatOccupancy, SeatsByTenantIdQuery, SeatsByTenantIdQueryVariables, Tenant } from "@/API";
 import { client } from "@/components/APIClientProvider";
-import { floorsByTenantId, getTenant, listTenants } from "@/graphql/queries";
+import { floorsByTenantId, getTenant, listTenants, seatOccupanciesByDateAndTenantId, seatsByTenantId } from "@/graphql/queries";
 import { NextToken } from "@/types/graphql";
 import { queryKeys } from "./queryKeys";
 
@@ -97,3 +97,71 @@ async function graphqlFloorsByTenantId(tenantId: string) {
     return floors;
 }
 
+export function useSeatsByTenantId(tenantId: string, staleTime?: number) {
+    return useQuery({
+        queryKey: queryKeys.graphqlSeatsByTenantId(tenantId),
+        queryFn: async () => { return await graphqlSeatsByTenantId(tenantId); },
+        ...(!!staleTime && {staleTime }),
+    });
+}
+
+async function graphqlSeatsByTenantId(tenantId: string) {
+    const seats: Seat[] = [];
+
+    let nextToken: NextToken = undefined;
+    do {
+        const result = await client.graphql(
+            graphqlOperation(
+                seatsByTenantId,
+                {
+                    tenantId,
+                    nextToken,
+                } as SeatsByTenantIdQueryVariables
+            )
+        ) as GraphQLResult<SeatsByTenantIdQuery>;
+        if (result.errors || !result.data) { throw new Error(JSON.stringify(result.errors)); }
+        for(const item of result.data?.seatsByTenantId?.items ?? []) {
+            if (item) {
+                seats.push(item);
+            }
+        }
+        nextToken = result.data.seatsByTenantId?.nextToken;
+    } while(nextToken);
+
+    return seats;
+}
+
+export function useListSeatOccupanciesByDateAndTenantId(date: string, tenantId: string, staleTime?: number) {
+    return useQuery({
+        queryKey: queryKeys.graphqlSeatOccupanciesByDateAndTenantId(date, tenantId),
+        async queryFn() { return await graphqlSeatOccupanciesByDateAndTenantId(date, tenantId); },
+        ...(!!staleTime && {staleTime }),
+    });
+}
+
+async function graphqlSeatOccupanciesByDateAndTenantId(date: string, tenantId: string) {
+    const seatOccupancies: SeatOccupancy[] = [];
+
+    let nextToken: NextToken = undefined;
+    do {
+        const result = await client.graphql(
+            graphqlOperation(
+                seatOccupanciesByDateAndTenantId,
+                {
+                    date,
+                    tenantId: { eq: tenantId },
+                    nextToken,
+                } as SeatOccupanciesByDateAndTenantIdQueryVariables
+            )
+        ) as GraphQLResult<SeatOccupanciesByDateAndTenantIdQuery>;
+        if (result.errors || !result.data) { throw new Error(JSON.stringify(result.errors)); }
+        for(const item of result.data.seatOccupanciesByDateAndTenantId?.items?? []) {
+            if (item) {
+                seatOccupancies.push(item);
+            }
+        }
+        nextToken = result.data.seatOccupanciesByDateAndTenantId?.nextToken;
+    } while(nextToken);
+
+    return seatOccupancies;
+}

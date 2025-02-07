@@ -55,8 +55,8 @@ type Floor @model @auth (
   # id
   id: ID!
 
-  # 組織ID
-  tenantId: String! @index(name: "byTenantId")
+  # テナントID
+  tenantId: ID! @index(name: "byTenantId")
 
   # 名前
   name: String!
@@ -69,6 +69,92 @@ type Floor @model @auth (
 
   # 画像高さ
   imageHeight: Int!
+}
+
+# 座席マスタ
+type Seat @model @auth (
+  rules: [
+    {
+      allow: groups,
+      provider: userPools,
+      groupClaim: "cognito:groups",
+      groups: ["sysAdmins"],
+      operations: [read]
+    },
+    {
+      allow: groups,
+      provider: userPools,
+      groupClaim: "cognito:groups",
+      groupsField: "tenantId",
+      operations: [read]
+    },
+    {
+      allow: private,
+      provider: iam,
+      operations: [create, update, delete, read]
+    }
+  ]
+) {
+  # id
+  id: ID!
+
+  # テナントID
+  tenantId: ID! @index(name: "byTenantId")
+
+  # Floorのid
+  floorId: ID!
+
+  # 座席名
+  name: String!
+
+  # X座標
+  posX: Int!
+
+  # Y座標
+  posY: Int!
+}
+
+# 座席確保情報
+type SeatOccupancy @model @auth (
+  rules: [
+    {
+      allow: groups,
+      provider: userPools,
+      groupClaim: "cognito:groups",
+      groups: ["sysAdmins"],
+      operations: [read]
+    },
+    {
+      allow: groups,
+      provider: userPools,
+      groupClaim: "cognito:groups",
+      groupsField: "tenantId",
+      operations: [read]
+    },
+    {
+      allow: private,
+      provider: iam,
+      operations: [create, update, delete, read]
+    }
+  ]
+) {
+  # id
+  id: ID!
+
+  # テナントID
+  tenantId: ID! @index(name: "byTenantId")
+
+  # Seatのid
+  seatId: ID!
+
+  # 使用者のcognitoのusername(社員番号) 値が設定されていれば使用中、空なら空席
+  userId: ID
+
+  # 使用者の氏名 cognitoのnameが設定される
+  userName: String
+
+  # 日付(YYYYMMDD)
+  date: String! @index(name: "byDateAndTenantId", sortKeyFields: ["tenantId"])
 }
 
 input funcCreateFloorInput {

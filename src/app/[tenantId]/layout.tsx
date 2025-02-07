@@ -6,6 +6,7 @@ import { useAuthState } from "@/hooks/auth";
 import CheckSuspend from "./CheckSuspend";
 import TenantMainUI from "./TenantMainUI";
 import { TenantIdContext } from "./hook";
+import { ReFindProvider } from "./ReFindProvider";
 
 type LayoutProps = {
     children: React.ReactNode,
@@ -43,7 +44,9 @@ export default function Layout({ children, params}: LayoutProps) {
         <TenantIdContext.Provider value={tenantId}>
             <TenantMainUI>
                 <CheckSuspend>
-                    {children}
+                    <ReFindProvider>
+                        {children}
+                    </ReFindProvider>
                 </CheckSuspend>
             </TenantMainUI>
         </TenantIdContext.Provider>
