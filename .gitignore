@@ -58,3 +58,6 @@ amplifytools.xcconfig
 #amplify-do-not-edit-end
 
 certificates
+
+src/ui-components
+

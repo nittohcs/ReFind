@@ -77,6 +77,19 @@ const checkGroup = function (req, res, next) {
   next();
 };
 
+const getGroups = function(req) {
+  return req.apiGateway.event.requestContext.authorizer.claims['cognito:groups'].split(',');
+}
+
+const getTenantId = function (groups) {
+  // sysAdmins,admins,usersではないものがtenantId
+  return groups.find(x => x !== "sysAdmins" && x !== "admins" && x !== "users");
+}
+
+const isSysAdmins = function (groups) {
+  return groups.indexOf("sysAdmins") >= 0;
+}
+
 app.all('*', checkGroup);
 
 app.post('/setUserPassword', async (req, res, next) => {
@@ -110,21 +123,22 @@ app.post('/updateUserAttributes', async (req, res, next) => {
 });
 
 app.post('/createUser', async (req, res, next) => {
-  if (!req.body.username || !req.body.email || !req.body.name) {
-    const err = new Error('username, email and name are required');
+  if (!req.body.username || !req.body.email || !req.body.name || !req.body.email_verified || !req.body.tenantId) {
+    const err = new Error('username, email, name, email_verified and tenantId are required');
     err.statusCode = 400;
     return next(err);
   }
 
   try {
-    let tenantId = req.body.tenantId;
+    const groups = getGroups(req);
 
-    // sysAdminsでない場合、groupに格納されたtenantIdを使用する
-    const groups = req.apiGateway.event.requestContext.authorizer.claims['cognito:groups'].split(',');
-    if (groups.indexOf("sysAdmins") < 0) {
-      // sysAdmins,admins,usersではないものがtenantId
-      tenantId = groups.find(x => x !== "sysAdmins" && x !== "admins" && x !== "users");
-      console.log(`createUser: tenantId=${tenantId}`);
+    if (!isSysAdmins(groups)) {
+      const tenantId = getTenantId(groups);
+      if (req.body.tenantId !== tenantId) {
+        const err = new Error('invalid tenantId');
+        err.statusCode = 400;
+        return next(err);
+      }
     }
 
     const attributes = [
@@ -138,11 +152,11 @@ app.post('/createUser', async (req, res, next) => {
       },
       {
         Name: "email_verified",
-        Value: "true",
+        Value: req.body.email_verified,
       },
       {
         Name: "custom:tenantId",
-        Value: tenantId,
+        Value: req.body.tenantId,
       }
     ];
     const response = await createUser(req.body.username, attributes, req.body.messageAction);
@@ -160,6 +174,21 @@ app.post('/deleteUser', async (req, res, next) => {
   }
 
   try {
+    const groups = getGroups(req);
+
+    // sysAdminsではない場合、tenantIdが一致するユーザーしか削除できない
+    if (!isSysAdmins(groups)) {
+      const tenantId = getTenantId(groups);
+
+      const userData = await getUser(req.body.username);
+      const userTenantId = userData.UserAttributes.find(x => x.Name === "custom:tenantId")?.Value;
+      if (userTenantId !== tenantId) {
+        const err = new Error('invalid tenantId');
+        err.statusCode = 400;
+        return next(err);
+      }
+    }
+
     const response = await deleteUser(req.body.username);
     res.status(200).json(response);
   } catch (err) {

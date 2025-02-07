@@ -13,8 +13,10 @@ import { useAuthState } from "@/hooks/auth";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { useTodayYYYYMMDD } from "@/hooks/util";
 import { queryKeys } from "@/services/queryKeys";
-import { ReFindUser } from "@/types/user";
+import { AdminQueriesUser, ReFindUser } from "@/types/user";
+import { useTenantId } from "../../hook";
 import { deleteReFindUser, invalidateReFindUserQuery } from "./user";
+import { SeatOccupancy } from "@/API";
 
 type FormValues = {
     key: string,
@@ -29,6 +31,7 @@ type DeleteUserDialogProps = {
 };
 
 export const DeleteUserDialog: FC<DeleteUserDialogProps> = ({ isOpened, close, data, resetRowSelection }) => {
+    const tenantId = useTenantId();
     const authState = useAuthState();
     const includeOperatingUser = !!data && data.findIndex(x => x.id === authState.username) >= 0;
 
@@ -52,21 +55,31 @@ export const DeleteUserDialog: FC<DeleteUserDialogProps> = ({ isOpened, close, d
         async mutationFn(_values: FormValues) {
             setTotalCount((data ?? []).length);
             setCurrentCount(0);
-            const deletedUsers = [];
+            const deleted = [];
             for(const user of (data ?? [])) {
-                deletedUsers.push(await deleteReFindUser(user));
+                deleted.push(await deleteReFindUser(user));
                 setCurrentCount(x => x + 1);
             }
-            return deletedUsers;
+            return deleted;
         },
-        onSuccess(_data, _variables, _context) {
+        onSuccess(data, _variables, _context) {
             enqueueSnackbar("ユーザーを削除しました。", { variant: "success" });
 
             // ユーザー一覧取得クエリを無効化して再取得されるようにする
-            invalidateReFindUserQuery(queryClient);
+            //invalidateReFindUserQuery(queryClient);
 
-            // SeatOccupancy取得クエリを無効化してを再取得されるようにする
-            queryClient.invalidateQueries({ queryKey: queryKeys.graphqlSeatOccupanciesByDate(today) });
+            // ユーザー一覧のクエリのキャッシュを更新する
+            const deletedUserIds = data.map(x => x.user.id);
+            queryClient.setQueryData(queryKeys.listAllUsers, (items: AdminQueriesUser[] = []) => items.filter(user => !deletedUserIds.includes(user.id)));
+
+            //// SeatOccupancy取得クエリを無効化してを再取得されるようにする
+            //queryClient.invalidateQueries({ queryKey: queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId) });
+
+            // 座席確保情報のクエリのキャッシュを更新する
+            const seatOccupancies = data.map(x => x.seatOccupancy).filter(x => !!x);
+            if (seatOccupancies.length > 0) {
+                queryClient.setQueryData(queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId), (items: SeatOccupancy[] = []) => [...items, ...seatOccupancies]);
+            }
 
             // テーブルの行選択をリセット
             resetRowSelection();

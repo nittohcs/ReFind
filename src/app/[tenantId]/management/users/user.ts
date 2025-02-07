@@ -1,6 +1,7 @@
 "use client";
 
 import { QueryClient } from "@tanstack/react-query";
+import { SeatOccupancy } from "@/API";
 import { addUserToGroup, createUser, deleteUser } from "@/services/AdminQueries";
 import { releaseSeatBySeatId } from "@/services/occupancyUtil";
 import { queryKeys } from "@/services/queryKeys";
@@ -25,15 +26,20 @@ export async function createReFindUser(user: ReFindUser) {
 }
 
 export async function deleteReFindUser(user: ReFindUser) {
+    let seatOccupancy: SeatOccupancy | null = null;
+
     // 使用中の座席がある場合、座席を解放
     if (user.seatId) {
-        await releaseSeatBySeatId(user.tenantId, user.seatId);
+        seatOccupancy = await releaseSeatBySeatId(user.tenantId, user.seatId);
     }
 
     // cognitoのユーザーを削除
     await deleteUser(user);
 
-    return user;
+    return {
+        user,
+        seatOccupancy,
+    };
 }
 
 export function invalidateReFindUserQuery(queryClient: QueryClient) {
