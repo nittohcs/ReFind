@@ -87,7 +87,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
         }
         router.replace(`/${tenantId}/floors/${params.floorId}?${urlSearchParams.toString()}`);
         setFilterString(s);
-    }, [searchParams, router, params.floorId]);
+    }, [searchParams, router, tenantId, params.floorId]);
 
     const { elementRef, contentsWidth, contentsHeight } = useContentsSize();
 

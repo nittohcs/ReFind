@@ -134,6 +134,21 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "refind2CreateSeatOccupancy": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind2"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "refind2DeleteFile": {
       "build": true,
       "dependsOn": [
@@ -242,6 +257,22 @@
         {
           "category": "function",
           "resourceName": "refind2CreateFloor"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2CreateSeatOccupancy_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2CreateSeatOccupancy"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2CreateSeatOccupancy_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2CreateSeatOccupancy"
         }
       ]
     },

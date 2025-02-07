@@ -66,6 +66,23 @@ export const funcDeleteFloor = /* GraphQL */ `mutation FuncDeleteFloor($input: f
   APITypes.FuncDeleteFloorMutationVariables,
   APITypes.FuncDeleteFloorMutation
 >;
+export const funcCreateSeatOccupancy = /* GraphQL */ `mutation FuncCreateSeatOccupancy($input: funcCreateSeatOccupancyInput!) {
+  funcCreateSeatOccupancy(input: $input) {
+    id
+    tenantId
+    seatId
+    userId
+    userName
+    date
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.FuncCreateSeatOccupancyMutationVariables,
+  APITypes.FuncCreateSeatOccupancyMutation
+>;
 export const createTenant = /* GraphQL */ `mutation CreateTenant(
   $input: CreateTenantInput!
   $condition: ModelTenantConditionInput

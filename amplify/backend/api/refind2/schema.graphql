@@ -179,6 +179,15 @@ input funcDeleteFloorInput {
   id: ID!
 }
 
+input funcCreateSeatOccupancyInput {
+  id: ID
+  tenantId: ID!
+  seatId: ID!
+  userId: ID
+  userName: String
+  date: String!
+}
+
 type Query {
   # ファイルアップロード用URLの取得
   getFileUploadUrl(filePath: String!): String
@@ -205,4 +214,8 @@ type Mutation {
   # フロア削除
   funcDeleteFloor(input: funcDeleteFloorInput!): Floor
   @function(name: "refind2DeleteFloor-${env}")
+
+  # 座席確保情報登録
+  funcCreateSeatOccupancy(input: funcCreateSeatOccupancyInput!): SeatOccupancy
+  @function(name: "refind2CreateSeatOccupancy-${env}")
 }
