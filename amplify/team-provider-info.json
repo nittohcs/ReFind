@@ -24,7 +24,7 @@
         },
         "AdminQueries7c6d4bef": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
-          "s3Key": "amplify-builds/AdminQueries7c6d4bef-54542f5a66724c4a4179-build.zip"
+          "s3Key": "amplify-builds/AdminQueries7c6d4bef-6a6945516761665a7436-build.zip"
         },
         "refind2GetFileUploadUrl": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",

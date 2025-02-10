@@ -65,15 +65,9 @@ export const DeleteUserDialog: FC<DeleteUserDialogProps> = ({ isOpened, close, d
         onSuccess(data, _variables, _context) {
             enqueueSnackbar("ユーザーを削除しました。", { variant: "success" });
 
-            // ユーザー一覧取得クエリを無効化して再取得されるようにする
-            //invalidateReFindUserQuery(queryClient);
-
             // ユーザー一覧のクエリのキャッシュを更新する
             const deletedUserIds = data.map(x => x.user.id);
             queryClient.setQueryData(queryKeys.listAllUsers, (items: AdminQueriesUser[] = []) => items.filter(user => !deletedUserIds.includes(user.id)));
-
-            //// SeatOccupancy取得クエリを無効化してを再取得されるようにする
-            //queryClient.invalidateQueries({ queryKey: queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId) });
 
             // 座席確保情報のクエリのキャッシュを更新する
             const seatOccupancies = data.map(x => x.seatOccupancy).filter(x => !!x);
@@ -88,6 +82,10 @@ export const DeleteUserDialog: FC<DeleteUserDialogProps> = ({ isOpened, close, d
             close();
         },
         onError(error, _variables, _context) {
+            // クエリを再取得
+            queryClient.invalidateQueries({ queryKey: queryKeys.listAllUsers });
+            queryClient.invalidateQueries({ queryKey: queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId) });
+
             if (!!error.message) {
                 enqueueSnackbar(error.message, { variant: "error" });
                 return;

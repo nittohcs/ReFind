@@ -92,6 +92,10 @@ export const BulkEditUserDialog: FC<BulkEditUserDialogProps> = ({
             close();
         },
         onError(error, _variables, _context) {
+            // クエリが再取得されるようにする
+            queryClient.invalidateQueries({ queryKey: queryKeys.listAllUsersInGroup("users") });
+            queryClient.invalidateQueries({ queryKey: queryKeys.listAllUsersInGroup("admins") });
+
             if (!!error.message) {
                 enqueueSnackbar(error.message, { variant: "error" });
                 return;

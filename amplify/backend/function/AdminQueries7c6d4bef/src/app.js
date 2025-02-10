@@ -90,6 +90,10 @@ const isSysAdmins = function (groups) {
   return groups.indexOf("sysAdmins") >= 0;
 }
 
+const getUserTenantId = function (userData)  {
+  return userData.UserAttributes.find(x => x.Name === "custom:tenantId")?.Value;
+}
+
 app.all('*', checkGroup);
 
 app.post('/setUserPassword', async (req, res, next) => {
@@ -108,14 +112,43 @@ app.post('/setUserPassword', async (req, res, next) => {
 });
 
 app.post('/updateUserAttributes', async (req, res, next) => {
-  if (!req.body.username || !req.body.attributes) {
-    const err = new Error('username and attributes are required');
+  if (!req.body.username || !req.body.email || !req.body.name) {
+    const err = new Error('username, email and name are required');
     err.statusCode = 400;
     return next(err);
   }
 
   try {
-    const response = await updateUserAttributes(req.body.username, req.body.attributes);
+    const groups = getGroups(req);
+
+    // sysAdminsではない場合、tenantIdが一致するユーザーしか操作できない
+    if (!isSysAdmins(groups)) {
+      const tenantId = getTenantId(groups);
+
+      const userData = await getUser(req.body.username);
+      const userTenantId = getUserTenantId(userData);
+      if (userTenantId !== tenantId) {
+        const err = new Error('invalid tenantId');
+        err.statusCode = 400;
+        return next(err);
+      }
+    }
+
+    const attributes = [
+      {
+        Name: "email",
+        Value: req.body.email,
+      },
+      {
+        Name: "name",
+        Value: req.body.name,
+      },
+      {
+        Name: "email_verified",
+        Value: "true",
+      },
+    ];
+    const response = await updateUserAttributes(req.body.username, attributes);
     res.status(200).json(response);
   } catch (err) {
     next(err);
@@ -123,8 +156,8 @@ app.post('/updateUserAttributes', async (req, res, next) => {
 });
 
 app.post('/createUser', async (req, res, next) => {
-  if (!req.body.username || !req.body.email || !req.body.name || !req.body.email_verified || !req.body.tenantId) {
-    const err = new Error('username, email, name, email_verified and tenantId are required');
+  if (!req.body.username || !req.body.email || !req.body.name || !req.body.tenantId) {
+    const err = new Error('username, email, name and tenantId are required');
     err.statusCode = 400;
     return next(err);
   }
@@ -152,7 +185,7 @@ app.post('/createUser', async (req, res, next) => {
       },
       {
         Name: "email_verified",
-        Value: req.body.email_verified,
+        Value: "true",
       },
       {
         Name: "custom:tenantId",
@@ -176,12 +209,12 @@ app.post('/deleteUser', async (req, res, next) => {
   try {
     const groups = getGroups(req);
 
-    // sysAdminsではない場合、tenantIdが一致するユーザーしか削除できない
+    // sysAdminsではない場合、tenantIdが一致するユーザーしか操作できない
     if (!isSysAdmins(groups)) {
       const tenantId = getTenantId(groups);
 
       const userData = await getUser(req.body.username);
-      const userTenantId = userData.UserAttributes.find(x => x.Name === "custom:tenantId")?.Value;
+      const userTenantId = getUserTenantId(userData);
       if (userTenantId !== tenantId) {
         const err = new Error('invalid tenantId');
         err.statusCode = 400;
@@ -204,6 +237,21 @@ app.post('/addUserToGroup', async (req, res, next) => {
   }
 
   try {
+    const groups = getGroups(req);
+
+    // sysAdminsではない場合、tenantIdが一致するユーザーしか操作できない
+    if (!isSysAdmins(groups)) {
+      const tenantId = getTenantId(groups);
+
+      const userData = await getUser(req.body.username);
+      const userTenantId = getUserTenantId(userData);
+      if (userTenantId !== tenantId) {
+        const err = new Error('invalid tenantId');
+        err.statusCode = 400;
+        return next(err);
+      }
+    }
+
     const response = await addUserToGroup(req.body.username, req.body.groupname);
     res.status(200).json(response);
   } catch (err) {
@@ -219,6 +267,21 @@ app.post('/removeUserFromGroup', async (req, res, next) => {
   }
 
   try {
+    const groups = getGroups(req);
+
+    // sysAdminsではない場合、tenantIdが一致するユーザーしか操作できない
+    if (!isSysAdmins(groups)) {
+      const tenantId = getTenantId(groups);
+
+      const userData = await getUser(req.body.username);
+      const userTenantId = getUserTenantId(userData);
+      if (userTenantId !== tenantId) {
+        const err = new Error('invalid tenantId');
+        err.statusCode = 400;
+        return next(err);
+      }
+    }
+
     const response = await removeUserFromGroup(req.body.username, req.body.groupname);
     res.status(200).json(response);
   } catch (err) {
@@ -226,6 +289,7 @@ app.post('/removeUserFromGroup', async (req, res, next) => {
   }
 });
 
+/*
 app.post('/confirmUserSignUp', async (req, res, next) => {
   if (!req.body.username) {
     const err = new Error('username is required');
@@ -240,7 +304,9 @@ app.post('/confirmUserSignUp', async (req, res, next) => {
     next(err);
   }
 });
+*/
 
+/*
 app.post('/disableUser', async (req, res, next) => {
   if (!req.body.username) {
     const err = new Error('username is required');
@@ -255,7 +321,9 @@ app.post('/disableUser', async (req, res, next) => {
     next(err);
   }
 });
+*/
 
+/*
 app.post('/enableUser', async (req, res, next) => {
   if (!req.body.username) {
     const err = new Error('username is required');
@@ -270,6 +338,7 @@ app.post('/enableUser', async (req, res, next) => {
     next(err);
   }
 });
+*/
 
 app.get('/getUser', async (req, res, next) => {
   if (!req.query.username) {
@@ -280,6 +349,20 @@ app.get('/getUser', async (req, res, next) => {
 
   try {
     const response = await getUser(req.query.username);
+
+    // sysAdminsではない場合、tenantIdが一致するユーザーしか操作できない
+    const groups = getGroups(req);
+    if (!isSysAdmins(groups)) {
+      const tenantId = getTenantId(groups);
+      console.log(`response:${JSON.stringify(response)}`);
+      const userTenantId = getUserTenantId(response);
+      if (userTenantId !== tenantId) {
+        const err = new Error('invalid tenantId');
+        err.statusCode = 400;
+        return next(err);
+      }
+    }
+
     res.status(200).json(response);
   } catch (err) {
     next(err);

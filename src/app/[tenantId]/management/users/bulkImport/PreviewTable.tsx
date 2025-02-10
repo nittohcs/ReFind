@@ -3,6 +3,7 @@
 import { FC, useMemo } from "react";
 import { useField } from "formik";
 import { createColumnHelper } from "@tanstack/react-table";
+import { useTenantId } from "@/app/[tenantId]/hook";
 import MiraCalTable from "@/components/MiraCalTable";
 import { useTable, useTableOption } from "@/hooks/table";
 import { ReFindUser } from "@/types/user";
@@ -15,9 +16,10 @@ type PreviewTableProps = {
 };
 
 export const PreviewTable: FC<PreviewTableProps> = ({ name }) => {
+    const tenantId = useTenantId();
     const [field, _meta, _helper] = useField<string>(name);
 
-    const users = useMemo(() => getReFindUsersFromCsv(field.value), [field.value]);
+    const users = useMemo(() => getReFindUsersFromCsv(field.value, tenantId), [field.value, tenantId]);
 
     const columns = useMemo(() => [
         columnHelper.accessor("id", {

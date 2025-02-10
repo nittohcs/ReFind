@@ -12,7 +12,9 @@ import MiraCalCheckbox from "@/components/MiraCalCheckbox";
 import MiraCalFormAction from "@/components/MiraCalFormAction";
 import MiraCalButton from "@/components/MiraCalButton";
 import { useEnqueueSnackbar } from "@/hooks/ui";
-import { createReFindUser, invalidateReFindUserQuery } from "../user";
+import { createReFindUser } from "../user";
+import { queryKeys } from "@/services/queryKeys";
+import { ReFindUser } from "@/types/user";
 
 type FormValues = {
     id: string,
@@ -51,14 +53,14 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
                 floorName: "",
             });
         },
-        onSuccess(_data, _variables, _context) {
+        onSuccess(data, _variables, _context) {
             enqueueSnackbar("登録しました。", { variant: "success" });
+
+            // クエリのキャッシュを更新する
+            queryClient.setQueryData(queryKeys.listAllUsers, (items: ReFindUser[] = []) => [...items, data]);
 
             // 入力欄を初期化するため、このコンポーネントを再表示する
             update();
-
-            // ユーザー一覧取得クエリを無効化して再取得されるようにする
-            invalidateReFindUserQuery(queryClient);
         },
         onError(error, _variables, _context) {
             if (!!error.message) {

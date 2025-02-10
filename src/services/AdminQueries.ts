@@ -94,23 +94,8 @@ export async function adminUpdateUserAttributes(user: AdminQueriesUser) {
         },
         body: {
             username: user.id,
-            attributes: [
-                {
-                    Name: "email",
-                    Value: user.email,
-                },
-                {
-                    Name: "name",
-                    Value: user.name,
-                },
-                // email_verifiedがTrueでない場合、変更前のメールアドレスに確認コードが書かれたメールが送信される。
-                // しかしユーザーのブラウザで確認コードの入力画面が表示されるわけではないので、結局メールアドレスは変更されない。
-                // よって、email_verifiedをTrueとして強制的にメールアドレスを変更させる
-                {
-                    Name: "email_verified",
-                    Value: "True",
-                },
-            ]
+            email: user.email,
+            name: user.name,
         },
     };
     const operation = post({ apiName, path, options });

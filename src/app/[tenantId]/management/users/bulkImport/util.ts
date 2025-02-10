@@ -3,7 +3,7 @@
 import { parse } from "csv-parse/sync";
 import { ReFindUser } from "@/types/user";
 
-export function getReFindUsersFromCsv(csv: string) {
+export function getReFindUsersFromCsv(csv: string, tenantId: string) {
     const users: ReFindUser[] = [];
 
     try {
@@ -18,6 +18,7 @@ export function getReFindUsersFromCsv(csv: string) {
                 id: row["ID"] ?? "",
                 name: row["氏名"] ?? "",
                 email: row["メールアドレス"] ?? "",
+                tenantId: tenantId,
                 isAdmin: !!row["管理者"]?.trim(),
                 seatId: "",
                 seatName: "",

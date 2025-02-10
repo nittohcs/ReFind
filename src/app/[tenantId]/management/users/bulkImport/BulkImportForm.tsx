@@ -5,16 +5,18 @@ import { Alert, Stack } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from 'yup'
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEnqueueSnackbar } from "@/hooks/ui";
+import { useTenantId } from "@/app/[tenantId]/hook";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalFormAction from "@/components/MiraCalFormAction";
 import MiraCalButton from "@/components/MiraCalButton";
 import MiraCalCsvField from "@/components/MiraCalCsvField";
 import MiraCalLinearProgressWithLabel from "@/components/MiraCalLinearProgressWithLabel";
 import { useReFindUsers } from "@/hooks/ReFindUser";
+import { useEnqueueSnackbar } from "@/hooks/ui";
+import { queryKeys } from "@/services/queryKeys";
 import { ReFindUser } from "@/types/user";
+import { createReFindUser } from "../user";
 import PreviewTable from "./PreviewTable";
-import { createReFindUser, invalidateReFindUserQuery } from "../user";
 import { getReFindUsersFromCsv, isValidEmail } from "./util";
 
 type FormValues = {
@@ -26,10 +28,10 @@ type BulkImportFormProps = {
 };
 
 export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
+    const tenantId = useTenantId();
     const [inputErrors, setInputErrors] = useState<string[]>([]);
 
     const query = useReFindUsers();
-    //const currentUsers = query.data ?? [];
     const currentUserIds = useMemo(() => new Set((query.data ?? []).map(x => x.id)), [query.data]);
 
     const validationSchema = useMemo(() => yup.object().shape({
@@ -48,7 +50,7 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
     const queryClient = useQueryClient();
     const mutation = useMutation({
         async mutationFn(values: FormValues) {
-            const users = getReFindUsersFromCsv(values.csv);
+            const users = getReFindUsersFromCsv(values.csv, tenantId);
 
             // 入力チェック
             const errors: string[] = [];
@@ -59,23 +61,25 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
                 const index = i + 1;
                 // idチェック
                 if (!user.id) {
-                    errors.push(`${index}}件目: IDが入力されていません。`);
+                    errors.push(`${index}件目: IDが入力されていません。`);
                 }
                 if (currentUserIds.has(user.id.toLowerCase())) {
-                    errors.push(`${index}}件目: 入力されたIDは既に使用されています。`);
+                    errors.push(`${index}件目: 入力されたIDは既に使用されています。`);
+                } else if (users.findIndex(x => x.id === user.id) !== i) {
+                    errors.push(`${index}件目: 入力されたIDは既に使用されています。`);
                 }
 
                 // 氏名チェック
                 if (!user.name) {
-                    errors.push(`${index}}件目: 氏名が入力されていません。`);
+                    errors.push(`${index}件目: 氏名が入力されていません。`);
                 }
 
                 // メールアドレスチェック
                 if (!user.email) {
-                    errors.push(`${index}}件目: メールアドレスが入力されていません。`);
+                    errors.push(`${index}件目: メールアドレスが入力されていません。`);
                 } else {
                     if (!isValidEmail(user.email)) {
-                        errors.push(`${index}}件目: メールアドレスが正しくありません。`);
+                        errors.push(`${index}件目: メールアドレスが正しくありません。`);
                     }
                 }
             });
@@ -96,16 +100,19 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
             }
             return createdUsers;
         },
-        onSuccess(_data, _variables, _context) {
+        onSuccess(data, _variables, _context) {
             enqueueSnackbar("取り込みました。", { variant: "success" });
+
+            // クエリのキャッシュを更新する
+            queryClient.setQueryData(queryKeys.listAllUsers, (items: ReFindUser[] = []) => [...items, ...data]);
 
             // 入力欄を初期化するため、このコンポーネントを再表示する
             update();
-
-            // ユーザー一覧取得クエリを無効化して再取得されるようにする
-            invalidateReFindUserQuery(queryClient);
         },
         onError(error, _variables, _context) {
+            // クエリを再読み込みする
+            queryClient.invalidateQueries({ queryKey: queryKeys.listAllUsers });
+
             if (!!error.message) {
                 enqueueSnackbar(error.message, { variant: "error" });
                 return;

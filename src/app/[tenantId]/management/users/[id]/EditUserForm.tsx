@@ -5,6 +5,7 @@ import { Box } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTenantId } from "@/app/[tenantId]/hook";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalTextField from "@/components/MiraCalTextField";
 import MiraCalCheckbox from "@/components/MiraCalCheckbox";
@@ -14,7 +15,8 @@ import { useAuthState } from "@/hooks/auth";
 import { useReFindUsers } from "@/hooks/ReFindUser";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { addUserToGroup, adminUpdateUserAttributes, removeUserFromGroup } from "@/services/AdminQueries";
-import { invalidateReFindUserQuery } from "../user";
+import { queryKeys } from "@/services/queryKeys";
+import { ReFindUser } from "@/types/user";
 
 type FormValues = {
     id: string,
@@ -28,6 +30,7 @@ type EditUserFormProps = {
 };
 
 export const EditUserForm: FC<EditUserFormProps> = ({ id }) => {
+    const tenantId = useTenantId();
     const authState = useAuthState();
 
     const query = useReFindUsers();
@@ -55,21 +58,32 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id }) => {
     const enqueueSnackbar = useEnqueueSnackbar();
     const queryClient = useQueryClient();
     const mutation = useMutation({
-        async mutationFn(user: FormValues) {
+        async mutationFn(values: FormValues) {
+            const updated = {
+                ...values,
+                tenantId: tenantId,
+            };
+
             // cognitoユーザー編集
-            await adminUpdateUserAttributes(user);
+            await adminUpdateUserAttributes(updated);
 
             // cognitoのグループに追加
-            if (user.isAdmin !== initialValues.isAdmin) {
-                await removeUserFromGroup(user, initialValues.isAdmin ? "admins" : "users");
-                await addUserToGroup(user, user.isAdmin ? "admins" : "users");
+            if (updated.isAdmin !== initialValues.isAdmin) {
+                await removeUserFromGroup(updated, initialValues.isAdmin ? "admins" : "users");
+                await addUserToGroup(updated, updated.isAdmin ? "admins" : "users");
             }
         },
-        onSuccess(_data, _variables, _context) {
+        onSuccess(_data, variables, _context) {
             enqueueSnackbar("保存しました。", { variant: "success" });
 
-            // ユーザー一覧取得クエリを無効化して再取得されるようにする
-            invalidateReFindUserQuery(queryClient);
+            // クエリのキャッシュを更新する
+            const updated: ReFindUser = {
+                ...user!,
+                name: variables.name,
+                email: variables.email,
+                isAdmin: variables.isAdmin,
+            };
+            queryClient.setQueryData(queryKeys.listAllUsers, (items: ReFindUser[] = []) => items.map(item => item.id === updated.id ? updated : item));
         },
         onError(error, _variables, _context) {
             if (!!error.message) {
@@ -102,6 +116,7 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id }) => {
                 validationSchema={validationSchema}
                 initialValues={initialValues}
                 onSubmit={onSubmit}
+                enableReinitialize={true}
             >
                 <MiraCalForm>
                     <MiraCalTextField
