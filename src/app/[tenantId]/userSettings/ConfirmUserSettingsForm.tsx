@@ -1,0 +1,85 @@
+"use client";
+
+import { Dispatch, FC, SetStateAction, useCallback, useMemo } from "react";
+import { Box, Button, Typography } from "@mui/material";
+import { Formik } from "formik";
+import * as yup from "yup";
+import { useMutation } from "@tanstack/react-query";
+import { confirmUserAttribute } from "aws-amplify/auth";
+import MiraCalErrorAlert from "@/components/MiraCalErrorAlert";
+import MiraCalForm from "@/components/MiraCalForm";
+import MiraCalFormAction from "@/components/MiraCalFormAction";
+import MiraCalTextField from "@/components/MiraCalTextField";
+import { useUpdateUserInfo } from "@/hooks/auth";
+import { useEnqueueSnackbar } from "@/hooks/ui";
+
+type ConfirmUserSettingsFormValues = {
+    confirmationCode: string,
+};
+
+type ConfirmUserSettingsFormProps = {
+    confirmingEmail: string,
+    setConfirmingEmail: Dispatch<SetStateAction<string>>,
+    update: () => void,
+};
+
+export const ConfirmUserSettingsForm: FC<ConfirmUserSettingsFormProps> = ({ confirmingEmail, setConfirmingEmail, update }) => {
+    const updateUserInfo = useUpdateUserInfo();
+    const enqueueSnackbar = useEnqueueSnackbar();
+
+    const validationSchema = useMemo(() => yup.object().shape({
+        confirmationCode: yup.string().required().default(""),
+    }), []);
+
+    const initialValues: ConfirmUserSettingsFormValues = useMemo(() => validationSchema.cast({
+    }), [validationSchema]);
+
+    const mutation = useMutation(({
+        async mutationFn({ confirmationCode }: ConfirmUserSettingsFormValues) {
+            await confirmUserAttribute({
+                userAttributeKey: "email",
+                confirmationCode: confirmationCode,
+            });
+        },
+        onSuccess(_data, _variables, _context) {
+            updateUserInfo({
+                email: confirmingEmail,
+            });
+            setConfirmingEmail("");
+            enqueueSnackbar("メールアドレスを変更しました。", { variant: "success" })
+            update();
+        },
+        onError(error, _variables, _context) {
+            console.log(error.message);
+        },
+    }));
+
+    const onSubmit = useCallback((values: ConfirmUserSettingsFormValues) => mutation.mutate(values), [mutation]);
+    const cancel = useCallback(() => setConfirmingEmail(""), [setConfirmingEmail]);
+
+    return (
+        <Box>
+            <Typography variant="h6">確認コード入力</Typography>
+            <Typography variant="body1">{`${confirmingEmail}に確認コードが送信されました。確認コードを入力することでメールアドレスが変更されます。`}</Typography>
+            <Formik<ConfirmUserSettingsFormValues>
+                validationSchema={validationSchema}
+                initialValues={initialValues}
+                onSubmit={onSubmit}
+            >
+                <MiraCalForm>
+                    <MiraCalTextField
+                        name="confirmationCode"
+                        label="確認コード"
+                        type="text"
+                    />
+                    <MiraCalErrorAlert error={mutation.error} />
+                    <MiraCalFormAction>
+                        <Button variant="contained" type="submit" disabled={mutation.isPending}>入力</Button>
+                        <Button variant="contained" onClick={cancel}>キャンセル</Button>
+                    </MiraCalFormAction>
+                </MiraCalForm>
+            </Formik>
+        </Box>
+    );
+};
+export default ConfirmUserSettingsForm;
