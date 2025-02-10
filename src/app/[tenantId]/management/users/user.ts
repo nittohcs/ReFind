@@ -1,10 +1,8 @@
 "use client";
 
-import { QueryClient } from "@tanstack/react-query";
 import { SeatOccupancy } from "@/API";
 import { addUserToGroup, createUser, deleteUser } from "@/services/AdminQueries";
 import { releaseSeatBySeatId } from "@/services/occupancyUtil";
-import { queryKeys } from "@/services/queryKeys";
 import { ReFindUser } from "@/types/user";
 
 export async function createReFindUser(user: ReFindUser) {

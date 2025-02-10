@@ -67,7 +67,6 @@ export function useContentsSize(defaultWidth: number = 300, defaultHeight: numbe
             try {
                 const elem = elementRef.current;
                 if (!elem) throw new Error("element does not exist");
-                //console.log(`open=${open}, window.innerWidth=${window.innerWidth}, elem.offsetLeft=${elem.offsetLeft}, elem.clientWidth=${elem.clientWidth}`);
                 const width = window.innerWidth - elem.offsetLeft;
                 const height = window.innerHeight - (elem.offsetTop + elem.clientHeight);
                 if (Number.isNaN(width)) throw new Error("width is NaN");
@@ -77,7 +76,9 @@ export function useContentsSize(defaultWidth: number = 300, defaultHeight: numbe
             } catch(_error) {
                 setContentsWidth(window.innerWidth);
                 setContentsHeight(window.innerHeight);
-                setRedo(x => x + 1);  // エラー発生時に値を変更して、もういちどeffectを実行する
+                if (elementRef.current) {
+                    setRedo(x => x + 1);  // エラー発生時に値を変更して、もういちどeffectを実行する
+                }
             }
         }
 
@@ -86,7 +87,7 @@ export function useContentsSize(defaultWidth: number = 300, defaultHeight: numbe
         window.addEventListener("resize", updateContentsHeight);
 
         return () => window.removeEventListener("resize", updateContentsHeight);
-    }, [redo, open]);
+    }, [redo, open, elementRef]);
 
     return {
         elementRef,

@@ -1,5 +1,4 @@
 import { AdminQueriesGroup } from "@/types/user";
-import { useListUsersByTenantId } from "./AdminQueries";
 
 export const queryKeys = {
     storage: (path: string) => ["storage", path] as const,
