@@ -105,6 +105,7 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
 
             // クエリのキャッシュを更新する
             queryClient.setQueryData(queryKeys.listUsersByTenantId(tenantId), (items: AdminQueriesUser[] = []) => [...items, ...data]);
+            queryClient.setQueryData(queryKeys.listUsersInGroupByTenantId(tenantId, "admins"), (items: AdminQueriesUser[] = []) => [...items, data.filter(x => x.isAdmin)]);
 
             // 入力欄を初期化するため、このコンポーネントを再表示する
             update();
@@ -112,6 +113,7 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
         onError(error, _variables, _context) {
             // クエリを再読み込みする
             queryClient.invalidateQueries({ queryKey: queryKeys.listUsersByTenantId(tenantId) });
+            queryClient.invalidateQueries({ queryKey: queryKeys.listUsersInGroupByTenantId(tenantId, "admins") });
 
             if (!!error.message) {
                 enqueueSnackbar(error.message, { variant: "error" });
