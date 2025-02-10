@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AdminQueriesGroup, AdminQueriesUser } from "@/types/user";
 import { queryKeys } from "./queryKeys";
 
+/*
 async function listAllUsers() {
     const authSession = await fetchAuthSession();
     const accessToken = authSession.tokens?.accessToken?.toString() ?? "";
@@ -31,7 +32,38 @@ export function useListAllUsers(staleTime?: number) {
         ...(!!staleTime && {staleTime }),
     });
 }
+*/
 
+async function listUsersByTenantId(tenantId: string) {
+    const authSession = await fetchAuthSession();
+    const accessToken = authSession.tokens?.accessToken?.toString() ?? "";
+    const apiName = "AdminQueries";
+    const path = "/listUsersByTenantId";
+    const options = {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: accessToken,
+        },
+        queryParams: {
+            tenantId: tenantId,
+        },
+    };
+    const operation = get({ apiName, path, options });
+    const response = await operation.response;
+    const json = await response.body.json();
+    const users = json as AdminQueriesUser[];
+    return users;
+}
+
+export function useListUsersByTenantId(tenantId: string, staleTime?: number) {
+    return useQuery({
+        queryKey: queryKeys.listUsersByTenantId(tenantId),
+        async queryFn() { return await listUsersByTenantId(tenantId); },
+        ...(!!staleTime && {staleTime }),
+    })
+}
+
+/*
 async function listAllUsersInGroup(groupName: AdminQueriesGroup) {
     const authSession = await fetchAuthSession();
     const accessToken = authSession.tokens?.accessToken?.toString() ?? "";
@@ -57,6 +89,37 @@ export function useListAllUsersInGroup(groupName: AdminQueriesGroup, staleTime?:
     return useQuery({
         queryKey: queryKeys.listAllUsersInGroup(groupName),
         async queryFn() { return await listAllUsersInGroup(groupName); },
+        ...(!!staleTime && {staleTime }),
+    });
+}
+*/
+
+async function listUsersInGroupByTenantId(tenantId: string, groupName: AdminQueriesGroup) {
+    const authSession = await fetchAuthSession();
+    const accessToken = authSession.tokens?.accessToken?.toString() ?? "";
+    const apiName = "AdminQueries";
+    const path = "/listUsersInGroupByTenantId";
+    const options = {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: accessToken,
+        },
+        queryParams: {
+            tenantId: tenantId,
+            groupname: groupName,
+        },
+    };
+    const operation = get({ apiName, path, options });
+    const response = await operation.response;
+    const json = await response.body.json();
+    const users = json as AdminQueriesUser[];
+    return users;
+}
+
+export function useListUsersInGroupByTenantId(tenantId: string, groupName: AdminQueriesGroup, staleTime?: number) {
+    return useQuery({
+        queryKey: queryKeys.listUsersInGroupByTenantId(tenantId, groupName),
+        async queryFn() { return await listUsersInGroupByTenantId(tenantId, groupName); },
         ...(!!staleTime && {staleTime }),
     });
 }

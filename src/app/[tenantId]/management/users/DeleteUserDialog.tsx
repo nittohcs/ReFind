@@ -67,7 +67,7 @@ export const DeleteUserDialog: FC<DeleteUserDialogProps> = ({ isOpened, close, d
 
             // ユーザー一覧のクエリのキャッシュを更新する
             const deletedUserIds = data.map(x => x.user.id);
-            queryClient.setQueryData(queryKeys.listAllUsers, (items: AdminQueriesUser[] = []) => items.filter(user => !deletedUserIds.includes(user.id)));
+            queryClient.setQueryData(queryKeys.listUsersByTenantId(tenantId), (items: AdminQueriesUser[] = []) => items.filter(user => !deletedUserIds.includes(user.id)));
 
             // 座席確保情報のクエリのキャッシュを更新する
             const seatOccupancies = data.map(x => x.seatOccupancy).filter(x => !!x);
@@ -83,7 +83,7 @@ export const DeleteUserDialog: FC<DeleteUserDialogProps> = ({ isOpened, close, d
         },
         onError(error, _variables, _context) {
             // クエリを再取得
-            queryClient.invalidateQueries({ queryKey: queryKeys.listAllUsers });
+            queryClient.invalidateQueries({ queryKey: queryKeys.listUsersByTenantId(tenantId) });
             queryClient.invalidateQueries({ queryKey: queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId) });
 
             if (!!error.message) {

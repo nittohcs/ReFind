@@ -57,7 +57,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
             enqueueSnackbar("登録しました。", { variant: "success" });
 
             // クエリのキャッシュを更新する
-            queryClient.setQueryData(queryKeys.listAllUsers, (items: ReFindUser[] = []) => [...items, data]);
+            queryClient.setQueryData(queryKeys.listUsersByTenantId(tenantId), (items: ReFindUser[] = []) => [...items, data]);
 
             // 入力欄を初期化するため、このコンポーネントを再表示する
             update();

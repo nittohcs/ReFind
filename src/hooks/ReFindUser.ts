@@ -5,11 +5,10 @@ import { UseQueryResult } from "@tanstack/react-query";
 import { Floor, Seat, SeatOccupancy } from "@/API";
 import { useTenantId } from "@/app/[tenantId]/hook";
 import { useTodayYYYYMMDD } from "@/hooks/util";
-import { useListAllUsers, useListAllUsersInGroup } from "@/services/AdminQueries";
-//import { useListAllFloors, useListAllSeats, useListSeatOccupanciesByDate } from "@/services/graphql";
+import { useListUsersByTenantId, useListUsersInGroupByTenantId } from "@/services/AdminQueries";
+import { useFloorsByTenantId, useSeatOccupanciesByDateAndTenantId, useSeatsByTenantId } from "@/services/graphql";
 import { getLatestOccupancyMap } from "@/services/occupancyUtil";
 import { AdminQueriesUser, ReFindUser } from "@/types/user";
-import { useFloorsByTenantId, useSeatOccupanciesByDateAndTenantId, useSeatsByTenantId } from "@/services/graphql";
 
 type UseReFindUsersResult = {
     data: ReFindUser[],
@@ -36,8 +35,8 @@ function ToReFindUser(user: AdminQueriesUser): ReFindUser {
 export function useReFindUsersValue() {
     const tenantId = useTenantId();
     const todayYYYYMMDD = useTodayYYYYMMDD();
-    const qUsers = useListAllUsers();
-    const qAdmins = useListAllUsersInGroup("admins");
+    const qUsers = useListUsersByTenantId(tenantId);
+    const qAdmins = useListUsersInGroupByTenantId(tenantId, "admins");
     const qFloors = useFloorsByTenantId(tenantId);
     const qSeats = useSeatsByTenantId(tenantId);
     const qOccupancies = useSeatOccupanciesByDateAndTenantId(todayYYYYMMDD, tenantId);

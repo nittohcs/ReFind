@@ -52,8 +52,8 @@ const allowedGroup = process.env.GROUP;
 
 const checkGroup = function (req, res, next) {
   // 通常のAdminQueriesでは'/signUserOut'のみ全ユーザーに許可されているが
-  // '/listAllUsers'と'/listAllUsersInGroup'も許可する
-  const allowedPaths = ['/signUserOut', '/listAllUsers', '/listAllUsersInGroup']
+  // '/listUsersByTenantId'と'/listUsersInGroupByTenantId'も許可する
+  const allowedPaths = ['/signUserOut', '/listUsersByTenantId', '/listUsersInGroupByTenantId']
   if (allowedPaths.includes(req.path)) {
     return next();
   }
@@ -104,6 +104,21 @@ app.post('/setUserPassword', async (req, res, next) => {
   }
 
   try {
+    const groups = getGroups(req);
+
+    // sysAdminsではない場合、tenantIdが一致するユーザーしか操作できない
+    if (!isSysAdmins(groups)) {
+      const tenantId = getTenantId(groups);
+
+      const userData = await getUser(req.body.username);
+      const userTenantId = getUserTenantId(userData);
+      if (userTenantId !== tenantId) {
+        const err = new Error('invalid tenantId');
+        err.statusCode = 400;
+        return next(err);
+      }
+    }
+
     const response = await setUserPassword(req.body.username, req.body.password);
     res.status(200).json(response);
   } catch(err) {
@@ -340,6 +355,7 @@ app.post('/enableUser', async (req, res, next) => {
 });
 */
 
+/*
 app.get('/getUser', async (req, res, next) => {
   if (!req.query.username) {
     const err = new Error('username is required');
@@ -368,7 +384,9 @@ app.get('/getUser', async (req, res, next) => {
     next(err);
   }
 });
+*/
 
+/*
 app.get('/listUsers', async (req, res, next) => {
   try {
     const limit = req.query.limit ? parseInt(req.query.limit) : 25;
@@ -378,7 +396,9 @@ app.get('/listUsers', async (req, res, next) => {
     next(err);
   }
 });
+*/
 
+/*
 app.get('/listAllUsers', async (req, res, next) => {
   try {
     const response = await listAllUsers();
@@ -387,7 +407,37 @@ app.get('/listAllUsers', async (req, res, next) => {
     next(err);
   }
 });
+*/
 
+app.get('/listUsersByTenantId', async (req, res, next) => {
+  if (!req.query.tenantId) {
+    const err = new Error('tenantId is required');
+    err.statusCode = 400;
+    return next(err);
+  }
+
+  try {
+    const groups = getGroups(req);
+
+    // sysAdminsではない場合、自分のテナントのユーザーしか取得できない
+    if (!isSysAdmins(groups)) {
+      const tenantId = getTenantId(groups);
+      if (req.query.tenantId !== tenantId) {
+        const err = new Error('invalid tenantId');
+        err.statusCode = 400;
+        return next(err);
+      }
+    }
+
+    const response = await listAllUsers();
+    const filtered = response.filter(x => x.tenantId === req.query.tenantId);
+    res.status(200).json(filtered);
+  } catch (err) {
+    next(err);
+  }
+});
+
+/*
 app.get('/listGroups', async (req, res, next) => {
   try {
     const limit = req.query.limit ? parseInt(req.query.limit) : 25;
@@ -397,7 +447,9 @@ app.get('/listGroups', async (req, res, next) => {
     next(err);
   }
 });
+*/
 
+/*
 app.get('/listGroupsForUser', async (req, res, next) => {
   if (!req.query.username) {
     const err = new Error('username is required');
@@ -413,7 +465,9 @@ app.get('/listGroupsForUser', async (req, res, next) => {
     next(err);
   }
 });
+*/
 
+/*
 app.get('/listUsersInGroup', async (req, res, next) => {
   if (!req.query.groupname) {
     const err = new Error('groupname is required');
@@ -429,7 +483,9 @@ app.get('/listUsersInGroup', async (req, res, next) => {
     next(err);
   }
 });
+*/
 
+/*
 app.get('/listAllUsersInGroup', async (req, res, next) => {
   if (!req.query.groupname) {
     const err = new Error('groupname is required');
@@ -440,6 +496,35 @@ app.get('/listAllUsersInGroup', async (req, res, next) => {
   try {
     const response = await listAllUsersInGroup(req.query.groupname);
     res.status(200).json(response);
+  } catch (err) {
+    next(err);
+  }
+});
+*/
+
+app.get('/listUsersInGroupByTenantId', async (req, res, next) => {
+  if (!req.query.tenantId || !req.query.groupname) {
+    const err = new Error('tenantId and groupname is required');
+    err.statusCode = 400;
+    return next(err);
+  }
+
+  try {
+    const groups = getGroups(req);
+
+    // sysAdminsではない場合、自分のテナントのユーザーしか取得できない
+    if (!isSysAdmins(groups)) {
+      const tenantId = getTenantId(groups);
+      if (req.query.tenantId !== tenantId) {
+        const err = new Error('invalid tenantId');
+        err.statusCode = 400;
+        return next(err);
+      }
+    }
+
+    const response = await listAllUsersInGroup(req.query.groupname);
+    const filtered = response.filter(x => x.tenantId === req.query.tenantId);
+    res.status(200).json(filtered);
   } catch (err) {
     next(err);
   }

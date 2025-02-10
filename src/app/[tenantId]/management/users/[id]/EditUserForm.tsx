@@ -83,7 +83,7 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id }) => {
                 email: variables.email,
                 isAdmin: variables.isAdmin,
             };
-            queryClient.setQueryData(queryKeys.listAllUsers, (items: ReFindUser[] = []) => items.map(item => item.id === updated.id ? updated : item));
+            queryClient.setQueryData(queryKeys.listUsersByTenantId(tenantId), (items: ReFindUser[] = []) => items.map(item => item.id === updated.id ? updated : item));
         },
         onError(error, _variables, _context) {
             if (!!error.message) {

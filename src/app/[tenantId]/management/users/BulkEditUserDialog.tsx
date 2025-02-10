@@ -14,6 +14,7 @@ import { useEnqueueSnackbar } from "@/hooks/ui";
 import { addUserToGroup, removeUserFromGroup } from "@/services/AdminQueries";
 import { queryKeys } from "@/services/queryKeys";
 import { ReFindUser } from "@/types/user";
+import { useTenantId } from "../../hook";
 
 type FormValues = {
     isAdmin: boolean,
@@ -32,6 +33,7 @@ export const BulkEditUserDialog: FC<BulkEditUserDialogProps> = ({
     data,
     resetRowSelection,
 }) => {
+    const tenantId = useTenantId();
     const authState = useAuthState();
     const validationSchema = useMemo(() => yup.object().shape({
         isAdmin: yup.bool().required().default(false).test("isAdmin", "操作中のユーザーを管理者ではなくすることはできません", value => {
@@ -82,8 +84,8 @@ export const BulkEditUserDialog: FC<BulkEditUserDialogProps> = ({
             enqueueSnackbar("保存しました。", { variant: "success" });
 
             // クエリが再取得されるようにする
-            queryClient.invalidateQueries({ queryKey: queryKeys.listAllUsersInGroup("users") });
-            queryClient.invalidateQueries({ queryKey: queryKeys.listAllUsersInGroup("admins") });
+            queryClient.invalidateQueries({ queryKey: queryKeys.listUsersInGroupByTenantId(tenantId, "users") });
+            queryClient.invalidateQueries({ queryKey: queryKeys.listUsersInGroupByTenantId(tenantId, "admins") });
 
             // テーブルの行選択をリセット
             resetRowSelection();
@@ -93,8 +95,8 @@ export const BulkEditUserDialog: FC<BulkEditUserDialogProps> = ({
         },
         onError(error, _variables, _context) {
             // クエリが再取得されるようにする
-            queryClient.invalidateQueries({ queryKey: queryKeys.listAllUsersInGroup("users") });
-            queryClient.invalidateQueries({ queryKey: queryKeys.listAllUsersInGroup("admins") });
+            queryClient.invalidateQueries({ queryKey: queryKeys.listUsersInGroupByTenantId(tenantId, "users") });
+            queryClient.invalidateQueries({ queryKey: queryKeys.listUsersInGroupByTenantId(tenantId, "admins") });
 
             if (!!error.message) {
                 enqueueSnackbar(error.message, { variant: "error" });

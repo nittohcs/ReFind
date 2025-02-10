@@ -41,7 +41,3 @@ export async function deleteReFindUser(user: ReFindUser) {
         seatOccupancy,
     };
 }
-
-export function invalidateReFindUserQuery(queryClient: QueryClient) {
-    queryClient.invalidateQueries({ queryKey: queryKeys.listAllUsers });
-}

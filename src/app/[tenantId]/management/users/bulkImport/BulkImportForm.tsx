@@ -104,14 +104,14 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
             enqueueSnackbar("取り込みました。", { variant: "success" });
 
             // クエリのキャッシュを更新する
-            queryClient.setQueryData(queryKeys.listAllUsers, (items: ReFindUser[] = []) => [...items, ...data]);
+            queryClient.setQueryData(queryKeys.listUsersByTenantId(tenantId), (items: ReFindUser[] = []) => [...items, ...data]);
 
             // 入力欄を初期化するため、このコンポーネントを再表示する
             update();
         },
         onError(error, _variables, _context) {
             // クエリを再読み込みする
-            queryClient.invalidateQueries({ queryKey: queryKeys.listAllUsers });
+            queryClient.invalidateQueries({ queryKey: queryKeys.listUsersByTenantId(tenantId) });
 
             if (!!error.message) {
                 enqueueSnackbar(error.message, { variant: "error" });
