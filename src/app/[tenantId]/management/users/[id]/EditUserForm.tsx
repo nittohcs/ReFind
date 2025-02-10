@@ -27,9 +27,10 @@ type FormValues = {
 
 type EditUserFormProps = {
     id: string,
+    update: () => void,
 };
 
-export const EditUserForm: FC<EditUserFormProps> = ({ id }) => {
+export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
     const tenantId = useTenantId();
     const authState = useAuthState();
 
@@ -84,6 +85,14 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id }) => {
                 isAdmin: variables.isAdmin,
             };
             queryClient.setQueryData(queryKeys.listUsersByTenantId(tenantId), (items: AdminQueriesUser[] = []) => items.map(item => item.id === updated.id ? updated : item));
+            if (updated.isAdmin) {
+                queryClient.setQueryData(queryKeys.listUsersInGroupByTenantId(tenantId, "admins"), (items: AdminQueriesUser[] = []) => [...items, updated]);
+            } else {
+                queryClient.setQueryData(queryKeys.listUsersInGroupByTenantId(tenantId, "admins"), (items: AdminQueriesUser[] = []) => items.filter(item => item.id !== updated.id));
+            }
+
+            // コンポーネントを再生成
+            update();
         },
         onError(error, _variables, _context) {
             if (!!error.message) {
@@ -144,6 +153,7 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id }) => {
                             variant="contained"
                             type="submit"
                             disabled={mutation.isPending}
+                            disabledWhenNotDirty={true}
                         >
                             保存
                         </MiraCalButton>

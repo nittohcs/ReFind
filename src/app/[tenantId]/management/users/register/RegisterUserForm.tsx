@@ -14,7 +14,7 @@ import MiraCalButton from "@/components/MiraCalButton";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { createReFindUser } from "../user";
 import { queryKeys } from "@/services/queryKeys";
-import { AdminQueriesUser, ReFindUser } from "@/types/user";
+import { AdminQueriesUser } from "@/types/user";
 
 type FormValues = {
     id: string,

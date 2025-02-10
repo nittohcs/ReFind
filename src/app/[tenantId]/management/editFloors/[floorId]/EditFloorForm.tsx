@@ -169,6 +169,7 @@ export const EditFloorForm: FC<EditFloorFormProps> = ({
                             variant="contained"
                             type="submit"
                             disabled={updateMutation.isPending}
+                            disabledWhenNotDirty={true}
                         >
                             保存
                         </MiraCalButton>

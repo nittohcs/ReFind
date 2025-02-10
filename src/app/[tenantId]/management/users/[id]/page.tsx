@@ -4,11 +4,13 @@ import Link from "next/link";
 import { Box, Toolbar, Typography } from "@mui/material";
 import { useTenantId } from "@/app/[tenantId]/hook";
 import MiraCalBreadcrumbs from "@/components/MiraCalBreadcrumbs";
+import { useUpdatedAt } from "@/hooks/ui";
 import EditUserForm from "./EditUserForm";
 
 export default function Page({ params }: { params: { id: string } }) {
     const tenantId = useTenantId();
     const id = decodeURIComponent(params.id);
+    const [updatedAt, update] = useUpdatedAt("editUser");
 
     return (
         <>
@@ -23,7 +25,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     <Typography variant="h5" flexGrow={1}>{id}</Typography>
                 </Box>
             </Toolbar>
-            <EditUserForm id={id} />
+            <EditUserForm key={updatedAt} id={id} update={update} />
         </>
     );
 }

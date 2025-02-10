@@ -1,7 +1,8 @@
 "use client";
 
 import { FC, useCallback, useMemo } from "react";
-import { Box } from "@mui/material";
+import Link from "next/link";
+import { Box, Button } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -114,9 +115,17 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
                             variant="contained"
                             type="submit"
                             disabled={mutation.isPending}
+                            disabledWhenNotDirty={true}
                         >
                             保存
                         </MiraCalButton>
+                        <Link href={`/${tenantId}`}>
+                            <Button
+                                variant="contained"
+                            >
+                                テナントのページを表示
+                            </Button>
+                        </Link>
                     </MiraCalFormAction>
                 </MiraCalForm>
             </Formik>

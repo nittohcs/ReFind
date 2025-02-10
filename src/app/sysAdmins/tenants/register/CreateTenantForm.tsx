@@ -11,7 +11,7 @@ import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalFormAction from "@/components/MiraCalFormAction";
 import MiraCalButton from "@/components/MiraCalButton";
 import { useEnqueueSnackbar } from "@/hooks/ui";
-import { addUserToGroup, createUser, deleteUser } from "@/services/AdminQueries";
+import { createUser } from "@/services/AdminQueries";
 import { queryKeys } from "@/services/queryKeys";
 import { AdminQueriesUser } from "@/types/user";
 import { graphqlCreateTenant, graphqlDeleteTenant } from "../operation";

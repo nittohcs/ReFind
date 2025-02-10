@@ -9,6 +9,7 @@ import { useTodayYYYYMMDD } from "@/hooks/util";
 import { queryKeys } from "@/services/queryKeys";
 import { ReFindUser } from "@/types/user";
 import { releaseSeatBySeatId } from "@/services/occupancyUtil";
+import { useTenantId } from "../../hook";
 
 type ReleaseSeatDialogProps = {
     isOpened: boolean,
@@ -24,6 +25,7 @@ export const ReleaseSeatDialog: FC<ReleaseSeatDialogProps> = ({
     data,
     resetRowSelection
 }) => {
+    const tenantId = useTenantId();
     const today = useTodayYYYYMMDD();
 
     const [totalCount, setTotalCount] = useState(1);
@@ -42,7 +44,7 @@ export const ReleaseSeatDialog: FC<ReleaseSeatDialogProps> = ({
             const ret = [];
             for(const user of processUsers) {
                 if (user.seatId) {
-                    ret.push(await releaseSeatBySeatId(user.seatId));
+                    ret.push(await releaseSeatBySeatId(tenantId, user.seatId));
                 }
                 setCurrentCount(x => x + 1);
             }
@@ -52,7 +54,7 @@ export const ReleaseSeatDialog: FC<ReleaseSeatDialogProps> = ({
             enqueueSnackbar("座席を強制解放しました。", { variant: "success" });
 
             // SeatOccupancy取得クエリを無効化してを再取得されるようにする
-            queryClient.invalidateQueries({ queryKey: queryKeys.graphqlSeatOccupanciesByDate(today) });
+            queryClient.invalidateQueries({ queryKey: queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId) });
 
             // テーブルの行選択をリセット
             resetRowSelection();
