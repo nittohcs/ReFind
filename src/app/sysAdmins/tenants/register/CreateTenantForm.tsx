@@ -66,16 +66,7 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
                 };
 
                 // テナントの管理者ユーザーを追加
-                await createUser(adminUser);
-
-                // テナントの管理者ユーザーを管理者にする
-                try {
-                    await addUserToGroup(adminUser, "admins");
-                } catch (error) {
-                    await deleteUser(adminUser);
-
-                    throw error;
-                }
+                await createUser(adminUser, true);
             } catch(error) {
                 await graphqlDeleteTenant({
                     id: tenant.id,
@@ -88,9 +79,6 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
         },
         onSuccess(data, _variables, _context) {
             enqueueSnackbar("登録しました。", { variant: "success" });
-
-            // フロア一覧取得クエリを無効化して再取得されるようにする
-            //queryClient.invalidateQueries({ queryKey: queryKeys.listAllTenants });
 
             // 登録したテナントをキャッシュに追加
             queryClient.setQueryData(queryKeys.graphqlListAllTenants, (items: Tenant[] = []) => [...items, data]);

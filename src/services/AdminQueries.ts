@@ -171,7 +171,7 @@ export async function adminUpdateUserAttributes(user: AdminQueriesUser) {
  * Cognitoのユーザーを追加する。
  * 既に存在するユーザーと同じIDで追加しようとするとエラー。
  */
-export async function createUser(user: AdminQueriesUser, isSuppress: boolean = true) {
+export async function createUser(user: AdminQueriesUser, isAdmin: boolean, isSuppress: boolean = true) {
     const authSession = await fetchAuthSession();
     const accessToken = authSession.tokens?.accessToken?.toString() ?? "";
     const apiName = "AdminQueries";
@@ -187,6 +187,7 @@ export async function createUser(user: AdminQueriesUser, isSuppress: boolean = t
             name: user.name,
             email_verified: "true",
             tenantId: user.tenantId,
+            groupname: isAdmin ? "admins" : "users",
 
             // SUPPRESSで初回ログイン用パスワードのお知らせメールが送信されなくなる
             ...(isSuppress && { messageAction: "SUPPRESS" }),

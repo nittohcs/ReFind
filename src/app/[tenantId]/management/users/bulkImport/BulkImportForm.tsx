@@ -14,7 +14,7 @@ import MiraCalLinearProgressWithLabel from "@/components/MiraCalLinearProgressWi
 import { useReFindUsers } from "@/hooks/ReFindUser";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { queryKeys } from "@/services/queryKeys";
-import { ReFindUser } from "@/types/user";
+import { AdminQueriesUser, ReFindUser } from "@/types/user";
 import { createReFindUser } from "../user";
 import PreviewTable from "./PreviewTable";
 import { getReFindUsersFromCsv, isValidEmail } from "./util";
@@ -104,7 +104,7 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
             enqueueSnackbar("取り込みました。", { variant: "success" });
 
             // クエリのキャッシュを更新する
-            queryClient.setQueryData(queryKeys.listUsersByTenantId(tenantId), (items: ReFindUser[] = []) => [...items, ...data]);
+            queryClient.setQueryData(queryKeys.listUsersByTenantId(tenantId), (items: AdminQueriesUser[] = []) => [...items, ...data]);
 
             // 入力欄を初期化するため、このコンポーネントを再表示する
             update();

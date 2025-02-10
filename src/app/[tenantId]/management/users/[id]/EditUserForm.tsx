@@ -16,7 +16,7 @@ import { useReFindUsers } from "@/hooks/ReFindUser";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { addUserToGroup, adminUpdateUserAttributes, removeUserFromGroup } from "@/services/AdminQueries";
 import { queryKeys } from "@/services/queryKeys";
-import { ReFindUser } from "@/types/user";
+import { AdminQueriesUser, ReFindUser } from "@/types/user";
 
 type FormValues = {
     id: string,
@@ -83,7 +83,7 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id }) => {
                 email: variables.email,
                 isAdmin: variables.isAdmin,
             };
-            queryClient.setQueryData(queryKeys.listUsersByTenantId(tenantId), (items: ReFindUser[] = []) => items.map(item => item.id === updated.id ? updated : item));
+            queryClient.setQueryData(queryKeys.listUsersByTenantId(tenantId), (items: AdminQueriesUser[] = []) => items.map(item => item.id === updated.id ? updated : item));
         },
         onError(error, _variables, _context) {
             if (!!error.message) {

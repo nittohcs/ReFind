@@ -171,8 +171,14 @@ app.post('/updateUserAttributes', async (req, res, next) => {
 });
 
 app.post('/createUser', async (req, res, next) => {
-  if (!req.body.username || !req.body.email || !req.body.name || !req.body.tenantId) {
-    const err = new Error('username, email, name and tenantId are required');
+  if (!req.body.username || !req.body.email || !req.body.name || !req.body.tenantId || !req.body.groupname) {
+    const err = new Error('username, email, name, tenantId and groupname are required');
+    err.statusCode = 400;
+    return next(err);
+  }
+
+  if (req.body.groupname !== "admins" && req.body.groupname !== "users") {
+    const err = new Error("invalid groupname");
     err.statusCode = 400;
     return next(err);
   }
@@ -189,6 +195,7 @@ app.post('/createUser', async (req, res, next) => {
       }
     }
 
+    // ユーザー作成
     const attributes = [
       {
         Name: "email",
@@ -208,6 +215,15 @@ app.post('/createUser', async (req, res, next) => {
       }
     ];
     const response = await createUser(req.body.username, attributes, req.body.messageAction);
+
+    // グループに追加
+    try {
+      await addUserToGroup(req.body.username, req.body.groupname);
+    } catch(err) {
+      await deleteUser(req.body.username);
+      return next(err);
+    }
+
     res.status(200).json(response);
   } catch (err) {
     next(err);

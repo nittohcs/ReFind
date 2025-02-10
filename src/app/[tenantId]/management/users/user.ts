@@ -1,26 +1,16 @@
 "use client";
 
 import { SeatOccupancy } from "@/API";
-import { addUserToGroup, createUser, deleteUser } from "@/services/AdminQueries";
+import { createUser, deleteUser } from "@/services/AdminQueries";
 import { releaseSeatBySeatId } from "@/services/occupancyUtil";
 import { ReFindUser } from "@/types/user";
 
 export async function createReFindUser(user: ReFindUser) {
     // TODO ユーザー作成時にcognitoがメールを送るようにしているが、自前でメールを送るようにするかも
     // cognitoユーザー作成
-    await createUser(user);
+    await createUser(user, user.isAdmin);
 
-    try {
-        // cognitoのグループに追加
-        await addUserToGroup(user, user.isAdmin ? "admins" : "users");
-
-        return user;
-    } catch (err) {
-        // cognitoユーザー作成後にエラー発生したらユーザーを削除する
-        await deleteUser(user);
-
-        throw err;
-    }
+    return user;
 }
 
 export async function deleteReFindUser(user: ReFindUser) {
