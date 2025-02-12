@@ -193,6 +193,21 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "refind2DeleteOldSeatOccupancy": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind2"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "refind2DeleteSeat": {
       "build": true,
       "dependsOn": [
@@ -366,6 +381,30 @@
         {
           "category": "function",
           "resourceName": "refind2DeleteFloor"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2DeleteOldSeatOccupancy_defaultNumDays": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2DeleteOldSeatOccupancy"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2DeleteOldSeatOccupancy_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2DeleteOldSeatOccupancy"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2DeleteOldSeatOccupancy_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2DeleteOldSeatOccupancy"
         }
       ]
     },

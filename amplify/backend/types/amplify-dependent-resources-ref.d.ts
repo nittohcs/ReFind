@@ -69,6 +69,14 @@ export type AmplifyDependentResourcesAttributes = {
       "Name": "string",
       "Region": "string"
     },
+    "refind2DeleteOldSeatOccupancy": {
+      "Arn": "string",
+      "CloudWatchEventRule": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    },
     "refind2DeleteSeat": {
       "Arn": "string",
       "LambdaExecutionRole": "string",

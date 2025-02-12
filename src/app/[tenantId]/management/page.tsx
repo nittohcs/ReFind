@@ -41,17 +41,6 @@ export default function Page() {
                         </CardActions>
                     </Card>
                 </Link>
-                <Link href={`/${tenantId}/management/deleteOldSeatOccupancy`}>
-                    <Card>
-                        <CardContent>
-                            <Typography variant="h6">古い座席確保情報の削除</Typography>
-                            <Typography variant="caption">7日より古い座席確保履歴の削除を行う</Typography>
-                        </CardContent>
-                        <CardActions>
-                            <Button size="small">設定を行う</Button>
-                        </CardActions>
-                    </Card>
-                </Link>
                 <Link href={`/${tenantId}/management/seatQRCode`}>
                     <Card>
                         <CardContent>
