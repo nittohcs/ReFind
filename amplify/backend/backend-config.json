@@ -1,0 +1,530 @@
+{
+  "api": {
+    "AdminQueries": {
+      "authorizationType": "AMAZON_COGNITO_USER_POOLS",
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "refind2a0622a88"
+        },
+        {
+          "attributes": [
+            "Arn",
+            "Name"
+          ],
+          "category": "function",
+          "resourceName": "AdminQueries7c6d4bef"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "refind2": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "refind2a0622a88"
+        }
+      ],
+      "output": {
+        "authConfig": {
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "AWS_IAM"
+            }
+          ],
+          "defaultAuthentication": {
+            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+            "userPoolConfig": {
+              "userPoolId": "authrefind2a0622a88"
+            }
+          }
+        }
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "AppSync"
+    }
+  },
+  "auth": {
+    "refind2a0622a88": {
+      "customAuth": false,
+      "dependsOn": [
+        {
+          "attributes": [
+            "Arn",
+            "Name"
+          ],
+          "category": "function",
+          "resourceName": "refind2a0622a88PreTokenGeneration",
+          "triggerProvider": "Cognito"
+        }
+      ],
+      "frontendAuthConfig": {
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyCharacters": [],
+          "passwordPolicyMinLength": 8
+        },
+        "signupAttributes": [
+          "EMAIL",
+          "NAME"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito"
+    },
+    "userPoolGroups": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId",
+            "AppClientIDWeb",
+            "AppClientID",
+            "IdentityPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "refind2a0622a88"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito-UserPool-Groups"
+    }
+  },
+  "function": {
+    "AdminQueries7c6d4bef": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "refind2a0622a88"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refind2CreateFloor": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind2"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refind2CreateSeat": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind2"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refind2CreateSeatOccupancy": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind2"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refind2DeleteFile": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "BucketName"
+          ],
+          "category": "storage",
+          "resourceName": "ReFind2Storage"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refind2DeleteFloor": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind2"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refind2DeleteOldSeatOccupancy": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind2"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refind2DeleteSeat": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind2"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refind2GetFileDownloadUrl": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "BucketName"
+          ],
+          "category": "storage",
+          "resourceName": "ReFind2Storage"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refind2GetFileUploadUrl": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "BucketName"
+          ],
+          "category": "storage",
+          "resourceName": "ReFind2Storage"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refind2UpdateFloor": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind2"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refind2UpdateSeat": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind2"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refind2a0622a88PreTokenGeneration": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_AdminQueries7c6d4bef_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "AdminQueries7c6d4bef"
+        }
+      ]
+    },
+    "AMPLIFY_function_AdminQueries7c6d4bef_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "AdminQueries7c6d4bef"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2CreateFloor_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2CreateFloor"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2CreateFloor_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2CreateFloor"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2CreateSeatOccupancy_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2CreateSeatOccupancy"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2CreateSeatOccupancy_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2CreateSeatOccupancy"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2CreateSeat_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2CreateSeat"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2CreateSeat_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2CreateSeat"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2DeleteFile_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2DeleteFile"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2DeleteFile_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2DeleteFile"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2DeleteFloor_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2DeleteFloor"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2DeleteFloor_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2DeleteFloor"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2DeleteOldSeatOccupancy_defaultNumDays": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2DeleteOldSeatOccupancy"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2DeleteOldSeatOccupancy_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2DeleteOldSeatOccupancy"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2DeleteOldSeatOccupancy_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2DeleteOldSeatOccupancy"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2DeleteSeat_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2DeleteSeat"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2DeleteSeat_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2DeleteSeat"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2GetFileDownloadUrl_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2GetFileDownloadUrl"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2GetFileDownloadUrl_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2GetFileDownloadUrl"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2GetFileUploadUrl_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2GetFileUploadUrl"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2GetFileUploadUrl_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2GetFileUploadUrl"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2UpdateFloor_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2UpdateFloor"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2UpdateFloor_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2UpdateFloor"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2UpdateSeat_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2UpdateSeat"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2UpdateSeat_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2UpdateSeat"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2a0622a88PreTokenGeneration_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2a0622a88PreTokenGeneration"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2a0622a88PreTokenGeneration_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2a0622a88PreTokenGeneration"
+        }
+      ]
+    }
+  },
+  "storage": {
+    "ReFind2Storage": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "refind2a0622a88"
+        },
+        {
+          "attributes": [
+            "sysAdminsGroupRole"
+          ],
+          "category": "auth",
+          "resourceName": "userPoolGroups"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "S3"
+    }
+  }
+}

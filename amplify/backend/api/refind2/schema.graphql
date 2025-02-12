@@ -1,0 +1,260 @@
+
+# テナントマスタ
+type Tenant @model @auth (
+  rules: [
+    {
+      allow: groups,
+      provider: userPools,
+      groupClaim: "cognito:groups",
+      groups: ["sysAdmins"],
+      operations: [create, update, delete, read]
+    },
+    {
+      allow: groups,
+      provider: userPools,
+      groupClaim: "cognito:groups",
+      groupsField: "id",
+      operations: [read]
+    }
+  ]
+) {
+  # id
+  id: ID!
+
+  # 名前
+  name: String!
+
+  # 利用停止中かどうか
+  isSuspended: Boolean!
+}
+
+# フロアマスタ
+type Floor @model @auth (
+  rules: [
+    {
+      allow: groups,
+      provider: userPools,
+      groupClaim: "cognito:groups",
+      groups: ["sysAdmins"],
+      operations: [read]
+    },
+    {
+      allow: groups,
+      provider: userPools,
+      groupClaim: "cognito:groups",
+      groupsField: "tenantId",
+      operations: [read]
+    },
+    {
+      allow: private,
+      provider: iam,
+      operations: [create, update, delete, read]
+    }
+  ]
+) {
+  # id
+  id: ID!
+
+  # テナントID
+  tenantId: ID! @index(name: "byTenantId")
+
+  # 名前
+  name: String!
+
+  # ストレージ上での画像ファイルのパス
+  imagePath: String!
+
+  # 画像幅
+  imageWidth: Int!
+
+  # 画像高さ
+  imageHeight: Int!
+}
+
+# 座席マスタ
+type Seat @model @auth (
+  rules: [
+    {
+      allow: groups,
+      provider: userPools,
+      groupClaim: "cognito:groups",
+      groups: ["sysAdmins"],
+      operations: [read]
+    },
+    {
+      allow: groups,
+      provider: userPools,
+      groupClaim: "cognito:groups",
+      groupsField: "tenantId",
+      operations: [read]
+    },
+    {
+      allow: private,
+      provider: iam,
+      operations: [create, update, delete, read]
+    }
+  ]
+) {
+  # id
+  id: ID!
+
+  # テナントID
+  tenantId: ID! @index(name: "byTenantId")
+
+  # Floorのid
+  floorId: ID!
+
+  # 座席名
+  name: String!
+
+  # X座標
+  posX: Int!
+
+  # Y座標
+  posY: Int!
+}
+
+# 座席確保情報
+type SeatOccupancy @model @auth (
+  rules: [
+    {
+      allow: groups,
+      provider: userPools,
+      groupClaim: "cognito:groups",
+      groups: ["sysAdmins"],
+      operations: [read]
+    },
+    {
+      allow: groups,
+      provider: userPools,
+      groupClaim: "cognito:groups",
+      groupsField: "tenantId",
+      operations: [read]
+    },
+    {
+      allow: private,
+      provider: iam,
+      operations: [create, update, delete, read]
+    }
+  ]
+) {
+  # id
+  id: ID!
+
+  # テナントID
+  tenantId: ID! @index(name: "byTenantId")
+
+  # Seatのid
+  seatId: ID!
+
+  # 使用者のcognitoのusername(社員番号) 値が設定されていれば使用中、空なら空席
+  userId: ID
+
+  # 使用者の氏名 cognitoのnameが設定される
+  userName: String
+
+  # 日付(YYYYMMDD)
+  date: String! @index(name: "byDateAndTenantId", sortKeyFields: ["tenantId"])
+}
+
+input funcCreateFloorInput {
+  id: ID
+  tenantId: String!
+  name: String!
+  imagePath: String!
+  imageWidth: Int!
+  imageHeight: Int!
+}
+
+input funcUpdateFloorInput {
+  id: ID!
+  tenantId: String
+  name: String
+  imagePath: String
+  imageWidth: Int
+  imageHeight: Int
+}
+
+input funcDeleteFloorInput {
+  id: ID!
+}
+
+input funcCreateSeatInput {
+  id: ID
+  tenantId: ID!
+  floorId: ID!
+  name: String!
+  posX: Int!
+  posY: Int!
+}
+
+input funcCreateSeatOccupancyInput {
+  id: ID
+  tenantId: ID!
+  seatId: ID!
+  userId: ID
+  userName: String
+  date: String!
+}
+
+input funcUpdateSeatInput {
+  id: ID!
+  tenantId: ID
+  floorId: ID
+  name: String
+  posX: Int
+  posY: Int
+}
+
+input funcDeleteSeatInput {
+  id: ID!
+}
+
+type Query {
+  # ファイルアップロード用URLの取得
+  getFileUploadUrl(filePath: String!): String
+  @function(name: "refind2GetFileUploadUrl-${env}")
+
+  # ファイルダウンロード用URLの取得
+  getFileDownloadUrl(filePath: String!, expiresIn: Int): String
+  @function(name: "refind2GetFileDownloadUrl-${env}")
+}
+
+type Mutation {
+  # ファイル削除
+  deleteFile(filePath: String!): Boolean
+  @function(name: "refind2DeleteFile-${env}")
+
+  # フロア登録
+  funcCreateFloor(input: funcCreateFloorInput!): Floor
+  @function(name: "refind2CreateFloor-${env}")
+
+  # フロア更新
+  funcUpdateFloor(input: funcUpdateFloorInput!): Floor
+  @function(name: "refind2UpdateFloor-${env}")
+
+  # フロア削除
+  funcDeleteFloor(input: funcDeleteFloorInput!): Floor
+  @function(name: "refind2DeleteFloor-${env}")
+
+  # 座席登録
+  funcCreateSeat(input: funcCreateSeatInput!): Seat
+  @function(name: "refind2CreateSeat-${env}")
+
+  # 座席更新
+  funcUpdateSeat(input: funcUpdateSeatInput!): Seat
+  @function(name: "refind2UpdateSeat-${env}")
+
+  # 座席削除
+  funcDeleteSeat(input: funcDeleteSeatInput!): Seat
+  @function(name: "refind2DeleteSeat-${env}")
+
+  # 座席確保情報登録
+  funcCreateSeatOccupancy(input: funcCreateSeatOccupancyInput!): SeatOccupancy
+  @function(name: "refind2CreateSeatOccupancy-${env}")
+}
+
+type Subscription {
+  onCreateSeatOccupancyByTenantId(tenantId: String!): SeatOccupancy
+  @aws_subscribe(mutations: ["createSeatOccupancy"])
+}

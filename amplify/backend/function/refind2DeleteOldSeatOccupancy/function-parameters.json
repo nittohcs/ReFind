@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "api": {
+      "refind2": [
+        "Query",
+        "Mutation"
+      ]
+    }
+  },
+  "lambdaLayers": [],
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "defaultNumDays",
+      "environmentVariableName": "DEFAULT_NUM_DAYS"
+    }
+  ]
+}
