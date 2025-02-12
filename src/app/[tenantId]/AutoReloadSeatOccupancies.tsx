@@ -23,7 +23,13 @@ export const AutoReloadSeatOccupancies: FC<PropsWithChildren> = ({ children }) =
         }).subscribe({
             next: (value) => {
                 // クエリのキャッシュを更新する
-                queryClient.setQueryData(queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId), (items: SeatOccupancy[] = []) => [...items, value.data.onCreateSeatOccupancyByTenantId]);
+                queryClient.setQueryData(queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId), (items: SeatOccupancy[] = []) => {
+                    // 既にキャッシュに追加されているデータは追加しない
+                    if (items.findIndex(item => item.id === value.data.onCreateSeatOccupancyByTenantId.id)) {
+                        return items;
+                    }
+                    return [...items, value.data.onCreateSeatOccupancyByTenantId];
+                });
             },
             error: (error) => console.warn(error),
         })

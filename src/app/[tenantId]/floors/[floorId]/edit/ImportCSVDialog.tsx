@@ -100,8 +100,13 @@ export const ImportCSVDialog: FC<ImportCSVDialogProps> = ({
                 return seats;
             };
 
+            const ret = {
+                deleted: [] as Seat[],
+                created: [] as Seat[],
+            };
+
             if (!fileRef.current?.files) {
-                return;
+                return ret;
             }
 
             // 既存の座席を削除する
@@ -109,9 +114,9 @@ export const ImportCSVDialog: FC<ImportCSVDialogProps> = ({
             setTotalCount(seats.length);
             setCurrentCount(0);
             for(const seat of seats) {
-                await graphqlDeleteSeat({
+                ret.deleted.push(await graphqlDeleteSeat({
                     id: seat.id,
-                });
+                }));
                 setCurrentCount(x => x + 1);
             }
 
@@ -122,22 +127,28 @@ export const ImportCSVDialog: FC<ImportCSVDialogProps> = ({
             setTotalCount(newSeats.length)
             setCurrentCount(0);
             for (const seat of newSeats) {
-                await graphqlCreateSeat({
+                ret.created.push(await graphqlCreateSeat({
                     //id: seat.id,
                     tenantId: tenantId,
                     floorId: floor.id,
                     name: seat.name,
                     posX: seat.posX,
                     posY: seat.posY,
-                });
+                }));
                 setCurrentCount(x => x + 1);
             }
+
+            return ret;
         },
-        onSuccess(_data, _variables, _context) {
+        onSuccess(data, _variables, _context) {
             enqueueSnackbar("インポートが完了しました。", { variant: "success" });
 
-            // 座席取得クエリを無効化して再取得されるようにする
-            queryClient.invalidateQueries({ queryKey: queryKeys.graphqlSeatsByTenantId(tenantId) });
+            // クエリのキャッシュから削除されたSeatを削除する
+            const deletedSet = new Set(data.deleted.map(x => x.id));
+            queryClient.setQueryData(queryKeys.graphqlSeatsByTenantId(tenantId), (items: Seat[] = []) => items.filter(item => !deletedSet.has(item.id)));
+
+            // クエリのキャッシュに登録されたSeatを追加する
+            queryClient.setQueryData(queryKeys.graphqlSeatsByTenantId(tenantId), (items: Seat[] = []) => [...items, ...data.created]);
 
             // ダイアログを閉じる
             close();
@@ -169,7 +180,6 @@ export const ImportCSVDialog: FC<ImportCSVDialogProps> = ({
                 <MiraCalForm disablePadding disableGap>
                     <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                         <DialogContentText>既存の座席をすべて削除し、CSVエクスポートで保存したファイルを読み込んで座席を新規登録します。</DialogContentText>
-                        <DialogContentText>stagingからmain、mainからstagingなど、環境間で座席の名前・座標をコピーしたいときに使用します。</DialogContentText>
                         <MiraCalFileUpload
                             name="csv"
                             label="CSVファイル"

@@ -3,12 +3,13 @@
 import { FC, useState } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { SeatOccupancy } from "@/API";
 import MiraCalLinearProgressWithLabel from "@/components/MiraCalLinearProgressWithLabel";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { useTodayYYYYMMDD } from "@/hooks/util";
+import { releaseSeatBySeatId } from "@/services/occupancyUtil";
 import { queryKeys } from "@/services/queryKeys";
 import { ReFindUser } from "@/types/user";
-import { releaseSeatBySeatId } from "@/services/occupancyUtil";
 import { useTenantId } from "../../hook";
 
 type ReleaseSeatDialogProps = {
@@ -50,11 +51,11 @@ export const ReleaseSeatDialog: FC<ReleaseSeatDialogProps> = ({
             }
             return ret;
         },
-        onSuccess(_data, _variables, _context) {
+        onSuccess(data, _variables, _context) {
             enqueueSnackbar("座席を強制解放しました。", { variant: "success" });
 
-            // SeatOccupancy取得クエリを無効化してを再取得されるようにする
-            queryClient.invalidateQueries({ queryKey: queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId) });
+            // クエリのキャッシュを更新する
+            queryClient.setQueryData(queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId), (items: SeatOccupancy[] = []) => [...items, ...data]);
 
             // テーブルの行選択をリセット
             resetRowSelection();
