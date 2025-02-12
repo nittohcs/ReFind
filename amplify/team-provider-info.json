@@ -70,11 +70,101 @@
           "defaultNumDays": "7",
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
           "s3Key": "amplify-builds/refind2DeleteOldSeatOccupancy-72734347374f63306c78-build.zip"
-        }
+        },
+        "refind2a0622a88": {},
+        "refind2": {},
+        "ReFind2Storage": {},
+        "userPoolGroups": {}
       },
       "api": {
         "refind2": {},
         "AdminQueries": {}
+      },
+      "storage": {
+        "ReFind2Storage": {}
+      }
+    }
+  },
+  "main": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-refind2-main-169f7-authRole",
+      "UnauthRoleArn": "arn:aws:iam::590183797717:role/amplify-refind2-main-169f7-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::590183797717:role/amplify-refind2-main-169f7-authRole",
+      "Region": "ap-northeast-3",
+      "DeploymentBucketName": "amplify-refind2-main-169f7-deployment",
+      "UnauthRoleName": "amplify-refind2-main-169f7-unauthRole",
+      "StackName": "amplify-refind2-main-169f7",
+      "StackId": "arn:aws:cloudformation:ap-northeast-3:590183797717:stack/amplify-refind2-main-169f7/cb005ce0-e90d-11ef-8bc7-0a6b4490e07d",
+      "AmplifyAppId": "d1dhf2a9qlh2ez",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-refind2-main-169f7-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
+    },
+    "categories": {
+      "auth": {
+        "refind2a0622a88": {},
+        "userPoolGroups": {}
+      },
+      "function": {
+        "AdminQueries7c6d4bef": {
+          "deploymentBucketName": "amplify-refind2-main-169f7-deployment",
+          "s3Key": "amplify-builds/AdminQueries7c6d4bef-6e785538514750435876-build.zip"
+        },
+        "refind2CreateFloor": {
+          "deploymentBucketName": "amplify-refind2-main-169f7-deployment",
+          "s3Key": "amplify-builds/refind2CreateFloor-6d653758512b2f636e4d-build.zip"
+        },
+        "refind2CreateSeat": {
+          "deploymentBucketName": "amplify-refind2-main-169f7-deployment",
+          "s3Key": "amplify-builds/refind2CreateSeat-7547503274525033726d-build.zip"
+        },
+        "refind2CreateSeatOccupancy": {
+          "deploymentBucketName": "amplify-refind2-main-169f7-deployment",
+          "s3Key": "amplify-builds/refind2CreateSeatOccupancy-354d585131384f756a4f-build.zip"
+        },
+        "refind2DeleteFile": {
+          "deploymentBucketName": "amplify-refind2-main-169f7-deployment",
+          "s3Key": "amplify-builds/refind2DeleteFile-5574527333726f314b65-build.zip"
+        },
+        "refind2DeleteFloor": {
+          "deploymentBucketName": "amplify-refind2-main-169f7-deployment",
+          "s3Key": "amplify-builds/refind2DeleteFloor-70612f42454e574b6451-build.zip"
+        },
+        "refind2DeleteOldSeatOccupancy": {
+          "defaultNumDays": "7",
+          "deploymentBucketName": "amplify-refind2-main-169f7-deployment",
+          "s3Key": "amplify-builds/refind2DeleteOldSeatOccupancy-72734347374f63306c78-build.zip"
+        },
+        "refind2DeleteSeat": {
+          "deploymentBucketName": "amplify-refind2-main-169f7-deployment",
+          "s3Key": "amplify-builds/refind2DeleteSeat-736c314c345a57527452-build.zip"
+        },
+        "refind2GetFileDownloadUrl": {
+          "deploymentBucketName": "amplify-refind2-main-169f7-deployment",
+          "s3Key": "amplify-builds/refind2GetFileDownloadUrl-50546f72474d6f764c4f-build.zip"
+        },
+        "refind2GetFileUploadUrl": {
+          "deploymentBucketName": "amplify-refind2-main-169f7-deployment",
+          "s3Key": "amplify-builds/refind2GetFileUploadUrl-6b2f4434575065795071-build.zip"
+        },
+        "refind2UpdateFloor": {
+          "deploymentBucketName": "amplify-refind2-main-169f7-deployment",
+          "s3Key": "amplify-builds/refind2UpdateFloor-4a4b757856796e6e364b-build.zip"
+        },
+        "refind2UpdateSeat": {
+          "deploymentBucketName": "amplify-refind2-main-169f7-deployment",
+          "s3Key": "amplify-builds/refind2UpdateSeat-314c503558304955525a-build.zip"
+        },
+        "refind2a0622a88PreTokenGeneration": {
+          "deploymentBucketName": "amplify-refind2-main-169f7-deployment",
+          "s3Key": "amplify-builds/refind2a0622a88PreTokenGeneration-77536378745655367139-build.zip"
+        },
+        "refind2a0622a88": {},
+        "refind2": {},
+        "ReFind2Storage": {},
+        "userPoolGroups": {}
+      },
+      "api": {
+        "AdminQueries": {},
+        "refind2": {}
       },
       "storage": {
         "ReFind2Storage": {}
