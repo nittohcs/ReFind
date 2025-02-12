@@ -1,11 +1,15 @@
 "use client";
 
-import { FC, PropsWithChildren, useEffect } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthState } from "@/hooks/auth";
 import { useTenantId } from "../hook";
 
-export const Layout: FC<PropsWithChildren> = ({ children }) => {
+type LayoutProps = {
+    children: React.ReactNode,
+};
+
+export default function Layout({ children }: LayoutProps) {
     const tenantId = useTenantId();
     const authState = useAuthState();
     const router = useRouter();
@@ -28,4 +32,3 @@ export const Layout: FC<PropsWithChildren> = ({ children }) => {
         </>
     );
 };
-export default Layout;
