@@ -39,22 +39,26 @@ const createSeatOccupancy = /* GraphQL */ `mutation CreateSeatOccupancy(
  export const handler = async (event) => {
   console.log(`EVENT: ${JSON.stringify(event)}`);
 
+  const input = event.arguments.input;
   const groups = event.identity?.groups;
-  // 管理者以外でも書き込み可能なのでコメントアウト 
-  //if (groups.indexOf("admins") < 0) {
-  //  throw new Error("User does not have permissions to create seatOccupancies");
-  //}
+  const isSysAdmins = groups.indexOf("sysAdmins") >= 0;
 
   const tenantId = groups.find(x => x !== "sysAdmins" && x !== "admins" && x !== "users") ?? "";
-  if (!tenantId) {
+  if (!isSysAdmins && !tenantId) {
     throw new Error("Empty tenantId");
   }
 
-  const input = event.arguments.input;
+  // tenantIdをチェック
+  if (input.tenantId !== tenantId) {
+    // sysAdmins以外はtenantIdが違ってたらアウト
+    if (!isSysAdmins) {
+      throw new Error("Invalid tenantId");
+    }
 
-  // sysAdmins以外ならtenantIdをチェック
-  if (groups.indexOf("sysAdmins") < 0 && input.tenantId !== tenantId) {
-    throw new Error("Invalid tenantId");
+    // sysAdminsでも関係ないテナントで座席確保はできない
+    if (input.userId) {
+      throw new Error("Invalid tenantId");
+    }
   }
 
   const endpoint = new URL(GRAPHQL_ENDPOINT);

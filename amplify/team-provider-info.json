@@ -32,7 +32,7 @@
         },
         "refind2CreateFloor": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
-          "s3Key": "amplify-builds/refind2CreateFloor-75493354507067783649-build.zip"
+          "s3Key": "amplify-builds/refind2CreateFloor-6d653758512b2f636e4d-build.zip"
         },
         "refind2GetFileDownloadUrl": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
@@ -40,7 +40,7 @@
         },
         "refind2UpdateFloor": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
-          "s3Key": "amplify-builds/refind2UpdateFloor-62784e66424d64775155-build.zip"
+          "s3Key": "amplify-builds/refind2UpdateFloor-4a4b757856796e6e364b-build.zip"
         },
         "refind2DeleteFile": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
@@ -48,23 +48,23 @@
         },
         "refind2DeleteFloor": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
-          "s3Key": "amplify-builds/refind2DeleteFloor-416d306d4d7146557278-build.zip"
+          "s3Key": "amplify-builds/refind2DeleteFloor-70612f42454e574b6451-build.zip"
         },
         "refind2CreateSeatOccupancy": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
-          "s3Key": "amplify-builds/refind2CreateSeatOccupancy-6255727371464d685444-build.zip"
+          "s3Key": "amplify-builds/refind2CreateSeatOccupancy-354d585131384f756a4f-build.zip"
         },
         "refind2CreateSeat": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
-          "s3Key": "amplify-builds/refind2CreateSeat-48773942363067585542-build.zip"
+          "s3Key": "amplify-builds/refind2CreateSeat-7547503274525033726d-build.zip"
         },
         "refind2UpdateSeat": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
-          "s3Key": "amplify-builds/refind2UpdateSeat-723764354e54724b6978-build.zip"
+          "s3Key": "amplify-builds/refind2UpdateSeat-314c503558304955525a-build.zip"
         },
         "refind2DeleteSeat": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
-          "s3Key": "amplify-builds/refind2DeleteSeat-444d6678674443667332-build.zip"
+          "s3Key": "amplify-builds/refind2DeleteSeat-736c314c345a57527452-build.zip"
         }
       },
       "api": {

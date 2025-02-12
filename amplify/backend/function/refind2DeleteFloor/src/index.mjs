@@ -85,20 +85,21 @@ async function graphqlAccess(query, variables) {
  export const handler = async (event) => {
   console.log(`EVENT: ${JSON.stringify(event)}`);
 
+  const input = event.arguments.input;
   const groups = event.identity?.groups;
+  const isSysAdmins = groups.indexOf("sysAdmins") >= 0;
+
   if (groups.indexOf("admins") < 0) {
     throw new Error("User does not have permissions to delete floors");
   }
 
   const tenantId = groups.find(x => x !== "sysAdmins" && x !== "admins" && x !== "users") ?? "";
-  if (!tenantId) {
+  if (!isSysAdmins && !tenantId) {
     throw new Error("Empty tenantId");
   }
 
-  const input = event.arguments.input;
-
   // sysAdmins以外ならtenantIdをチェック
-  if (groups.indexOf("sysAdmins") < 0) {
+  if (!isSysAdmins) {
     const floor = await graphqlAccess(getFloor, { id: input.id });
     if (floor.data.getFloor.tenantId !== tenantId) {
       throw new Error("Invalid tenantId");

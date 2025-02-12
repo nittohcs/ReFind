@@ -39,20 +39,21 @@ const createFloor = /* GraphQL */ `mutation CreateFloor(
 export const handler = async (event) => {
   console.log(`EVENT: ${JSON.stringify(event)}`);
 
+  const input = event.arguments.input;
   const groups = event.identity?.groups;
+  const isSysAdmins = groups.indexOf("sysAdmins") >= 0;
+
   if (groups.indexOf("admins") < 0) {
     throw new Error("User does not have permissions to create floors");
   }
 
   const tenantId = groups.find(x => x !== "sysAdmins" && x !== "admins" && x !== "users") ?? "";
-  if (!tenantId) {
+  if (!isSysAdmins && !tenantId) {
     throw new Error("Empty tenantId");
   }
 
-  const input = event.arguments.input;
-
   // sysAdmins以外ならtenantIdをチェック
-  if (groups.indexOf("sysAdmins") < 0 && input.tenantId !== tenantId) {
+  if (!isSysAdmins && input.tenantId !== tenantId) {
     throw new Error("Invalid tenantId");
   }
 
