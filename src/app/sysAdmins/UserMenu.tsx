@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { Box, Divider, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { signOut } from "aws-amplify/auth";
@@ -26,9 +25,6 @@ export function UserMenu() {
                         <Divider sx={{ mb: 1 }} />
                     </Box>
                 )}
-                <Link href="/userSettings">
-                    <MenuItem onClick={menu.closeHandler}>設定</MenuItem>
-                </Link>
                 <MenuItem onClick={() => signOut()}>ログアウト</MenuItem>
             </Menu>
         </Box>
