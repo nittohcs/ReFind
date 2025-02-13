@@ -2,13 +2,12 @@
 
 import { createContext, useContext, useMemo } from "react";
 import { UseQueryResult } from "@tanstack/react-query";
-import { Floor, Seat, SeatOccupancy } from "@/API";
+import { Floor, Seat, SeatOccupancy, User } from "@/API";
 import { useTenantId } from "@/app/[tenantId]/hook";
 import { useTodayYYYYMMDD } from "@/hooks/util";
-import { useListUsersByTenantId, useListUsersInGroupByTenantId } from "@/services/AdminQueries";
-import { useFloorsByTenantId, useSeatOccupanciesByDateAndTenantId, useSeatsByTenantId } from "@/services/graphql";
+import { useFloorsByTenantId, useSeatOccupanciesByDateAndTenantId, useSeatsByTenantId, useUsersByTenantId } from "@/services/graphql";
 import { getLatestOccupancyMap } from "@/services/occupancyUtil";
-import { AdminQueriesUser, ReFindUser } from "@/types/user";
+import { ReFindUser } from "@/types/user";
 
 type UseReFindUsersResult = {
     data: ReFindUser[],
@@ -21,10 +20,9 @@ type UseReFindUsersResult = {
     refetch: () => void,
 };
 
-function ToReFindUser(user: AdminQueriesUser): ReFindUser {
+function ToReFindUser(user: User): ReFindUser {
     return {
         ...user,
-        isAdmin: false,
         seatId: "",
         seatName: "",
         floorId: "",
@@ -35,30 +33,21 @@ function ToReFindUser(user: AdminQueriesUser): ReFindUser {
 export function useReFindUsersValue() {
     const tenantId = useTenantId();
     const todayYYYYMMDD = useTodayYYYYMMDD();
-    const qUsers = useListUsersByTenantId(tenantId);
-    const qAdmins = useListUsersInGroupByTenantId(tenantId, "admins");
+    const qUsers = useUsersByTenantId(tenantId);
     const qFloors = useFloorsByTenantId(tenantId);
     const qSeats = useSeatsByTenantId(tenantId);
     const qOccupancies = useSeatOccupanciesByDateAndTenantId(todayYYYYMMDD, tenantId);
 
     const ret = useMemo(() => {
-        const isLoading = qUsers.isLoading || qAdmins.isLoading || qFloors.isLoading || qSeats.isLoading || qOccupancies.isLoading;
-        const isFetched = qUsers.isFetched && qAdmins.isFetched && qFloors.isFetched && qSeats.isFetched && qOccupancies.isFetched;
-        const isFetching = qUsers.isFetching || qAdmins.isFetching || qFloors.isFetching || qSeats.isFetching || qOccupancies.isFetching;
+        const isLoading = qUsers.isLoading || qFloors.isLoading || qSeats.isLoading || qOccupancies.isLoading;
+        const isFetched = qUsers.isFetched && qFloors.isFetched && qSeats.isFetched && qOccupancies.isFetched;
+        const isFetching = qUsers.isFetching || qFloors.isFetching || qSeats.isFetching || qOccupancies.isFetching;
 
         let data: ReFindUser[] = [];
         if (isFetched) {
             // ユーザーidとユーザーのマップ
             const m = new Map<string, ReFindUser>((qUsers.data ?? []).map(x => [x.id, ToReFindUser(x)]));
 
-            // qAdminsに入っているユーザーは管理者
-            for (const admin of (qAdmins.data ?? [])) {
-                const user = m.get(admin.id);
-                if (user) {
-                    user.isAdmin = true;
-                }
-            }
-            
             // 座席ごとの最新の座席確保状況のマップ
             const seatOccupancyMap = getLatestOccupancyMap(qOccupancies.data ?? []);
 
@@ -98,13 +87,12 @@ export function useReFindUsersValue() {
             isFetching,
             refetch: () => {
                 qUsers.refetch();
-                qAdmins.refetch();
                 qFloors.refetch();
                 qSeats.refetch();
                 qOccupancies.refetch();
             }
         };
-    }, [qUsers, qAdmins, qFloors, qSeats, qOccupancies]);
+    }, [qUsers, qFloors, qSeats, qOccupancies]);
     return ret;
 }
 

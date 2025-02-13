@@ -84,7 +84,7 @@ export const BulkEditUserDialog: FC<BulkEditUserDialogProps> = ({
             enqueueSnackbar("保存しました。", { variant: "success" });
 
             // クエリが再取得されるようにする
-            queryClient.invalidateQueries({ queryKey: queryKeys.listUsersInGroupByTenantId(tenantId, "admins") });
+            queryClient.invalidateQueries({ queryKey: queryKeys.graphqlUsersByTenantId(tenantId) });
 
             // テーブルの行選択をリセット
             resetRowSelection();
@@ -94,7 +94,7 @@ export const BulkEditUserDialog: FC<BulkEditUserDialogProps> = ({
         },
         onError(error, _variables, _context) {
             // クエリが再取得されるようにする
-            queryClient.invalidateQueries({ queryKey: queryKeys.listUsersInGroupByTenantId(tenantId, "admins") });
+            queryClient.invalidateQueries({ queryKey: queryKeys.graphqlUsersByTenantId(tenantId) });
 
             if (!!error.message) {
                 enqueueSnackbar(error.message, { variant: "error" });

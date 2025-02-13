@@ -14,7 +14,7 @@ import MiraCalButton from "@/components/MiraCalButton";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { createReFindUser } from "../user";
 import { queryKeys } from "@/services/queryKeys";
-import { AdminQueriesUser } from "@/types/user";
+import { ReFindUser } from "@/types/user";
 
 type FormValues = {
     id: string,
@@ -57,10 +57,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
             enqueueSnackbar("登録しました。", { variant: "success" });
 
             // クエリのキャッシュを更新する
-            queryClient.setQueryData(queryKeys.listUsersByTenantId(tenantId), (items: AdminQueriesUser[] = []) => [...items, data]);
-            if (data.isAdmin) {
-                queryClient.setQueryData(queryKeys.listUsersInGroupByTenantId(tenantId, "admins"), (items: AdminQueriesUser[] = []) => [...items, data]);
-            }
+            queryClient.setQueryData(queryKeys.graphqlUsersByTenantId(tenantId), (items: ReFindUser[] = []) => [...items, data]);
 
             // 入力欄を初期化するため、このコンポーネントを再表示する
             update();

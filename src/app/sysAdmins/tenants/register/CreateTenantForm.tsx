@@ -63,10 +63,11 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
                     email: values.adminEmail,
                     name: values.adminName,
                     tenantId: tenant.id,
+                    isAdmin: true,
                 };
 
                 // テナントの管理者ユーザーを追加
-                await createUser(adminUser, true);
+                await createUser(adminUser);
             } catch(error) {
                 await graphqlDeleteTenant({
                     id: tenant.id,

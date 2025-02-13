@@ -14,7 +14,7 @@ import MiraCalLinearProgressWithLabel from "@/components/MiraCalLinearProgressWi
 import { useReFindUsers } from "@/hooks/ReFindUser";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { queryKeys } from "@/services/queryKeys";
-import { AdminQueriesUser, ReFindUser } from "@/types/user";
+import { ReFindUser } from "@/types/user";
 import { createReFindUser } from "../user";
 import PreviewTable from "./PreviewTable";
 import { getReFindUsersFromCsv, isValidEmail } from "./util";
@@ -104,16 +104,14 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
             enqueueSnackbar("取り込みました。", { variant: "success" });
 
             // クエリのキャッシュを更新する
-            queryClient.setQueryData(queryKeys.listUsersByTenantId(tenantId), (items: AdminQueriesUser[] = []) => [...items, ...data]);
-            queryClient.setQueryData(queryKeys.listUsersInGroupByTenantId(tenantId, "admins"), (items: AdminQueriesUser[] = []) => [...items, data.filter(x => x.isAdmin)]);
+            queryClient.setQueryData(queryKeys.graphqlUsersByTenantId(tenantId), (items: ReFindUser[] = []) => [...items, ...data]);
 
             // 入力欄を初期化するため、このコンポーネントを再表示する
             update();
         },
         onError(error, _variables, _context) {
             // クエリを再読み込みする
-            queryClient.invalidateQueries({ queryKey: queryKeys.listUsersByTenantId(tenantId) });
-            queryClient.invalidateQueries({ queryKey: queryKeys.listUsersInGroupByTenantId(tenantId, "admins") });
+            queryClient.invalidateQueries({ queryKey: queryKeys.graphqlUsersByTenantId(tenantId) });
 
             if (!!error.message) {
                 enqueueSnackbar(error.message, { variant: "error" });

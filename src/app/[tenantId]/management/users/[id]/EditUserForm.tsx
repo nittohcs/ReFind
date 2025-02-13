@@ -16,7 +16,7 @@ import { useReFindUsers } from "@/hooks/ReFindUser";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { addUserToGroup, adminUpdateUserAttributes, removeUserFromGroup } from "@/services/AdminQueries";
 import { queryKeys } from "@/services/queryKeys";
-import { AdminQueriesUser, ReFindUser } from "@/types/user";
+import { ReFindUser } from "@/types/user";
 
 type FormValues = {
     id: string,
@@ -84,12 +84,7 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
                 email: variables.email,
                 isAdmin: variables.isAdmin,
             };
-            queryClient.setQueryData(queryKeys.listUsersByTenantId(tenantId), (items: AdminQueriesUser[] = []) => items.map(item => item.id === updated.id ? updated : item));
-            if (updated.isAdmin) {
-                queryClient.setQueryData(queryKeys.listUsersInGroupByTenantId(tenantId, "admins"), (items: AdminQueriesUser[] = []) => [...items, updated]);
-            } else {
-                queryClient.setQueryData(queryKeys.listUsersInGroupByTenantId(tenantId, "admins"), (items: AdminQueriesUser[] = []) => items.filter(item => item.id !== updated.id));
-            }
+            queryClient.setQueryData(queryKeys.graphqlUsersByTenantId(tenantId), (items: ReFindUser[] = []) => items.map(item => item.id === updated.id ? updated : item));
 
             // コンポーネントを再生成
             update();

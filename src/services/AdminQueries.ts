@@ -1,10 +1,8 @@
 "use client";
 
 import { fetchAuthSession } from "aws-amplify/auth";
-import { get, post } from "aws-amplify/api";
-import { useQuery } from "@tanstack/react-query";
+import { post } from "aws-amplify/api";
 import { AdminQueriesGroup, AdminQueriesUser } from "@/types/user";
-import { queryKeys } from "./queryKeys";
 
 /*
 async function listAllUsers() {
@@ -33,7 +31,7 @@ export function useListAllUsers(staleTime?: number) {
     });
 }
 */
-
+/*
 async function listUsersByTenantId(tenantId: string) {
     const authSession = await fetchAuthSession();
     const accessToken = authSession.tokens?.accessToken?.toString() ?? "";
@@ -62,7 +60,7 @@ export function useListUsersByTenantId(tenantId: string, staleTime?: number) {
         ...(!!staleTime && {staleTime }),
     })
 }
-
+*/
 /*
 async function listAllUsersInGroup(groupName: AdminQueriesGroup) {
     const authSession = await fetchAuthSession();
@@ -93,7 +91,7 @@ export function useListAllUsersInGroup(groupName: AdminQueriesGroup, staleTime?:
     });
 }
 */
-
+/*
 async function listUsersInGroupByTenantId(tenantId: string, groupName: AdminQueriesGroup) {
     const authSession = await fetchAuthSession();
     const accessToken = authSession.tokens?.accessToken?.toString() ?? "";
@@ -123,7 +121,7 @@ export function useListUsersInGroupByTenantId(tenantId: string, groupName: Admin
         ...(!!staleTime && {staleTime }),
     });
 }
-
+*/
 export async function adminSetUserPassword(user: AdminQueriesUser, password: string) {
     const authSession = await fetchAuthSession();
     const accessToken = authSession.tokens?.accessToken?.toString() ?? "";
@@ -171,7 +169,7 @@ export async function adminUpdateUserAttributes(user: AdminQueriesUser) {
  * Cognitoのユーザーを追加する。
  * 既に存在するユーザーと同じIDで追加しようとするとエラー。
  */
-export async function createUser(user: AdminQueriesUser, isAdmin: boolean, isSuppress: boolean = true) {
+export async function createUser(user: AdminQueriesUser, isSuppress: boolean = true) {
     const authSession = await fetchAuthSession();
     const accessToken = authSession.tokens?.accessToken?.toString() ?? "";
     const apiName = "AdminQueries";
@@ -187,7 +185,7 @@ export async function createUser(user: AdminQueriesUser, isAdmin: boolean, isSup
             name: user.name,
             email_verified: "true",
             tenantId: user.tenantId,
-            groupname: isAdmin ? "admins" : "users",
+            groupname: user.isAdmin ? "admins" : "users",
 
             // SUPPRESSで初回ログイン用パスワードのお知らせメールが送信されなくなる
             ...(isSuppress && { messageAction: "SUPPRESS" }),
