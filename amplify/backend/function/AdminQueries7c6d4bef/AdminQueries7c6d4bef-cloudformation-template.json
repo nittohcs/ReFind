@@ -22,6 +22,9 @@
     "apirefind2GraphQLAPIEndpointOutput": {
       "Type": "String",
       "Default": "apirefind2GraphQLAPIEndpointOutput"
+    },
+    "initialPassword": {
+      "Type": "String"
     }
   },
   "Conditions": {
@@ -81,6 +84,9 @@
             },
             "AUTH_REFIND2A0622A88_USERPOOLID": {
               "Ref": "authrefind2a0622a88UserPoolId"
+            },
+            "INITIAL_PASSWORD": {
+              "Ref": "initialPassword"
             }
           }
         },
