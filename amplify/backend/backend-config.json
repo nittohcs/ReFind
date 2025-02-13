@@ -110,6 +110,14 @@
       "dependsOn": [
         {
           "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind2"
+        },
+        {
+          "attributes": [
             "UserPoolId"
           ],
           "category": "auth",

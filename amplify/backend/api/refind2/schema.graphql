@@ -28,6 +28,46 @@ type Tenant @model @auth (
   isSuspended: Boolean!
 }
 
+# ユーザーマスタ
+type User @model @auth (
+  rules: [
+    {
+      allow: groups,
+      provider: userPools,
+      groupClaim: "cognito:groups",
+      groups: ["sysAdmins"],
+      operations: [read]
+    },
+    {
+      allow: groups,
+      provider: userPools,
+      groupClaim: "cognito:groups",
+      groupsField: "tenantId",
+      operations: [read]
+    },
+    {
+      allow: private,
+      provider: iam,
+      operations: [create, update, delete, read]
+    }
+  ]
+) {
+  # id
+  id: ID!
+
+  # テナントID
+  tenantId: ID! @index(name: "byTenantId")
+
+  # メールアドレス
+  email: String!
+
+  # 氏名
+  name: String!
+
+  # 管理者かどうか
+  isAdmin: Boolean!
+}
+
 # フロアマスタ
 type Floor @model @auth (
   rules: [

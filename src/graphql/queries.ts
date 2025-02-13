@@ -55,6 +55,72 @@ export const listTenants = /* GraphQL */ `query ListTenants(
   APITypes.ListTenantsQueryVariables,
   APITypes.ListTenantsQuery
 >;
+export const getUser = /* GraphQL */ `query GetUser($id: ID!) {
+  getUser(id: $id) {
+    id
+    tenantId
+    email
+    name
+    isAdmin
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedQuery<APITypes.GetUserQueryVariables, APITypes.GetUserQuery>;
+export const listUsers = /* GraphQL */ `query ListUsers(
+  $filter: ModelUserFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      tenantId
+      email
+      name
+      isAdmin
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<APITypes.ListUsersQueryVariables, APITypes.ListUsersQuery>;
+export const usersByTenantId = /* GraphQL */ `query UsersByTenantId(
+  $tenantId: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelUserFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  usersByTenantId(
+    tenantId: $tenantId
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      tenantId
+      email
+      name
+      isAdmin
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.UsersByTenantIdQueryVariables,
+  APITypes.UsersByTenantIdQuery
+>;
 export const getFloor = /* GraphQL */ `query GetFloor($id: ID!) {
   getFloor(id: $id) {
     id

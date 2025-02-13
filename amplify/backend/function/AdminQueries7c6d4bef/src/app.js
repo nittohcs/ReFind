@@ -1,3 +1,10 @@
+/* Amplify Params - DO NOT EDIT
+	API_REFIND2_GRAPHQLAPIENDPOINTOUTPUT
+	API_REFIND2_GRAPHQLAPIIDOUTPUT
+	AUTH_REFIND2A0622A88_USERPOOLID
+	ENV
+	REGION
+Amplify Params - DO NOT EDIT */
 /* eslint-disable */
 /*
  * Copyright 2019-2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -34,6 +41,12 @@ const {
   listAllUsersInGroup,
   signUserOut,
 } = require('./cognitoActions');
+
+const {
+  graphqlCreateUser,
+  graphqlUpdateUser,
+  graphqlDeleteUser,
+} = require('./graphql');
 
 const app = express();
 app.use(bodyParser.json());
@@ -164,7 +177,15 @@ app.post('/updateUserAttributes', async (req, res, next) => {
       },
     ];
     const response = await updateUserAttributes(req.body.username, attributes);
-    res.status(200).json(response);
+
+    // DB更新
+    const ret = await graphqlUpdateUser({
+      id: req.body.username,
+      email: req.body.email,
+      name: req.body.name,
+    });
+
+    res.status(200).json(ret);
   } catch (err) {
     next(err);
   }
@@ -219,12 +240,23 @@ app.post('/createUser', async (req, res, next) => {
     // グループに追加
     try {
       await addUserToGroup(req.body.username, req.body.groupname);
+
+      // DB登録
+      const ret = await graphqlCreateUser({
+        id: req.body.username,
+        tenantId: req.body.tenantId,
+        email: req.body.email,
+        name: req.body.name,
+        isAdmin: req.body.groupname === 'admins'
+      });
+
+      res.status(200).json(ret);
     } catch(err) {
       await deleteUser(req.body.username);
       return next(err);
     }
 
-    res.status(200).json(response);
+    //res.status(200).json(response);
   } catch (err) {
     next(err);
   }
@@ -254,7 +286,13 @@ app.post('/deleteUser', async (req, res, next) => {
     }
 
     const response = await deleteUser(req.body.username);
-    res.status(200).json(response);
+
+    // DB削除
+    const ret = await graphqlDeleteUser({
+      id: req.body.username,
+    });
+
+    res.status(200).json(ret);
   } catch (err) {
     next(err);
   }
@@ -284,6 +322,15 @@ app.post('/addUserToGroup', async (req, res, next) => {
     }
 
     const response = await addUserToGroup(req.body.username, req.body.groupname);
+
+    // DB更新
+    if (req.body.groupname === "admins") {
+      await graphqlUpdateUser({
+        id: req.body.username,
+        isAdmin: true,
+      });
+    }
+
     res.status(200).json(response);
   } catch (err) {
     next(err);
@@ -314,6 +361,15 @@ app.post('/removeUserFromGroup', async (req, res, next) => {
     }
 
     const response = await removeUserFromGroup(req.body.username, req.body.groupname);
+
+    // DB更新
+    if (req.body.groupname === "admins") {
+      await graphqlUpdateUser({
+        id: req.body.username,
+        isAdmin: false,
+      });
+    }
+
     res.status(200).json(response);
   } catch (err) {
     next(err);

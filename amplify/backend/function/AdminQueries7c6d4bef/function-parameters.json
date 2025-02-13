@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "api": {
+      "refind2": [
+        "Mutation"
+      ]
+    },
+    "auth": {
+      "refind2a0622a88": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    }
+  }
+}

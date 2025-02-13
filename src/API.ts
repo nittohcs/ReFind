@@ -173,6 +173,65 @@ export type DeleteTenantInput = {
   id: string,
 };
 
+export type CreateUserInput = {
+  id?: string | null,
+  tenantId: string,
+  email: string,
+  name: string,
+  isAdmin: boolean,
+};
+
+export type ModelUserConditionInput = {
+  tenantId?: ModelIDInput | null,
+  email?: ModelStringInput | null,
+  name?: ModelStringInput | null,
+  isAdmin?: ModelBooleanInput | null,
+  and?: Array< ModelUserConditionInput | null > | null,
+  or?: Array< ModelUserConditionInput | null > | null,
+  not?: ModelUserConditionInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+};
+
+export type ModelIDInput = {
+  ne?: string | null,
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  contains?: string | null,
+  notContains?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+  size?: ModelSizeInput | null,
+};
+
+export type User = {
+  __typename: "User",
+  id: string,
+  tenantId: string,
+  email: string,
+  name: string,
+  isAdmin: boolean,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type UpdateUserInput = {
+  id: string,
+  tenantId?: string | null,
+  email?: string | null,
+  name?: string | null,
+  isAdmin?: boolean | null,
+};
+
+export type DeleteUserInput = {
+  id: string,
+};
+
 export type CreateFloorInput = {
   id?: string | null,
   tenantId: string,
@@ -193,22 +252,6 @@ export type ModelFloorConditionInput = {
   not?: ModelFloorConditionInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
-};
-
-export type ModelIDInput = {
-  ne?: string | null,
-  eq?: string | null,
-  le?: string | null,
-  lt?: string | null,
-  ge?: string | null,
-  gt?: string | null,
-  contains?: string | null,
-  notContains?: string | null,
-  between?: Array< string | null > | null,
-  beginsWith?: string | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-  size?: ModelSizeInput | null,
 };
 
 export type ModelIntInput = {
@@ -323,6 +366,31 @@ export type ModelTenantConnection = {
   nextToken?: string | null,
 };
 
+export type ModelUserFilterInput = {
+  id?: ModelIDInput | null,
+  tenantId?: ModelIDInput | null,
+  email?: ModelStringInput | null,
+  name?: ModelStringInput | null,
+  isAdmin?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelUserFilterInput | null > | null,
+  or?: Array< ModelUserFilterInput | null > | null,
+  not?: ModelUserFilterInput | null,
+};
+
+export type ModelUserConnection = {
+  __typename: "ModelUserConnection",
+  items:  Array<User | null >,
+  nextToken?: string | null,
+};
+
+export enum ModelSortDirection {
+  ASC = "ASC",
+  DESC = "DESC",
+}
+
+
 export type ModelFloorFilterInput = {
   id?: ModelIDInput | null,
   tenantId?: ModelIDInput | null,
@@ -342,12 +410,6 @@ export type ModelFloorConnection = {
   items:  Array<Floor | null >,
   nextToken?: string | null,
 };
-
-export enum ModelSortDirection {
-  ASC = "ASC",
-  DESC = "DESC",
-}
-
 
 export type ModelSeatFilterInput = {
   id?: ModelIDInput | null,
@@ -428,16 +490,15 @@ export type ModelSubscriptionBooleanInput = {
   eq?: boolean | null,
 };
 
-export type ModelSubscriptionFloorFilterInput = {
+export type ModelSubscriptionUserFilterInput = {
   id?: ModelSubscriptionIDInput | null,
+  email?: ModelSubscriptionStringInput | null,
   name?: ModelSubscriptionStringInput | null,
-  imagePath?: ModelSubscriptionStringInput | null,
-  imageWidth?: ModelSubscriptionIntInput | null,
-  imageHeight?: ModelSubscriptionIntInput | null,
+  isAdmin?: ModelSubscriptionBooleanInput | null,
   createdAt?: ModelSubscriptionStringInput | null,
   updatedAt?: ModelSubscriptionStringInput | null,
-  and?: Array< ModelSubscriptionFloorFilterInput | null > | null,
-  or?: Array< ModelSubscriptionFloorFilterInput | null > | null,
+  and?: Array< ModelSubscriptionUserFilterInput | null > | null,
+  or?: Array< ModelSubscriptionUserFilterInput | null > | null,
 };
 
 export type ModelSubscriptionIDInput = {
@@ -453,6 +514,18 @@ export type ModelSubscriptionIDInput = {
   beginsWith?: string | null,
   in?: Array< string | null > | null,
   notIn?: Array< string | null > | null,
+};
+
+export type ModelSubscriptionFloorFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  name?: ModelSubscriptionStringInput | null,
+  imagePath?: ModelSubscriptionStringInput | null,
+  imageWidth?: ModelSubscriptionIntInput | null,
+  imageHeight?: ModelSubscriptionIntInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionFloorFilterInput | null > | null,
+  or?: Array< ModelSubscriptionFloorFilterInput | null > | null,
 };
 
 export type ModelSubscriptionIntInput = {
@@ -668,6 +741,60 @@ export type DeleteTenantMutation = {
     id: string,
     name: string,
     isSuspended: boolean,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type CreateUserMutationVariables = {
+  input: CreateUserInput,
+  condition?: ModelUserConditionInput | null,
+};
+
+export type CreateUserMutation = {
+  createUser?:  {
+    __typename: "User",
+    id: string,
+    tenantId: string,
+    email: string,
+    name: string,
+    isAdmin: boolean,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type UpdateUserMutationVariables = {
+  input: UpdateUserInput,
+  condition?: ModelUserConditionInput | null,
+};
+
+export type UpdateUserMutation = {
+  updateUser?:  {
+    __typename: "User",
+    id: string,
+    tenantId: string,
+    email: string,
+    name: string,
+    isAdmin: boolean,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type DeleteUserMutationVariables = {
+  input: DeleteUserInput,
+  condition?: ModelUserConditionInput | null,
+};
+
+export type DeleteUserMutation = {
+  deleteUser?:  {
+    __typename: "User",
+    id: string,
+    tenantId: string,
+    email: string,
+    name: string,
+    isAdmin: boolean,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -890,6 +1017,71 @@ export type ListTenantsQuery = {
       id: string,
       name: string,
       isSuspended: boolean,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type GetUserQueryVariables = {
+  id: string,
+};
+
+export type GetUserQuery = {
+  getUser?:  {
+    __typename: "User",
+    id: string,
+    tenantId: string,
+    email: string,
+    name: string,
+    isAdmin: boolean,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type ListUsersQueryVariables = {
+  filter?: ModelUserFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListUsersQuery = {
+  listUsers?:  {
+    __typename: "ModelUserConnection",
+    items:  Array< {
+      __typename: "User",
+      id: string,
+      tenantId: string,
+      email: string,
+      name: string,
+      isAdmin: boolean,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type UsersByTenantIdQueryVariables = {
+  tenantId: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelUserFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type UsersByTenantIdQuery = {
+  usersByTenantId?:  {
+    __typename: "ModelUserConnection",
+    items:  Array< {
+      __typename: "User",
+      id: string,
+      tenantId: string,
+      email: string,
+      name: string,
+      isAdmin: boolean,
       createdAt: string,
       updatedAt: string,
     } | null >,
@@ -1186,6 +1378,57 @@ export type OnDeleteTenantSubscription = {
     id: string,
     name: string,
     isSuspended: boolean,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnCreateUserSubscriptionVariables = {
+  filter?: ModelSubscriptionUserFilterInput | null,
+};
+
+export type OnCreateUserSubscription = {
+  onCreateUser?:  {
+    __typename: "User",
+    id: string,
+    tenantId: string,
+    email: string,
+    name: string,
+    isAdmin: boolean,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnUpdateUserSubscriptionVariables = {
+  filter?: ModelSubscriptionUserFilterInput | null,
+};
+
+export type OnUpdateUserSubscription = {
+  onUpdateUser?:  {
+    __typename: "User",
+    id: string,
+    tenantId: string,
+    email: string,
+    name: string,
+    isAdmin: boolean,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnDeleteUserSubscriptionVariables = {
+  filter?: ModelSubscriptionUserFilterInput | null,
+};
+
+export type OnDeleteUserSubscription = {
+  onDeleteUser?:  {
+    __typename: "User",
+    id: string,
+    tenantId: string,
+    email: string,
+    name: string,
+    isAdmin: boolean,
     createdAt: string,
     updatedAt: string,
   } | null,

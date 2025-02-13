@@ -67,6 +67,54 @@ export const onDeleteTenant = /* GraphQL */ `subscription OnDeleteTenant($filter
   APITypes.OnDeleteTenantSubscriptionVariables,
   APITypes.OnDeleteTenantSubscription
 >;
+export const onCreateUser = /* GraphQL */ `subscription OnCreateUser($filter: ModelSubscriptionUserFilterInput) {
+  onCreateUser(filter: $filter) {
+    id
+    tenantId
+    email
+    name
+    isAdmin
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnCreateUserSubscriptionVariables,
+  APITypes.OnCreateUserSubscription
+>;
+export const onUpdateUser = /* GraphQL */ `subscription OnUpdateUser($filter: ModelSubscriptionUserFilterInput) {
+  onUpdateUser(filter: $filter) {
+    id
+    tenantId
+    email
+    name
+    isAdmin
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnUpdateUserSubscriptionVariables,
+  APITypes.OnUpdateUserSubscription
+>;
+export const onDeleteUser = /* GraphQL */ `subscription OnDeleteUser($filter: ModelSubscriptionUserFilterInput) {
+  onDeleteUser(filter: $filter) {
+    id
+    tenantId
+    email
+    name
+    isAdmin
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnDeleteUserSubscriptionVariables,
+  APITypes.OnDeleteUserSubscription
+>;
 export const onCreateFloor = /* GraphQL */ `subscription OnCreateFloor($filter: ModelSubscriptionFloorFilterInput) {
   onCreateFloor(filter: $filter) {
     id
