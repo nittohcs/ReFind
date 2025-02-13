@@ -61,9 +61,6 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
         onSuccess(data, _variables, _context) {
             enqueueSnackbar("テナントを更新しました。", { variant: "success" });
 
-            // クエリを無効化して再取得されるようにする
-            //queryClient.invalidateQueries({ queryKey: queryKeys.listAllTenants });
-
             // 更新したテナントだけキャッシュを更新
             queryClient.setQueryData(queryKeys.graphqlListAllTenants, (items: Tenant[]) => items.map(item => item.id === data.id ? data : item));
 
@@ -119,7 +116,7 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
                         >
                             保存
                         </MiraCalButton>
-                        <Link href={`/${tenantId}`}>
+                        <Link href={`/${tenantId}`} target="_blank" rel="noopener noreferrer">
                             <Button
                                 variant="contained"
                             >

@@ -26,7 +26,7 @@ export default function Layout({ children, params}: LayoutProps) {
     useEffect(() => {
         if (authState.username) {
             if (tenantId !== authState.tenantId && !authState.groups?.sysAdmins) {
-                router.push(`/${authState.tenantId}`);
+                router.replace(`/${authState.tenantId}`);
             }
         }
     }, [authState, tenantId, router]);
