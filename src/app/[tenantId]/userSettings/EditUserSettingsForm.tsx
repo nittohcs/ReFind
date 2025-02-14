@@ -8,7 +8,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import MiraCalButton from "@/components/MiraCalButton";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalTextField from "@/components/MiraCalTextField";
-import MiraCalErrorAlert from "@/components/MiraCalErrorAlert";
 import MiraCalFormAction from "@/components/MiraCalFormAction";
 import { useAuthState, useUpdateUserInfo } from "@/hooks/auth";
 import { useEnqueueSnackbar } from "@/hooks/ui";

@@ -6,7 +6,6 @@ import { useMutation } from "@tanstack/react-query";
 import { updatePassword } from "aws-amplify/auth";
 import { Formik } from "formik";
 import * as yup from "yup";
-import MiraCalErrorAlert from "@/components/MiraCalErrorAlert";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalFormAction from "@/components/MiraCalFormAction";
 import MiraCalTextField from "@/components/MiraCalTextField";
@@ -73,7 +72,6 @@ export const ChangePasswordForm: FC<ChangePasswordFormProps> = ({ update }) => {
                         label="新しいパスワード(確認用)"
                         type="password"
                     />
-                    <MiraCalErrorAlert error={mutation.error} />
                     <MiraCalFormAction>
                         <Button variant="contained" type="submit" disabled={mutation.isPending}>パスワードを変更</Button>
                     </MiraCalFormAction>
