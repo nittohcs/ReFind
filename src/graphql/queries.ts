@@ -62,6 +62,7 @@ export const getUser = /* GraphQL */ `query GetUser($id: ID!) {
     email
     name
     isAdmin
+    confirmingEmail
     createdAt
     updatedAt
     __typename
@@ -80,6 +81,7 @@ export const listUsers = /* GraphQL */ `query ListUsers(
       email
       name
       isAdmin
+      confirmingEmail
       createdAt
       updatedAt
       __typename
@@ -109,6 +111,7 @@ export const usersByTenantId = /* GraphQL */ `query UsersByTenantId(
       email
       name
       isAdmin
+      confirmingEmail
       createdAt
       updatedAt
       __typename

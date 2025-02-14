@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "api": {
+      "refind2": [
+        "Query",
+        "Mutation"
+      ]
+    },
+    "auth": {
+      "refind2a0622a88": [
+        "read",
+        "update"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}

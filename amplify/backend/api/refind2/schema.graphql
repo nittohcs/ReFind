@@ -66,6 +66,9 @@ type User @model @auth (
 
   # 管理者かどうか
   isAdmin: Boolean!
+
+  # 検証待ちメールアドレス
+  confirmingEmail: String
 }
 
 # フロアマスタ
@@ -250,6 +253,24 @@ input funcDeleteSeatInput {
   id: ID!
 }
 
+input funcUpdateUserAttributesInput {
+  accessToken: String!
+  email: String
+  name: String
+}
+
+type funcUpdateUserAttributesResponse {
+  isUpdatedEmail: Boolean!
+  isUpdatedName: Boolean!
+  isRequiredVerification: Boolean!
+}
+
+input funcVerifyUserAttributeInput {
+  accessToken: String!
+  attributeName: String!
+  code: String!
+}
+
 type Query {
   # ファイルアップロード用URLの取得
   getFileUploadUrl(filePath: String!): String
@@ -292,6 +313,14 @@ type Mutation {
   # 座席確保情報登録
   funcCreateSeatOccupancy(input: funcCreateSeatOccupancyInput!): SeatOccupancy
   @function(name: "refind2CreateSeatOccupancy-${env}")
+
+  # ユーザー情報更新
+  funcUpdateUserAttributes(input: funcUpdateUserAttributesInput): funcUpdateUserAttributesResponse
+  @function(name: "refind2UpdateUserAttributes-${env}")
+
+  # ユーザー情報検証
+  funcVerifyUserAttribute(input: funcVerifyUserAttributeInput): Boolean
+  @function(name: "refind2VerifyUserAttribute-${env}")
 }
 
 type Subscription {

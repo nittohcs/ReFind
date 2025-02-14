@@ -134,6 +134,25 @@ export const funcCreateSeatOccupancy = /* GraphQL */ `mutation FuncCreateSeatOcc
   APITypes.FuncCreateSeatOccupancyMutationVariables,
   APITypes.FuncCreateSeatOccupancyMutation
 >;
+export const funcUpdateUserAttributes = /* GraphQL */ `mutation FuncUpdateUserAttributes($input: funcUpdateUserAttributesInput) {
+  funcUpdateUserAttributes(input: $input) {
+    isUpdatedEmail
+    isUpdatedName
+    isRequiredVerification
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.FuncUpdateUserAttributesMutationVariables,
+  APITypes.FuncUpdateUserAttributesMutation
+>;
+export const funcVerifyUserAttribute = /* GraphQL */ `mutation FuncVerifyUserAttribute($input: funcVerifyUserAttributeInput) {
+  funcVerifyUserAttribute(input: $input)
+}
+` as GeneratedMutation<
+  APITypes.FuncVerifyUserAttributeMutationVariables,
+  APITypes.FuncVerifyUserAttributeMutation
+>;
 export const createTenant = /* GraphQL */ `mutation CreateTenant(
   $input: CreateTenantInput!
   $condition: ModelTenantConditionInput
@@ -195,6 +214,7 @@ export const createUser = /* GraphQL */ `mutation CreateUser(
     email
     name
     isAdmin
+    confirmingEmail
     createdAt
     updatedAt
     __typename
@@ -214,6 +234,7 @@ export const updateUser = /* GraphQL */ `mutation UpdateUser(
     email
     name
     isAdmin
+    confirmingEmail
     createdAt
     updatedAt
     __typename
@@ -233,6 +254,7 @@ export const deleteUser = /* GraphQL */ `mutation DeleteUser(
     email
     name
     isAdmin
+    confirmingEmail
     createdAt
     updatedAt
     __typename

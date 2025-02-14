@@ -289,6 +289,50 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "refind2UpdateUserAttributes": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind2"
+        },
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "refind2a0622a88"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refind2VerifyUserAttribute": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind2"
+        },
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "refind2a0622a88"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "refind2a0622a88PreTokenGeneration": {
       "build": true,
       "providerPlugin": "awscloudformation",
@@ -501,6 +545,38 @@
         {
           "category": "function",
           "resourceName": "refind2UpdateSeat"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2UpdateUserAttributes_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2UpdateUserAttributes"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2UpdateUserAttributes_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2UpdateUserAttributes"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2VerifyUserAttribute_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2VerifyUserAttribute"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2VerifyUserAttribute_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2VerifyUserAttribute"
         }
       ]
     },

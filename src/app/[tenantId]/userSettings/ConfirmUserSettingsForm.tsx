@@ -4,14 +4,17 @@ import { Dispatch, FC, SetStateAction, useCallback, useMemo } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
-import { useMutation } from "@tanstack/react-query";
-import { confirmUserAttribute } from "aws-amplify/auth";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import MiraCalErrorAlert from "@/components/MiraCalErrorAlert";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalFormAction from "@/components/MiraCalFormAction";
 import MiraCalTextField from "@/components/MiraCalTextField";
-import { useUpdateUserInfo } from "@/hooks/auth";
+import { useAuthState, useUpdateUserInfo } from "@/hooks/auth";
 import { useEnqueueSnackbar } from "@/hooks/ui";
+import { queryKeys } from "@/services/queryKeys";
+import { ReFindUser } from "@/types/user";
+import { useTenantId } from "../hook";
+import { graphqlVerifyUserAttribute } from "./operation";
 
 type ConfirmUserSettingsFormValues = {
     confirmationCode: string,
@@ -24,8 +27,11 @@ type ConfirmUserSettingsFormProps = {
 };
 
 export const ConfirmUserSettingsForm: FC<ConfirmUserSettingsFormProps> = ({ confirmingEmail, setConfirmingEmail, update }) => {
+    const tenantId = useTenantId();
+    const authState = useAuthState();
     const updateUserInfo = useUpdateUserInfo();
     const enqueueSnackbar = useEnqueueSnackbar();
+    const queryClient = useQueryClient();
 
     const validationSchema = useMemo(() => yup.object().shape({
         confirmationCode: yup.string().required().default(""),
@@ -36,12 +42,12 @@ export const ConfirmUserSettingsForm: FC<ConfirmUserSettingsFormProps> = ({ conf
 
     const mutation = useMutation(({
         async mutationFn({ confirmationCode }: ConfirmUserSettingsFormValues) {
-            await confirmUserAttribute({
-                userAttributeKey: "email",
-                confirmationCode: confirmationCode,
-            });
+            return await graphqlVerifyUserAttribute("email", confirmationCode);
         },
         onSuccess(_data, _variables, _context) {
+            // クエリのキャッシュを更新
+            queryClient.setQueryData(queryKeys.graphqlUsersByTenantId(tenantId), (items: ReFindUser[] = []) => items.map(user => user.id === authState.username ? {...user, email: confirmingEmail } : user));
+
             updateUserInfo({
                 email: confirmingEmail,
             });
@@ -50,7 +56,17 @@ export const ConfirmUserSettingsForm: FC<ConfirmUserSettingsFormProps> = ({ conf
             update();
         },
         onError(error, _variables, _context) {
-            console.log(error.message);
+            if (!!error.message) {
+                enqueueSnackbar(error.message, { variant: "error" });
+                return;
+            }
+
+            // Error型以外でエラーが飛んでくる場合に対応
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const tmp = error as any;
+            for(const e of tmp.errors) {
+                enqueueSnackbar(e.message, { variant: "error" });
+            }
         },
     }));
 
@@ -72,7 +88,6 @@ export const ConfirmUserSettingsForm: FC<ConfirmUserSettingsFormProps> = ({ conf
                         label="確認コード"
                         type="text"
                     />
-                    <MiraCalErrorAlert error={mutation.error} />
                     <MiraCalFormAction>
                         <Button variant="contained" type="submit" disabled={mutation.isPending}>入力</Button>
                         <Button variant="contained" onClick={cancel}>キャンセル</Button>

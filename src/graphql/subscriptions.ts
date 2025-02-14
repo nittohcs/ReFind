@@ -74,6 +74,7 @@ export const onCreateUser = /* GraphQL */ `subscription OnCreateUser($filter: Mo
     email
     name
     isAdmin
+    confirmingEmail
     createdAt
     updatedAt
     __typename
@@ -90,6 +91,7 @@ export const onUpdateUser = /* GraphQL */ `subscription OnUpdateUser($filter: Mo
     email
     name
     isAdmin
+    confirmingEmail
     createdAt
     updatedAt
     __typename
@@ -106,6 +108,7 @@ export const onDeleteUser = /* GraphQL */ `subscription OnDeleteUser($filter: Mo
     email
     name
     isAdmin
+    confirmingEmail
     createdAt
     updatedAt
     __typename

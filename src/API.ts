@@ -91,6 +91,25 @@ export type SeatOccupancy = {
   updatedAt: string,
 };
 
+export type funcUpdateUserAttributesInput = {
+  accessToken: string,
+  email?: string | null,
+  name?: string | null,
+};
+
+export type funcUpdateUserAttributesResponse = {
+  __typename: "funcUpdateUserAttributesResponse",
+  isUpdatedEmail: boolean,
+  isUpdatedName: boolean,
+  isRequiredVerification: boolean,
+};
+
+export type funcVerifyUserAttributeInput = {
+  accessToken: string,
+  attributeName: string,
+  code: string,
+};
+
 export type CreateTenantInput = {
   id?: string | null,
   name: string,
@@ -179,6 +198,7 @@ export type CreateUserInput = {
   email: string,
   name: string,
   isAdmin: boolean,
+  confirmingEmail?: string | null,
 };
 
 export type ModelUserConditionInput = {
@@ -186,6 +206,7 @@ export type ModelUserConditionInput = {
   email?: ModelStringInput | null,
   name?: ModelStringInput | null,
   isAdmin?: ModelBooleanInput | null,
+  confirmingEmail?: ModelStringInput | null,
   and?: Array< ModelUserConditionInput | null > | null,
   or?: Array< ModelUserConditionInput | null > | null,
   not?: ModelUserConditionInput | null,
@@ -216,6 +237,7 @@ export type User = {
   email: string,
   name: string,
   isAdmin: boolean,
+  confirmingEmail?: string | null,
   createdAt: string,
   updatedAt: string,
 };
@@ -226,6 +248,7 @@ export type UpdateUserInput = {
   email?: string | null,
   name?: string | null,
   isAdmin?: boolean | null,
+  confirmingEmail?: string | null,
 };
 
 export type DeleteUserInput = {
@@ -372,6 +395,7 @@ export type ModelUserFilterInput = {
   email?: ModelStringInput | null,
   name?: ModelStringInput | null,
   isAdmin?: ModelBooleanInput | null,
+  confirmingEmail?: ModelStringInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
   and?: Array< ModelUserFilterInput | null > | null,
@@ -495,6 +519,7 @@ export type ModelSubscriptionUserFilterInput = {
   email?: ModelSubscriptionStringInput | null,
   name?: ModelSubscriptionStringInput | null,
   isAdmin?: ModelSubscriptionBooleanInput | null,
+  confirmingEmail?: ModelSubscriptionStringInput | null,
   createdAt?: ModelSubscriptionStringInput | null,
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionUserFilterInput | null > | null,
@@ -698,6 +723,27 @@ export type FuncCreateSeatOccupancyMutation = {
   } | null,
 };
 
+export type FuncUpdateUserAttributesMutationVariables = {
+  input?: funcUpdateUserAttributesInput | null,
+};
+
+export type FuncUpdateUserAttributesMutation = {
+  funcUpdateUserAttributes?:  {
+    __typename: "funcUpdateUserAttributesResponse",
+    isUpdatedEmail: boolean,
+    isUpdatedName: boolean,
+    isRequiredVerification: boolean,
+  } | null,
+};
+
+export type FuncVerifyUserAttributeMutationVariables = {
+  input?: funcVerifyUserAttributeInput | null,
+};
+
+export type FuncVerifyUserAttributeMutation = {
+  funcVerifyUserAttribute?: boolean | null,
+};
+
 export type CreateTenantMutationVariables = {
   input: CreateTenantInput,
   condition?: ModelTenantConditionInput | null,
@@ -759,6 +805,7 @@ export type CreateUserMutation = {
     email: string,
     name: string,
     isAdmin: boolean,
+    confirmingEmail?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -777,6 +824,7 @@ export type UpdateUserMutation = {
     email: string,
     name: string,
     isAdmin: boolean,
+    confirmingEmail?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -795,6 +843,7 @@ export type DeleteUserMutation = {
     email: string,
     name: string,
     isAdmin: boolean,
+    confirmingEmail?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1036,6 +1085,7 @@ export type GetUserQuery = {
     email: string,
     name: string,
     isAdmin: boolean,
+    confirmingEmail?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1057,6 +1107,7 @@ export type ListUsersQuery = {
       email: string,
       name: string,
       isAdmin: boolean,
+      confirmingEmail?: string | null,
       createdAt: string,
       updatedAt: string,
     } | null >,
@@ -1082,6 +1133,7 @@ export type UsersByTenantIdQuery = {
       email: string,
       name: string,
       isAdmin: boolean,
+      confirmingEmail?: string | null,
       createdAt: string,
       updatedAt: string,
     } | null >,
@@ -1395,6 +1447,7 @@ export type OnCreateUserSubscription = {
     email: string,
     name: string,
     isAdmin: boolean,
+    confirmingEmail?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1412,6 +1465,7 @@ export type OnUpdateUserSubscription = {
     email: string,
     name: string,
     isAdmin: boolean,
+    confirmingEmail?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1429,6 +1483,7 @@ export type OnDeleteUserSubscription = {
     email: string,
     name: string,
     isAdmin: boolean,
+    confirmingEmail?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,

@@ -75,7 +75,15 @@
         "refind2a0622a88": {},
         "refind2": {},
         "ReFind2Storage": {},
-        "userPoolGroups": {}
+        "userPoolGroups": {},
+        "refind2UpdateUserAttributes": {
+          "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
+          "s3Key": "amplify-builds/refind2UpdateUserAttributes-62787a494b66306b4257-build.zip"
+        },
+        "refind2VerifyUserAttribute": {
+          "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
+          "s3Key": "amplify-builds/refind2VerifyUserAttribute-36722b65505733495331-build.zip"
+        }
       },
       "api": {
         "refind2": {},
