@@ -11,10 +11,12 @@ import MiraCalTextField from "@/components/MiraCalTextField";
 import MiraCalCheckbox from "@/components/MiraCalCheckbox";
 import MiraCalFormAction from "@/components/MiraCalFormAction";
 import MiraCalButton from "@/components/MiraCalButton";
+import { useReFindUsers } from "@/hooks/ReFindUser";
 import { useEnqueueSnackbar } from "@/hooks/ui";
-import { createReFindUser } from "../user";
+import { useGetTenant } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
 import { ReFindUser } from "@/types/user";
+import { createReFindUser } from "../user";
 
 type FormValues = {
     id: string,
@@ -29,6 +31,8 @@ type RegisterUserFormProps = {
 
 export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
     const tenantId = useTenantId();
+    const qTenant = useGetTenant(tenantId);
+    const qUsers = useReFindUsers();
 
     const validationSchema = useMemo(() => yup.object().shape({
         id: yup.string().required().default(""),
@@ -44,6 +48,13 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
     const queryClient = useQueryClient();
     const mutation = useMutation({
         async mutationFn(values: FormValues) {
+            // 最大ユーザー数をチェック
+            const maxUserCount = qTenant.data?.maxUserCount ?? 0;
+            const currentUserCount = qUsers.data.length;
+            if (currentUserCount >= maxUserCount) {
+                throw new Error("ユーザーが最大数まで作成されています。");
+            }
+
             return await createReFindUser({
                 ...values,
                 tenantId: tenantId,
@@ -78,6 +89,10 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
     });
 
     const onSubmit = useCallback((values: FormValues) => mutation.mutate(values), [mutation]);
+
+    if (!qTenant.isFetched || !qUsers.isFetched) {
+        return null;
+    }
 
     return (
         <Box maxWidth="sm">

@@ -13,6 +13,7 @@ import MiraCalCsvField from "@/components/MiraCalCsvField";
 import MiraCalLinearProgressWithLabel from "@/components/MiraCalLinearProgressWithLabel";
 import { useReFindUsers } from "@/hooks/ReFindUser";
 import { useEnqueueSnackbar } from "@/hooks/ui";
+import { useGetTenant } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
 import { ReFindUser } from "@/types/user";
 import { createReFindUser } from "../user";
@@ -30,9 +31,9 @@ type BulkImportFormProps = {
 export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
     const tenantId = useTenantId();
     const [inputErrors, setInputErrors] = useState<string[]>([]);
-
-    const query = useReFindUsers();
-    const currentUserIds = useMemo(() => new Set((query.data ?? []).map(x => x.id)), [query.data]);
+    const qTenant = useGetTenant(tenantId);
+    const qUsers = useReFindUsers();
+    const currentUserIds = useMemo(() => new Set((qUsers.data ?? []).map(x => x.id)), [qUsers.data]);
 
     const validationSchema = useMemo(() => yup.object().shape({
         csv: yup.string().required().default(""),
@@ -86,6 +87,14 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
             setInputErrors(errors);
             if (errors.length > 0) {
                 throw new Error("入力データにエラーがあります。");
+            }
+
+            // 最大ユーザー数をチェック
+            const maxUserCount = qTenant.data?.maxUserCount ?? 0;
+            const currentUserCount = qUsers.data.length;
+            const creatableUserCount = maxUserCount - currentUserCount;
+            if (users.length > creatableUserCount) {
+                throw new Error(`あと${creatableUserCount}ユーザーまで作成可能です。`);
             }
 
             // ユーザー作成
