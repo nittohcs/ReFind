@@ -113,11 +113,13 @@ export type funcVerifyUserAttributeInput = {
 export type CreateTenantInput = {
   id?: string | null,
   name: string,
+  maxUserCount: number,
   isSuspended: boolean,
 };
 
 export type ModelTenantConditionInput = {
   name?: ModelStringInput | null,
+  maxUserCount?: ModelIntInput | null,
   isSuspended?: ModelBooleanInput | null,
   and?: Array< ModelTenantConditionInput | null > | null,
   or?: Array< ModelTenantConditionInput | null > | null,
@@ -166,6 +168,18 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
+export type ModelIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
 export type ModelBooleanInput = {
   ne?: boolean | null,
   eq?: boolean | null,
@@ -177,6 +191,7 @@ export type Tenant = {
   __typename: "Tenant",
   id: string,
   name: string,
+  maxUserCount: number,
   isSuspended: boolean,
   createdAt: string,
   updatedAt: string,
@@ -185,6 +200,7 @@ export type Tenant = {
 export type UpdateTenantInput = {
   id: string,
   name?: string | null,
+  maxUserCount?: number | null,
   isSuspended?: boolean | null,
 };
 
@@ -277,18 +293,6 @@ export type ModelFloorConditionInput = {
   updatedAt?: ModelStringInput | null,
 };
 
-export type ModelIntInput = {
-  ne?: number | null,
-  eq?: number | null,
-  le?: number | null,
-  lt?: number | null,
-  ge?: number | null,
-  gt?: number | null,
-  between?: Array< number | null > | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-};
-
 export type UpdateFloorInput = {
   id: string,
   tenantId?: string | null,
@@ -375,6 +379,7 @@ export type DeleteSeatOccupancyInput = {
 export type ModelTenantFilterInput = {
   id?: ModelIDInput | null,
   name?: ModelStringInput | null,
+  maxUserCount?: ModelIntInput | null,
   isSuspended?: ModelBooleanInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
@@ -487,6 +492,7 @@ export type ModelIDKeyConditionInput = {
 
 export type ModelSubscriptionTenantFilterInput = {
   name?: ModelSubscriptionStringInput | null,
+  maxUserCount?: ModelSubscriptionIntInput | null,
   isSuspended?: ModelSubscriptionBooleanInput | null,
   createdAt?: ModelSubscriptionStringInput | null,
   updatedAt?: ModelSubscriptionStringInput | null,
@@ -507,6 +513,18 @@ export type ModelSubscriptionStringInput = {
   beginsWith?: string | null,
   in?: Array< string | null > | null,
   notIn?: Array< string | null > | null,
+};
+
+export type ModelSubscriptionIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  in?: Array< number | null > | null,
+  notIn?: Array< number | null > | null,
 };
 
 export type ModelSubscriptionBooleanInput = {
@@ -551,18 +569,6 @@ export type ModelSubscriptionFloorFilterInput = {
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionFloorFilterInput | null > | null,
   or?: Array< ModelSubscriptionFloorFilterInput | null > | null,
-};
-
-export type ModelSubscriptionIntInput = {
-  ne?: number | null,
-  eq?: number | null,
-  le?: number | null,
-  lt?: number | null,
-  ge?: number | null,
-  gt?: number | null,
-  between?: Array< number | null > | null,
-  in?: Array< number | null > | null,
-  notIn?: Array< number | null > | null,
 };
 
 export type ModelSubscriptionSeatFilterInput = {
@@ -754,6 +760,7 @@ export type CreateTenantMutation = {
     __typename: "Tenant",
     id: string,
     name: string,
+    maxUserCount: number,
     isSuspended: boolean,
     createdAt: string,
     updatedAt: string,
@@ -770,6 +777,7 @@ export type UpdateTenantMutation = {
     __typename: "Tenant",
     id: string,
     name: string,
+    maxUserCount: number,
     isSuspended: boolean,
     createdAt: string,
     updatedAt: string,
@@ -786,6 +794,7 @@ export type DeleteTenantMutation = {
     __typename: "Tenant",
     id: string,
     name: string,
+    maxUserCount: number,
     isSuspended: boolean,
     createdAt: string,
     updatedAt: string,
@@ -1046,6 +1055,7 @@ export type GetTenantQuery = {
     __typename: "Tenant",
     id: string,
     name: string,
+    maxUserCount: number,
     isSuspended: boolean,
     createdAt: string,
     updatedAt: string,
@@ -1065,6 +1075,7 @@ export type ListTenantsQuery = {
       __typename: "Tenant",
       id: string,
       name: string,
+      maxUserCount: number,
       isSuspended: boolean,
       createdAt: string,
       updatedAt: string,
@@ -1399,6 +1410,7 @@ export type OnCreateTenantSubscription = {
     __typename: "Tenant",
     id: string,
     name: string,
+    maxUserCount: number,
     isSuspended: boolean,
     createdAt: string,
     updatedAt: string,
@@ -1414,6 +1426,7 @@ export type OnUpdateTenantSubscription = {
     __typename: "Tenant",
     id: string,
     name: string,
+    maxUserCount: number,
     isSuspended: boolean,
     createdAt: string,
     updatedAt: string,
@@ -1429,6 +1442,7 @@ export type OnDeleteTenantSubscription = {
     __typename: "Tenant",
     id: string,
     name: string,
+    maxUserCount: number,
     isSuspended: boolean,
     createdAt: string,
     updatedAt: string,

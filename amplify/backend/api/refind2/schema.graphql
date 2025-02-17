@@ -24,6 +24,9 @@ type Tenant @model @auth (
   # 名前
   name: String!
 
+  # 最大ユーザー数
+  maxUserCount: Int!
+
   # 利用停止中かどうか
   isSuspended: Boolean!
 }

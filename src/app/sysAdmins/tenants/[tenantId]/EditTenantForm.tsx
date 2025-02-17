@@ -20,6 +20,7 @@ import { graphqlUpdateTenant } from "../operation";
 type FormValues = {
     id: string,
     name: string,
+    maxUserCount: number,
     isSuspended: boolean,
 };
 
@@ -38,12 +39,14 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
     const validationSchema = useMemo(() => yup.object().shape({
         id: yup.string().required(),
         name: yup.string().required(),
+        maxUserCount: yup.number().required().min(1),
         isSuspended: yup.bool().required(),
     }), []);
 
     const initialValues: FormValues = useMemo(() => validationSchema.cast({
         id: tenant?.id ?? "",
         name: tenant?.name ?? "",
+        maxUserCount: tenant?.maxUserCount ?? 0,
         isSuspended: tenant?.isSuspended ?? false,
     }), [validationSchema, tenant]);
 
@@ -55,6 +58,7 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
             return await graphqlUpdateTenant({
                 id: values.id,
                 name: values.name,
+                maxUserCount: values.maxUserCount,
                 isSuspended: values.isSuspended,
             });
         },
@@ -102,6 +106,11 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
                         name="name"
                         label="名前"
                         type="text"
+                    />
+                    <MiraCalTextField
+                        name="maxUserCount"
+                        label="最大ユーザー数"
+                        type="number"
                     />
                     <MiraCalCheckbox
                         name="isSuspended"

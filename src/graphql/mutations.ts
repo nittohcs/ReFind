@@ -160,6 +160,7 @@ export const createTenant = /* GraphQL */ `mutation CreateTenant(
   createTenant(input: $input, condition: $condition) {
     id
     name
+    maxUserCount
     isSuspended
     createdAt
     updatedAt
@@ -177,6 +178,7 @@ export const updateTenant = /* GraphQL */ `mutation UpdateTenant(
   updateTenant(input: $input, condition: $condition) {
     id
     name
+    maxUserCount
     isSuspended
     createdAt
     updatedAt
@@ -194,6 +196,7 @@ export const deleteTenant = /* GraphQL */ `mutation DeleteTenant(
   deleteTenant(input: $input, condition: $condition) {
     id
     name
+    maxUserCount
     isSuspended
     createdAt
     updatedAt

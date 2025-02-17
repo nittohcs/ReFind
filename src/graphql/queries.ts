@@ -26,6 +26,7 @@ export const getTenant = /* GraphQL */ `query GetTenant($id: ID!) {
   getTenant(id: $id) {
     id
     name
+    maxUserCount
     isSuspended
     createdAt
     updatedAt
@@ -42,6 +43,7 @@ export const listTenants = /* GraphQL */ `query ListTenants(
     items {
       id
       name
+      maxUserCount
       isSuspended
       createdAt
       updatedAt

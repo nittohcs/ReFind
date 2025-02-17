@@ -29,6 +29,7 @@ export const onCreateTenant = /* GraphQL */ `subscription OnCreateTenant($filter
   onCreateTenant(filter: $filter) {
     id
     name
+    maxUserCount
     isSuspended
     createdAt
     updatedAt
@@ -43,6 +44,7 @@ export const onUpdateTenant = /* GraphQL */ `subscription OnUpdateTenant($filter
   onUpdateTenant(filter: $filter) {
     id
     name
+    maxUserCount
     isSuspended
     createdAt
     updatedAt
@@ -57,6 +59,7 @@ export const onDeleteTenant = /* GraphQL */ `subscription OnDeleteTenant($filter
   onDeleteTenant(filter: $filter) {
     id
     name
+    maxUserCount
     isSuspended
     createdAt
     updatedAt
