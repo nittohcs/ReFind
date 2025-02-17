@@ -20,6 +20,7 @@ import { Tenant } from "@/API";
 type FormValues = {
     id: string,
     name: string,
+    maxUserCount: number,
     isSuspended: boolean,
     adminUserId: string,
     adminEmail: string,
@@ -36,6 +37,7 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
     const validationSchema = useMemo(() => yup.object().shape({
         id: yup.string().default(""),
         name: yup.string().required().default(""),
+        maxUserCount: yup.number().required().default(0).min(1),
         isSuspended: yup.bool().required().default(false),
         adminUserId: yup.string().required().default(""),
         adminEmail: yup.string().required().default("").email(),
@@ -54,6 +56,7 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
             const tenant = await graphqlCreateTenant({
                 ...(values.id && { id: values.id }),
                 name: values.name,
+                maxUserCount: values.maxUserCount,
                 isSuspended: values.isSuspended,
             });
 
@@ -63,10 +66,11 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
                     email: values.adminEmail,
                     name: values.adminName,
                     tenantId: tenant.id,
+                    isAdmin: true,
                 };
 
                 // テナントの管理者ユーザーを追加
-                await createUser(adminUser, true);
+                await createUser(adminUser);
             } catch(error) {
                 await graphqlDeleteTenant({
                     id: tenant.id,
@@ -119,6 +123,11 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
                         name="name"
                         label="名前"
                         type="text"
+                    />
+                    <MiraCalTextField
+                        name="maxUserCount"
+                        label="最大ユーザー数"
+                        type="number"
                     />
                     <MiraCalCheckbox
                         name="isSuspended"

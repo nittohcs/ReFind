@@ -6,12 +6,11 @@ export type AdminQueriesUser = {
     email: string,
     name: string,
     tenantId: string,
+    // cognitoでユーザーがadminsグループに所属しているかどうか
+    isAdmin: boolean,
 };
 
 export type ReFindUser = AdminQueriesUser & {
-    // cognitoでユーザーがadminsグループに所属しているかどうか
-    isAdmin: boolean,
-
     // 使用中の座席のID。使用中の座席が無いなら空文字
     seatId: string,
 
@@ -23,8 +22,6 @@ export type ReFindUser = AdminQueriesUser & {
 
     // 使用中の座席があるフロアの名前。使用中の座席が無いなら空文字
     floorName: string,
-
-    // TODO graphqlで追加のユーザー情報を格納するテーブルがあるなら、そこから取ってきた項目を追加する
 };
 
 export type AdminQueriesGroup = "sysAdmins" | "admins" | "users";

@@ -17,7 +17,7 @@ export default function Layout({ children }: LayoutProps) {
     // adminsじゃないならテナントのトップページに飛ばす
     useEffect(() => {
         if (!authState.groups?.admins) {
-            router.push(`/${tenantId}`);
+            router.replace(`/${tenantId}`);
         }
     }, [authState, router, tenantId]);
 

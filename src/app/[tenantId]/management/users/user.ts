@@ -8,7 +8,7 @@ import { ReFindUser } from "@/types/user";
 export async function createReFindUser(user: ReFindUser) {
     // TODO ユーザー作成時にcognitoがメールを送るようにしているが、自前でメールを送るようにするかも
     // cognitoユーザー作成
-    await createUser(user, user.isAdmin);
+    await createUser(user);
 
     return user;
 }

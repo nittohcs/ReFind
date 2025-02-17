@@ -9,11 +9,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const authState = useAuthState();
 
-    // sysAdmins以外が表示しようとしたら/に飛ばす
+    // sysAdmins以外が表示しようとしたらテナントのトップページに飛ばす
     useEffect(() => {
         if (authState.username) {
             if (!authState.groups?.sysAdmins) {
-                router.push("/");
+                router.replace(`/${authState.tenantId}`);
             }
         }
     }, [authState, router]);

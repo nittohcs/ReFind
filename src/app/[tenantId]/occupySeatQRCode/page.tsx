@@ -35,7 +35,7 @@ export default function Page() {
         const floor = allFloors.find(x => x.id === seat.floorId) ?? null;
         if (!floor) {
             enqueueSnackbar(`座席「${seat.name}」に対応するフロアが存在しません。`, { variant: "error" });
-            router.push("/");
+            router.push(`/${tenantId}`);
             return true;
         }
 

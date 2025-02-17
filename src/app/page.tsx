@@ -11,9 +11,9 @@ export default function Home() {
   useEffect(() => {
     if (authState.username) {
       if (authState.groups?.sysAdmins) {
-        router.push("/sysAdmins");
+        router.replace("/sysAdmins");
       } else {
-        router.push(`/${authState.tenantId}/`);
+        router.replace(`/${authState.tenantId}/`);
       }
     }
   }, [authState, router]);

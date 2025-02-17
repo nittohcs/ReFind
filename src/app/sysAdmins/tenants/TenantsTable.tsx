@@ -40,6 +40,9 @@ export default function TenantsTable() {
         columnHelper.accessor("name", {
             header: "名前",
         }),
+        columnHelper.accessor("maxUserCount", {
+            header: "最大ユーザー数",
+        }),
         columnHelper.accessor("isSuspendedString", {
             header: "利用停止中",
         }),

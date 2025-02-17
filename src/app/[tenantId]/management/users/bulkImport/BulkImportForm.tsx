@@ -13,8 +13,9 @@ import MiraCalCsvField from "@/components/MiraCalCsvField";
 import MiraCalLinearProgressWithLabel from "@/components/MiraCalLinearProgressWithLabel";
 import { useReFindUsers } from "@/hooks/ReFindUser";
 import { useEnqueueSnackbar } from "@/hooks/ui";
+import { useGetTenant } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
-import { AdminQueriesUser, ReFindUser } from "@/types/user";
+import { ReFindUser } from "@/types/user";
 import { createReFindUser } from "../user";
 import PreviewTable from "./PreviewTable";
 import { getReFindUsersFromCsv, isValidEmail } from "./util";
@@ -30,9 +31,9 @@ type BulkImportFormProps = {
 export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
     const tenantId = useTenantId();
     const [inputErrors, setInputErrors] = useState<string[]>([]);
-
-    const query = useReFindUsers();
-    const currentUserIds = useMemo(() => new Set((query.data ?? []).map(x => x.id)), [query.data]);
+    const qTenant = useGetTenant(tenantId);
+    const qUsers = useReFindUsers();
+    const currentUserIds = useMemo(() => new Set((qUsers.data ?? []).map(x => x.id)), [qUsers.data]);
 
     const validationSchema = useMemo(() => yup.object().shape({
         csv: yup.string().required().default(""),
@@ -88,6 +89,14 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
                 throw new Error("入力データにエラーがあります。");
             }
 
+            // 最大ユーザー数をチェック
+            const maxUserCount = qTenant.data?.maxUserCount ?? 0;
+            const currentUserCount = qUsers.data.length;
+            const creatableUserCount = maxUserCount - currentUserCount;
+            if (users.length > creatableUserCount) {
+                throw new Error(`あと${creatableUserCount}ユーザーまで作成可能です。`);
+            }
+
             // ユーザー作成
             // Promise.allで並列処理すると大量データの場合にネットワークエラーが発生するので、1件ずつ処理する
             //const createdUsers = await Promise.all(users.map(user => createMiraCalUser(user)));
@@ -104,16 +113,14 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
             enqueueSnackbar("取り込みました。", { variant: "success" });
 
             // クエリのキャッシュを更新する
-            queryClient.setQueryData(queryKeys.listUsersByTenantId(tenantId), (items: AdminQueriesUser[] = []) => [...items, ...data]);
-            queryClient.setQueryData(queryKeys.listUsersInGroupByTenantId(tenantId, "admins"), (items: AdminQueriesUser[] = []) => [...items, data.filter(x => x.isAdmin)]);
+            queryClient.setQueryData(queryKeys.graphqlUsersByTenantId(tenantId), (items: ReFindUser[] = []) => [...items, ...data]);
 
             // 入力欄を初期化するため、このコンポーネントを再表示する
             update();
         },
         onError(error, _variables, _context) {
             // クエリを再読み込みする
-            queryClient.invalidateQueries({ queryKey: queryKeys.listUsersByTenantId(tenantId) });
-            queryClient.invalidateQueries({ queryKey: queryKeys.listUsersInGroupByTenantId(tenantId, "admins") });
+            queryClient.invalidateQueries({ queryKey: queryKeys.graphqlUsersByTenantId(tenantId) });
 
             if (!!error.message) {
                 enqueueSnackbar(error.message, { variant: "error" });

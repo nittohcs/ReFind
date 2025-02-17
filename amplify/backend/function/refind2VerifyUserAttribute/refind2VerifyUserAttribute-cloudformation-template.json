@@ -1,15 +1,16 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "{\"createdOn\":\"Windows\",\"createdBy\":\"Amplify\",\"createdWith\":\"12.14.2\",\"stackType\":\"function-Lambda\",\"metadata\":{\"whyContinueWithGen1\":\"\"}}",
+  "Description": "{\"createdOn\":\"Windows\",\"createdBy\":\"Amplify\",\"createdWith\":\"12.14.3\",\"stackType\":\"function-Lambda\",\"metadata\":{\"whyContinueWithGen1\":\"\"}}",
   "Parameters": {
-    "env": {
-      "Type": "String"
-    },
-    "authrefind2a0622a88UserPoolId": {
+    "CloudWatchRule": {
       "Type": "String",
-      "Default": "authrefind2a0622a88UserPoolId"
+      "Default": "NONE",
+      "Description": " Schedule Expression"
     },
     "deploymentBucketName": {
+      "Type": "String"
+    },
+    "env": {
       "Type": "String"
     },
     "s3Key": {
@@ -23,8 +24,9 @@
       "Type": "String",
       "Default": "apirefind2GraphQLAPIEndpointOutput"
     },
-    "initialPassword": {
-      "Type": "String"
+    "authrefind2a0622a88UserPoolId": {
+      "Type": "String",
+      "Default": "authrefind2a0622a88UserPoolId"
     }
   },
   "Conditions": {
@@ -45,16 +47,24 @@
         "aws:asset:property": "Code"
       },
       "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "deploymentBucketName"
+          },
+          "S3Key": {
+            "Ref": "s3Key"
+          }
+        },
         "Handler": "index.handler",
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "AdminQueries7c6d4bef",
+            "refind2VerifyUserAttribute",
             {
               "Fn::Join": [
                 "",
                 [
-                  "AdminQueries7c6d4bef",
+                  "refind2VerifyUserAttribute",
                   "-",
                   {
                     "Ref": "env"
@@ -69,10 +79,6 @@
             "ENV": {
               "Ref": "env"
             },
-            "GROUP": "admins",
-            "USERPOOL": {
-              "Ref": "authrefind2a0622a88UserPoolId"
-            },
             "REGION": {
               "Ref": "AWS::Region"
             },
@@ -84,9 +90,6 @@
             },
             "AUTH_REFIND2A0622A88_USERPOOLID": {
               "Ref": "authrefind2a0622a88UserPoolId"
-            },
-            "INITIAL_PASSWORD": {
-              "Ref": "initialPassword"
             }
           }
         },
@@ -97,15 +100,8 @@
           ]
         },
         "Runtime": "nodejs18.x",
-        "Timeout": 25,
-        "Code": {
-          "S3Bucket": {
-            "Ref": "deploymentBucketName"
-          },
-          "S3Key": {
-            "Ref": "s3Key"
-          }
-        }
+        "Layers": [],
+        "Timeout": 25
       }
     },
     "LambdaExecutionRole": {
@@ -114,12 +110,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "AdminQueries7c6d4befLambdaRole",
+            "refind2LambdaRole19e0dce4",
             {
               "Fn::Join": [
                 "",
                 [
-                  "AdminQueries7c6d4befLambdaRole",
+                  "refind2LambdaRole19e0dce4",
                   "-",
                   {
                     "Ref": "env"
@@ -183,45 +179,6 @@
                       "Ref": "LambdaFunction"
                     }
                   }
-                ]
-              }
-            },
-            {
-              "Effect": "Allow",
-              "Action": [
-                "cognito-idp:AdminCreateUser",
-                "cognito-idp:AdminDeleteUser",
-                "cognito-idp:AdminUpdateUserAttributes",
-                "cognito-idp:AdminSetUserPassword",
-                "cognito-idp:ListUsersInGroup",
-                "cognito-idp:AdminUserGlobalSignOut",
-                "cognito-idp:AdminEnableUser",
-                "cognito-idp:AdminDisableUser",
-                "cognito-idp:AdminRemoveUserFromGroup",
-                "cognito-idp:AdminAddUserToGroup",
-                "cognito-idp:AdminListGroupsForUser",
-                "cognito-idp:AdminGetUser",
-                "cognito-idp:AdminConfirmSignUp",
-                "cognito-idp:ListUsers",
-                "cognito-idp:ListGroups"
-              ],
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:cognito-idp:",
-                    {
-                      "Ref": "AWS::Region"
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId"
-                    },
-                    ":userpool/",
-                    {
-                      "Ref": "authrefind2a0622a88UserPoolId"
-                    }
-                  ]
                 ]
               }
             }
@@ -295,87 +252,7 @@
             {
               "Effect": "Allow",
               "Action": [
-                "cognito-idp:ConfirmSignUp",
-                "cognito-idp:AdminCreateUser",
-                "cognito-idp:CreateUserImportJob",
-                "cognito-idp:AdminSetUserSettings",
-                "cognito-idp:AdminLinkProviderForUser",
-                "cognito-idp:CreateIdentityProvider",
-                "cognito-idp:AdminConfirmSignUp",
-                "cognito-idp:AdminDisableUser",
-                "cognito-idp:AdminRemoveUserFromGroup",
-                "cognito-idp:SetUserMFAPreference",
-                "cognito-idp:SetUICustomization",
-                "cognito-idp:SignUp",
-                "cognito-idp:VerifyUserAttribute",
-                "cognito-idp:SetRiskConfiguration",
-                "cognito-idp:StartUserImportJob",
-                "cognito-idp:AdminSetUserPassword",
-                "cognito-idp:AssociateSoftwareToken",
-                "cognito-idp:CreateResourceServer",
-                "cognito-idp:RespondToAuthChallenge",
-                "cognito-idp:CreateUserPoolClient",
-                "cognito-idp:AdminUserGlobalSignOut",
-                "cognito-idp:GlobalSignOut",
-                "cognito-idp:AddCustomAttributes",
-                "cognito-idp:CreateGroup",
-                "cognito-idp:CreateUserPool",
-                "cognito-idp:AdminForgetDevice",
-                "cognito-idp:AdminAddUserToGroup",
-                "cognito-idp:AdminRespondToAuthChallenge",
-                "cognito-idp:ForgetDevice",
-                "cognito-idp:CreateUserPoolDomain",
-                "cognito-idp:AdminEnableUser",
-                "cognito-idp:AdminUpdateDeviceStatus",
-                "cognito-idp:StopUserImportJob",
-                "cognito-idp:InitiateAuth",
-                "cognito-idp:AdminInitiateAuth",
-                "cognito-idp:AdminSetUserMFAPreference",
-                "cognito-idp:ConfirmForgotPassword",
-                "cognito-idp:SetUserSettings",
-                "cognito-idp:VerifySoftwareToken",
-                "cognito-idp:AdminDisableProviderForUser",
-                "cognito-idp:SetUserPoolMfaConfig",
-                "cognito-idp:ChangePassword",
-                "cognito-idp:ConfirmDevice",
-                "cognito-idp:AdminResetUserPassword",
-                "cognito-idp:ResendConfirmationCode",
-                "cognito-identity:Describe*",
-                "cognito-identity:Get*",
-                "cognito-identity:List*",
-                "cognito-idp:Describe*",
-                "cognito-idp:AdminGetDevice",
-                "cognito-idp:AdminGetUser",
-                "cognito-idp:AdminList*",
-                "cognito-idp:List*",
-                "cognito-sync:Describe*",
-                "cognito-sync:Get*",
-                "cognito-sync:List*",
-                "iam:ListOpenIdConnectProviders",
-                "iam:ListRoles",
-                "sns:ListPlatformApplications",
-                "cognito-idp:ForgotPassword",
-                "cognito-idp:UpdateAuthEventFeedback",
-                "cognito-idp:UpdateResourceServer",
-                "cognito-idp:UpdateUserPoolClient",
-                "cognito-idp:AdminUpdateUserAttributes",
-                "cognito-idp:UpdateUserAttributes",
-                "cognito-idp:UpdateUserPoolDomain",
-                "cognito-idp:UpdateIdentityProvider",
-                "cognito-idp:UpdateGroup",
-                "cognito-idp:AdminUpdateAuthEventFeedback",
-                "cognito-idp:UpdateDeviceStatus",
-                "cognito-idp:UpdateUserPool",
-                "cognito-idp:DeleteUserPoolDomain",
-                "cognito-idp:DeleteResourceServer",
-                "cognito-idp:DeleteGroup",
-                "cognito-idp:AdminDeleteUserAttributes",
-                "cognito-idp:DeleteUserPoolClient",
-                "cognito-idp:DeleteUserAttributes",
-                "cognito-idp:DeleteUserPool",
-                "cognito-idp:AdminDeleteUser",
-                "cognito-idp:DeleteIdentityProvider",
-                "cognito-idp:DeleteUser"
+                "cognito-idp:VerifyUserAttribute"
               ],
               "Resource": [
                 {

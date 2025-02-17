@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Box, Button, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Toolbar, Tooltip } from "@mui/material";
@@ -19,6 +19,7 @@ import MiraCalTable from "@/components/MiraCalTable";
 import { useReFindUsers } from "@/hooks/ReFindUser";
 import { useTable, useTableOption } from "@/hooks/table";
 import { useDialogStateWithData, useEnqueueSnackbar, useMenu } from "@/hooks/ui";
+import { useGetTenant } from "@/services/graphql";
 import { ReFindUser } from "@/types/user";
 import { useTenantId } from "../../hook";
 import DeleteUserDialog from "./DeleteUserDialog";
@@ -42,9 +43,9 @@ const columnHelper = createColumnHelper<TableRow>();
 export default function UsersTable() {
     const tenantId = useTenantId();
     const router = useRouter();
-
-    const query = useReFindUsers();
-    const data = useMemo(() => (query.data ?? []).map(x => ToTableRow(x)), [query.data]);
+    const qTenant = useGetTenant(tenantId);
+    const qUsers = useReFindUsers();
+    const data = useMemo(() => (qUsers.data ?? []).map(x => ToTableRow(x)), [qUsers.data]);
 
     const columns = useMemo(() => [
         columnHelper.display({
@@ -93,6 +94,19 @@ export default function UsersTable() {
     const selectedUsers = table.getSelectedRowModel().rows.map(x => x.original);
 
     const enqueueSnackbar = useEnqueueSnackbar();
+
+    const checkUserCount = useCallback((e: React.MouseEvent) => {
+        const maxUserCount = qTenant.data?.maxUserCount ?? 0;
+        const currentUserCount = qUsers.data.length;
+        if (currentUserCount >= maxUserCount) {
+            e.preventDefault();
+            enqueueSnackbar("ユーザーが最大数まで作成されています。", { variant: "error" });
+        }
+    }, [qTenant.data, qUsers.data, enqueueSnackbar]);
+
+    if (!qTenant.isFetched || !qUsers.isFetched) {
+        return null;
+    }
 
     return (
         <Box display="flex">
@@ -161,21 +175,21 @@ export default function UsersTable() {
                             />
                             <Tooltip title="更新">
                                 <span>
-                                    <IconButton onClick={() => query.refetch()} disabled={query.isFetching}>
+                                    <IconButton onClick={() => qUsers.refetch()} disabled={qUsers.isFetching}>
                                         <RefreshIcon />
                                     </IconButton>
                                 </span>
                             </Tooltip>
                             <Link href={`/${tenantId}/management/users/bulkImport`}>
                                 <Tooltip title="一括取込">
-                                    <IconButton>
+                                    <IconButton onClick={checkUserCount}>
                                         <GroupAddIcon />
                                     </IconButton>
                                 </Tooltip>
                             </Link>
                             <Link href={`/${tenantId}/management/users/register`}>
                                 <Tooltip title="登録">
-                                    <IconButton>
+                                    <IconButton onClick={checkUserCount}>
                                         <AddIcon />
                                     </IconButton>
                                 </Tooltip>

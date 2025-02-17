@@ -134,6 +134,25 @@ export const funcCreateSeatOccupancy = /* GraphQL */ `mutation FuncCreateSeatOcc
   APITypes.FuncCreateSeatOccupancyMutationVariables,
   APITypes.FuncCreateSeatOccupancyMutation
 >;
+export const funcUpdateUserAttributes = /* GraphQL */ `mutation FuncUpdateUserAttributes($input: funcUpdateUserAttributesInput) {
+  funcUpdateUserAttributes(input: $input) {
+    isUpdatedEmail
+    isUpdatedName
+    isRequiredVerification
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.FuncUpdateUserAttributesMutationVariables,
+  APITypes.FuncUpdateUserAttributesMutation
+>;
+export const funcVerifyUserAttribute = /* GraphQL */ `mutation FuncVerifyUserAttribute($input: funcVerifyUserAttributeInput) {
+  funcVerifyUserAttribute(input: $input)
+}
+` as GeneratedMutation<
+  APITypes.FuncVerifyUserAttributeMutationVariables,
+  APITypes.FuncVerifyUserAttributeMutation
+>;
 export const createTenant = /* GraphQL */ `mutation CreateTenant(
   $input: CreateTenantInput!
   $condition: ModelTenantConditionInput
@@ -141,6 +160,7 @@ export const createTenant = /* GraphQL */ `mutation CreateTenant(
   createTenant(input: $input, condition: $condition) {
     id
     name
+    maxUserCount
     isSuspended
     createdAt
     updatedAt
@@ -158,6 +178,7 @@ export const updateTenant = /* GraphQL */ `mutation UpdateTenant(
   updateTenant(input: $input, condition: $condition) {
     id
     name
+    maxUserCount
     isSuspended
     createdAt
     updatedAt
@@ -175,6 +196,7 @@ export const deleteTenant = /* GraphQL */ `mutation DeleteTenant(
   deleteTenant(input: $input, condition: $condition) {
     id
     name
+    maxUserCount
     isSuspended
     createdAt
     updatedAt
@@ -184,6 +206,66 @@ export const deleteTenant = /* GraphQL */ `mutation DeleteTenant(
 ` as GeneratedMutation<
   APITypes.DeleteTenantMutationVariables,
   APITypes.DeleteTenantMutation
+>;
+export const createUser = /* GraphQL */ `mutation CreateUser(
+  $input: CreateUserInput!
+  $condition: ModelUserConditionInput
+) {
+  createUser(input: $input, condition: $condition) {
+    id
+    tenantId
+    email
+    name
+    isAdmin
+    confirmingEmail
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateUserMutationVariables,
+  APITypes.CreateUserMutation
+>;
+export const updateUser = /* GraphQL */ `mutation UpdateUser(
+  $input: UpdateUserInput!
+  $condition: ModelUserConditionInput
+) {
+  updateUser(input: $input, condition: $condition) {
+    id
+    tenantId
+    email
+    name
+    isAdmin
+    confirmingEmail
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.UpdateUserMutationVariables,
+  APITypes.UpdateUserMutation
+>;
+export const deleteUser = /* GraphQL */ `mutation DeleteUser(
+  $input: DeleteUserInput!
+  $condition: ModelUserConditionInput
+) {
+  deleteUser(input: $input, condition: $condition) {
+    id
+    tenantId
+    email
+    name
+    isAdmin
+    confirmingEmail
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.DeleteUserMutationVariables,
+  APITypes.DeleteUserMutation
 >;
 export const createFloor = /* GraphQL */ `mutation CreateFloor(
   $input: CreateFloorInput!

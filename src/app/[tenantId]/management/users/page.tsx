@@ -3,13 +3,11 @@
 import Link from "next/link";
 import { Box, Toolbar, Typography } from "@mui/material";
 import MiraCalBreadcrumbs from "@/components/MiraCalBreadcrumbs";
-import { useReFindUsers } from "@/hooks/ReFindUser";
 import { useTenantId } from "../../hook";
 import UsersTable from "./UsersTable";
 
 export default function Page() {
     const tenantId = useTenantId();
-    const query = useReFindUsers()
     
     return (
         <>
@@ -23,14 +21,7 @@ export default function Page() {
                     <Typography variant="h5" flexGrow={1}>ユーザー編集</Typography>
                 </Box>
             </Toolbar>
-            <Box>
-                {query.isLoading && (
-                    <p>loading...</p>
-                )}
-                {query.isFetched && (
-                    <UsersTable />
-                )}
-            </Box>
+            <UsersTable />
         </>
     )
 }

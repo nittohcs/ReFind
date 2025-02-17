@@ -14,7 +14,7 @@ import { useAuthState } from "@/hooks/auth";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { useTodayYYYYMMDD } from "@/hooks/util";
 import { queryKeys } from "@/services/queryKeys";
-import { AdminQueriesUser, ReFindUser } from "@/types/user";
+import { ReFindUser } from "@/types/user";
 import { useTenantId } from "../../hook";
 import { deleteReFindUser } from "./user";
 
@@ -67,7 +67,7 @@ export const DeleteUserDialog: FC<DeleteUserDialogProps> = ({ isOpened, close, d
 
             // ユーザー一覧のクエリのキャッシュを更新する
             const deletedUserIds = data.map(x => x.user.id);
-            queryClient.setQueryData(queryKeys.listUsersByTenantId(tenantId), (items: AdminQueriesUser[] = []) => items.filter(user => !deletedUserIds.includes(user.id)));
+            queryClient.setQueryData(queryKeys.graphqlUsersByTenantId(tenantId), (items: ReFindUser[] = []) => items.filter(user => !deletedUserIds.includes(user.id)))
 
             // 座席確保情報のクエリのキャッシュを更新する
             const seatOccupancies = data.map(x => x.seatOccupancy).filter(x => !!x);
@@ -83,7 +83,7 @@ export const DeleteUserDialog: FC<DeleteUserDialogProps> = ({ isOpened, close, d
         },
         onError(error, _variables, _context) {
             // クエリを再取得
-            queryClient.invalidateQueries({ queryKey: queryKeys.listUsersByTenantId(tenantId) });
+            queryClient.invalidateQueries({ queryKey: queryKeys.graphqlUsersByTenantId(tenantId) });
             queryClient.invalidateQueries({ queryKey: queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId) });
 
             if (!!error.message) {

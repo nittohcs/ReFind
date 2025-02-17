@@ -24,8 +24,54 @@ type Tenant @model @auth (
   # 名前
   name: String!
 
+  # 最大ユーザー数
+  maxUserCount: Int!
+
   # 利用停止中かどうか
   isSuspended: Boolean!
+}
+
+# ユーザーマスタ
+type User @model @auth (
+  rules: [
+    {
+      allow: groups,
+      provider: userPools,
+      groupClaim: "cognito:groups",
+      groups: ["sysAdmins"],
+      operations: [read]
+    },
+    {
+      allow: groups,
+      provider: userPools,
+      groupClaim: "cognito:groups",
+      groupsField: "tenantId",
+      operations: [read]
+    },
+    {
+      allow: private,
+      provider: iam,
+      operations: [create, update, delete, read]
+    }
+  ]
+) {
+  # id
+  id: ID!
+
+  # テナントID
+  tenantId: ID! @index(name: "byTenantId")
+
+  # メールアドレス
+  email: String!
+
+  # 氏名
+  name: String!
+
+  # 管理者かどうか
+  isAdmin: Boolean!
+
+  # 検証待ちメールアドレス
+  confirmingEmail: String
 }
 
 # フロアマスタ
@@ -210,6 +256,24 @@ input funcDeleteSeatInput {
   id: ID!
 }
 
+input funcUpdateUserAttributesInput {
+  accessToken: String!
+  email: String
+  name: String
+}
+
+type funcUpdateUserAttributesResponse {
+  isUpdatedEmail: Boolean!
+  isUpdatedName: Boolean!
+  isRequiredVerification: Boolean!
+}
+
+input funcVerifyUserAttributeInput {
+  accessToken: String!
+  attributeName: String!
+  code: String!
+}
+
 type Query {
   # ファイルアップロード用URLの取得
   getFileUploadUrl(filePath: String!): String
@@ -252,6 +316,14 @@ type Mutation {
   # 座席確保情報登録
   funcCreateSeatOccupancy(input: funcCreateSeatOccupancyInput!): SeatOccupancy
   @function(name: "refind2CreateSeatOccupancy-${env}")
+
+  # ユーザー情報更新
+  funcUpdateUserAttributes(input: funcUpdateUserAttributesInput): funcUpdateUserAttributesResponse
+  @function(name: "refind2UpdateUserAttributes-${env}")
+
+  # ユーザー情報検証
+  funcVerifyUserAttribute(input: funcVerifyUserAttributeInput): Boolean
+  @function(name: "refind2VerifyUserAttribute-${env}")
 }
 
 type Subscription {

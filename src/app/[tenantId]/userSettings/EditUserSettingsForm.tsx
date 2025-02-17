@@ -4,15 +4,17 @@ import { Dispatch, FC, SetStateAction, useCallback, useMemo } from "react";
 import { Box, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
-import { updateUserAttributes } from "aws-amplify/auth";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import MiraCalButton from "@/components/MiraCalButton";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalTextField from "@/components/MiraCalTextField";
-import MiraCalErrorAlert from "@/components/MiraCalErrorAlert";
 import MiraCalFormAction from "@/components/MiraCalFormAction";
 import { useAuthState, useUpdateUserInfo } from "@/hooks/auth";
 import { useEnqueueSnackbar } from "@/hooks/ui";
+import { queryKeys } from "@/services/queryKeys";
+import { ReFindUser } from "@/types/user";
+import { useTenantId } from "../hook";
+import { graphqlUpdateUserAttributes } from "./operation";
 
 type EditUserSettingsFormValues = {
     username?: string,
@@ -27,9 +29,11 @@ type EditUserSettingsFormProps = {
 };
 
 export const EditUserSettingsForm: FC<EditUserSettingsFormProps> = ({ /*confirmingEmail,*/ setConfirmingEmail, update }) => {
+    const tenantId = useTenantId();
     const authState = useAuthState();
     const updateUserInfo = useUpdateUserInfo();
     const enqueueSnackbar = useEnqueueSnackbar();
+    const queryClient = useQueryClient();
 
     const validationSchema = useMemo(() => yup.object().shape({
         username: yup.string().default(""),
@@ -44,35 +48,30 @@ export const EditUserSettingsForm: FC<EditUserSettingsFormProps> = ({ /*confirmi
     }), [validationSchema, authState.username, authState.name, authState.email]);
 
     const mutation = useMutation(({
-        async mutationFn({ name, email }: EditUserSettingsFormValues) {
-            const attributes: EditUserSettingsFormValues = {};
-            if (name !== initialValues.name) {
-                attributes.name = name;
-            }
-            if (email !== initialValues.email) {
-                attributes.email = email;
-            }
-            const output = await updateUserAttributes({
-                userAttributes: attributes,
-            });
-            return output;
+        async mutationFn(values: EditUserSettingsFormValues) {
+            const input = {
+                ...(values.email !== initialValues.email && { email: values.email }),
+                ...(values.name !== initialValues.name && { name: values.name }),
+            };
+            const ret = await graphqlUpdateUserAttributes(input);
+            return ret;
         },
         onSuccess(data, variables, _context) {
             let updated = false;
             let confirmRequired = false;
 
-            if (data.name?.isUpdated) {
+            if (data.isUpdatedName) {
                 updateUserInfo({ name: variables.name });
                 updated = true;
             }
 
             // メールアドレスは確認コードの入力が必要なので、これは実行されないはず
-            if (data.email?.isUpdated) {
+            if (data.isUpdatedEmail) {
                 updateUserInfo({ email: variables.email });
                 updated = true;
             }
 
-            if (data.email?.nextStep.updateAttributeStep === "CONFIRM_ATTRIBUTE_WITH_CODE") {
+            if (data.isRequiredVerification) {
                 setConfirmingEmail(variables.email as string);
                 confirmRequired = true;
             }
@@ -84,9 +83,22 @@ export const EditUserSettingsForm: FC<EditUserSettingsFormProps> = ({ /*confirmi
             if (confirmRequired) {
                 enqueueSnackbar("メールアドレスを変更するには確認コードを入力してください。", { variant: "info" })
             }
+
+            // クエリのキャッシュを更新
+            queryClient.setQueryData(queryKeys.graphqlUsersByTenantId(tenantId), (items: ReFindUser[] = []) => items.map(user => user.id === variables.username ? {...user, ...(data.isUpdatedName && { name: variables.name }), ...(data.isUpdatedEmail && { email: variables.email })} : user));
         },
         onError(error, _variables, _context) {
-            console.log(error.message);
+            if (!!error.message) {
+                enqueueSnackbar(error.message, { variant: "error" });
+                return;
+            }
+
+            // Error型以外でエラーが飛んでくる場合に対応
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const tmp = error as any;
+            for(const e of tmp.errors) {
+                enqueueSnackbar(e.message, { variant: "error" });
+            }
         },
     }));
 
@@ -117,7 +129,6 @@ export const EditUserSettingsForm: FC<EditUserSettingsFormProps> = ({ /*confirmi
                         label="氏名"
                         type="text"
                     />
-                    <MiraCalErrorAlert error={mutation.error} />
                     <MiraCalFormAction>
                         <MiraCalButton
                             variant="contained"

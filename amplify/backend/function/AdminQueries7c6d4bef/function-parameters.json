@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "api": {
+      "refind2": [
+        "Query",
+        "Mutation"
+      ]
+    },
+    "auth": {
+      "refind2a0622a88": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    }
+  },
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "initialPassword",
+      "environmentVariableName": "INITIAL_PASSWORD"
+    }
+  ]
+}

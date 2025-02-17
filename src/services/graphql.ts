@@ -2,9 +2,9 @@
 
 import { GraphQLResult, graphqlOperation } from "@aws-amplify/api-graphql";
 import { useQuery } from "@tanstack/react-query";
-import { Floor, FloorsByTenantIdQuery, FloorsByTenantIdQueryVariables, GetTenantQuery, GetTenantQueryVariables, ListTenantsQuery, ListTenantsQueryVariables, Seat, SeatOccupanciesByDateAndTenantIdQuery, SeatOccupanciesByDateAndTenantIdQueryVariables, SeatOccupancy, SeatsByTenantIdQuery, SeatsByTenantIdQueryVariables, Tenant } from "@/API";
+import { Floor, FloorsByTenantIdQuery, FloorsByTenantIdQueryVariables, GetTenantQuery, GetTenantQueryVariables, ListTenantsQuery, ListTenantsQueryVariables, Seat, SeatOccupanciesByDateAndTenantIdQuery, SeatOccupanciesByDateAndTenantIdQueryVariables, SeatOccupancy, SeatsByTenantIdQuery, SeatsByTenantIdQueryVariables, Tenant, User, UsersByTenantIdQuery, UsersByTenantIdQueryVariables } from "@/API";
 import { client } from "@/components/APIClientProvider";
-import { floorsByTenantId, getTenant, listTenants, seatOccupanciesByDateAndTenantId, seatsByTenantId } from "@/graphql/queries";
+import { floorsByTenantId, getTenant, listTenants, seatOccupanciesByDateAndTenantId, seatsByTenantId, usersByTenantId } from "@/graphql/queries";
 import { NextToken } from "@/types/graphql";
 import { queryKeys } from "./queryKeys";
 
@@ -164,4 +164,38 @@ async function graphqlSeatOccupanciesByDateAndTenantId(date: string, tenantId: s
     } while(nextToken);
 
     return seatOccupancies;
+}
+
+export function useUsersByTenantId(tenantId: string, staleTime?: number) {
+    return useQuery({
+        queryKey: queryKeys.graphqlUsersByTenantId(tenantId),
+        async queryFn() { return await graphqlUsersByTenantId(tenantId); },
+        ...(!!staleTime && {staleTime }),
+    });
+}
+
+async function graphqlUsersByTenantId(tenantId: string) {
+    const users: User[] = [];
+
+    let nextToken: NextToken = undefined;
+    do {
+        const result = await client.graphql(
+            graphqlOperation(
+                usersByTenantId,
+                {
+                    tenantId,
+                    nextToken,
+                } as UsersByTenantIdQueryVariables
+            )
+        ) as GraphQLResult<UsersByTenantIdQuery>;
+        if (result.errors || !result.data) { throw new Error(JSON.stringify(result.errors)); }
+        for(const item of result.data.usersByTenantId?.items ?? []) {
+            if (item) {
+                users.push(item);
+            }
+        }
+        nextToken = result.data.usersByTenantId?.nextToken;
+    } while(nextToken);
+
+    return users;
 }

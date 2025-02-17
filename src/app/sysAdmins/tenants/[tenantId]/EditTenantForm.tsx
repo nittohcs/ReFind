@@ -20,6 +20,7 @@ import { graphqlUpdateTenant } from "../operation";
 type FormValues = {
     id: string,
     name: string,
+    maxUserCount: number,
     isSuspended: boolean,
 };
 
@@ -38,12 +39,14 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
     const validationSchema = useMemo(() => yup.object().shape({
         id: yup.string().required(),
         name: yup.string().required(),
+        maxUserCount: yup.number().required().min(1),
         isSuspended: yup.bool().required(),
     }), []);
 
     const initialValues: FormValues = useMemo(() => validationSchema.cast({
         id: tenant?.id ?? "",
         name: tenant?.name ?? "",
+        maxUserCount: tenant?.maxUserCount ?? 0,
         isSuspended: tenant?.isSuspended ?? false,
     }), [validationSchema, tenant]);
 
@@ -55,14 +58,12 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
             return await graphqlUpdateTenant({
                 id: values.id,
                 name: values.name,
+                maxUserCount: values.maxUserCount,
                 isSuspended: values.isSuspended,
             });
         },
         onSuccess(data, _variables, _context) {
             enqueueSnackbar("テナントを更新しました。", { variant: "success" });
-
-            // クエリを無効化して再取得されるようにする
-            //queryClient.invalidateQueries({ queryKey: queryKeys.listAllTenants });
 
             // 更新したテナントだけキャッシュを更新
             queryClient.setQueryData(queryKeys.graphqlListAllTenants, (items: Tenant[]) => items.map(item => item.id === data.id ? data : item));
@@ -106,6 +107,11 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
                         label="名前"
                         type="text"
                     />
+                    <MiraCalTextField
+                        name="maxUserCount"
+                        label="最大ユーザー数"
+                        type="number"
+                    />
                     <MiraCalCheckbox
                         name="isSuspended"
                         label="利用停止中"
@@ -119,7 +125,7 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
                         >
                             保存
                         </MiraCalButton>
-                        <Link href={`/${tenantId}`}>
+                        <Link href={`/${tenantId}`} target="_blank" rel="noopener noreferrer">
                             <Button
                                 variant="contained"
                             >
