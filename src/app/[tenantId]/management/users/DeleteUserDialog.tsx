@@ -103,7 +103,7 @@ export const DeleteUserDialog: FC<DeleteUserDialogProps> = ({ isOpened, close, d
     const onSubmit = useCallback((values: FormValues) => mutation.mutate(values), [mutation]);
 
     return (
-        <Dialog fullWidth maxWidth="sm" open={isOpened} onClose={close}>
+        <Dialog fullWidth maxWidth="sm" open={isOpened} onClose={() => !mutation.isPending && close()}>
             <DialogTitle>ユーザー削除</DialogTitle>
             <Formik<FormValues>
                 validationSchema={validationSchema}
@@ -139,6 +139,7 @@ export const DeleteUserDialog: FC<DeleteUserDialogProps> = ({ isOpened, close, d
                         <MiraCalButton
                             variant="contained"
                             onClick={close}
+                            disabled={mutation.isPending}
                         >
                             キャンセル
                         </MiraCalButton>

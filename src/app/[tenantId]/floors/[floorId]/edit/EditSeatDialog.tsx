@@ -12,8 +12,8 @@ import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalTextField from "@/components/MiraCalTextField";
 import { useConfirmDialogState } from "@/hooks/confirmDialogState";
 import { useEnqueueSnackbar } from "@/hooks/ui";
+import { graphqlUpdateSeat } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
-import { graphqlUpdateSeat } from "./operation";
 import DeleteSeatDialog from "./DeleatSeatDialog";
 
 type FormValues = {
@@ -59,7 +59,7 @@ export const EditSeatDialog: FC<EditSeatDialogProps> = ({
 
     const enqueueSnackbar = useEnqueueSnackbar();
     const queryClient = useQueryClient();
-    const updateMutation = useMutation({
+    const mutation = useMutation({
         async mutationFn(values: FormValues) {
             const seat = await graphqlUpdateSeat({
                 id: values.id,
@@ -93,14 +93,14 @@ export const EditSeatDialog: FC<EditSeatDialogProps> = ({
             }
         },
     });
-    const onSubmit = useCallback((values: FormValues) => updateMutation.mutate(values), [updateMutation]);
+    const onSubmit = useCallback((values: FormValues) => mutation.mutate(values), [mutation]);
 
     const seat = data as Seat;
     const confirmDialogState = useConfirmDialogState<Seat>();
 
     return (
         <>
-            <Dialog fullWidth maxWidth="sm" open={isOpened} onClose={close}>
+            <Dialog fullWidth maxWidth="sm" open={isOpened} onClose={() => !mutation.isPending && close()}>
                 <DialogTitle>座席編集</DialogTitle>
                 <Formik<FormValues>
                     validationSchema={validationSchema}
@@ -129,7 +129,7 @@ export const EditSeatDialog: FC<EditSeatDialogProps> = ({
                             <MiraCalButton
                                 variant="contained"
                                 type="submit"
-                                disabled={updateMutation.isPending}
+                                disabled={mutation.isPending}
                                 disabledWhenNotDirty={true}
                             >
                                 更新
@@ -137,12 +137,14 @@ export const EditSeatDialog: FC<EditSeatDialogProps> = ({
                             <MiraCalButton
                                 variant="contained"
                                 onClick={() => confirmDialogState.open("座席削除", `座席「${seat.name}」を削除します。`, seat)}
+                                disabled={mutation.isPending}
                             >
                                 削除
                             </MiraCalButton>
                             <MiraCalButton
                                 variant="contained"
                                 onClick={close}
+                                disabled={mutation.isPending}
                             >
                                 キャンセル
                             </MiraCalButton>

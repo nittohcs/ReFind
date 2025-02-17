@@ -85,7 +85,7 @@ export const ConfirmDialog: FC<ConfirmDialogProps> = ({
     });
 
     return (
-        <Dialog fullWidth maxWidth="sm" open={isOpened} onClose={close}>
+        <Dialog fullWidth maxWidth="sm" open={isOpened} onClose={() => !mutation.isPending && close()}>
             <DialogTitle>{dialogData?.title}</DialogTitle>
             <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 <DialogContentText>{dialogData?.message}</DialogContentText>
@@ -101,6 +101,7 @@ export const ConfirmDialog: FC<ConfirmDialogProps> = ({
                 <Button
                     variant="contained"
                     onClick={close}
+                    disabled={mutation.isPending}
                 >
                     キャンセル
                 </Button>

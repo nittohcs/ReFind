@@ -16,8 +16,8 @@ import MiraCalFormAction from "@/components/MiraCalFormAction";
 import { useConfirmDialogState } from "@/hooks/confirmDialogState";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { useFloorsByTenantId } from "@/services/graphql";
+import { graphqlGetFileUploadUrl, graphqlUpdateFloor } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
-import { graphqlGetFileUploadUrl, graphqlUpdateFloor } from "../operation";
 import DeleteFloorDialog from "./DeleteFloorDialog";
 
 type FormValues = {
@@ -61,7 +61,7 @@ export const EditFloorForm: FC<EditFloorFormProps> = ({
 
     const enqueueSnackbar = useEnqueueSnackbar();
     const queryClient = useQueryClient();
-    const updateMutation = useMutation({
+    const mutation = useMutation({
         async mutationFn(values: FormValues) {
             function getFile(ref: RefObject<HTMLInputElement>) {
                 return ref.current?.files && ref.current?.files.length > 0 ? ref.current.files[0] : undefined;
@@ -123,7 +123,7 @@ export const EditFloorForm: FC<EditFloorFormProps> = ({
             }
         },
     });
-    const onSubmit = useCallback((values: FormValues) => updateMutation.mutate(values), [updateMutation]);
+    const onSubmit = useCallback((values: FormValues) => mutation.mutate(values), [mutation]);
 
     const confirmDialogState = useConfirmDialogState<Floor>();
 
@@ -168,7 +168,7 @@ export const EditFloorForm: FC<EditFloorFormProps> = ({
                         <MiraCalButton
                             variant="contained"
                             type="submit"
-                            disabled={updateMutation.isPending}
+                            disabled={mutation.isPending}
                             disabledWhenNotDirty={true}
                         >
                             保存
@@ -176,7 +176,7 @@ export const EditFloorForm: FC<EditFloorFormProps> = ({
                         <MiraCalButton
                             variant="contained"
                             onClick={() => floor && confirmDialogState.open("フロア削除", `フロア「${floor.name}」を削除します。`, floor)}
-                            disabled={updateMutation.isPending}
+                            disabled={mutation.isPending}
                         >
                             削除
                         </MiraCalButton>

@@ -15,8 +15,8 @@ import { ImageUploadState, MiraCalImageUpload } from "@/components/MiraCalImageU
 import MiraCalFormAction from "@/components/MiraCalFormAction";
 import MiraCalButton from "@/components/MiraCalButton";
 import { useEnqueueSnackbar } from "@/hooks/ui";
+import { graphqlCreateFloor, graphqlGetFileUploadUrl } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
-import { graphqlCreateFloor, graphqlGetFileUploadUrl } from "../operation";
 
 type FormValues = {
     name: string,
