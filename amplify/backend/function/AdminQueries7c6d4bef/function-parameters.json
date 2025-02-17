@@ -2,6 +2,7 @@
   "permissions": {
     "api": {
       "refind2": [
+        "Query",
         "Mutation"
       ]
     },

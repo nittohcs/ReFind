@@ -60,6 +60,42 @@ const deleteUser = /* GraphQL */ `mutation DeleteUser(
 }
 `;
 
+const getTenant = /* GraphQL */ `query GetTenant($id: ID!) {
+  getTenant(id: $id) {
+    id
+    name
+    maxUserCount
+    isSuspended
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+`;
+
+const usersByTenantIdForUserCount = /* GraphQL */ `query UsersByTenantId(
+  $tenantId: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelUserFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  usersByTenantId(
+    tenantId: $tenantId
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+    }
+    nextToken
+    __typename
+  }
+}
+`;
+
 async function graphqlAccess(query, variables) {
     const endpoint = new URL(GRAPHQL_ENDPOINT);
 
@@ -125,8 +161,28 @@ async function graphqlDeleteUser({ id }) {
     return ret.data.deleteUser;
 }
 
+async function graphqlGetTenant({ id }) {
+  const ret = await graphqlAccess(getTenant, { id });
+  return ret.data.getTenant;
+}
+
+async function graphqlGetUserCount({ tenantId }) {
+  let count = 0;
+
+  let nextToken = undefined;
+  do {
+    const ret = await graphqlAccess(usersByTenantIdForUserCount, { tenantId, nextToken });
+    count += ret.data.usersByTenantId.items.length;
+    nextToken = ret.data.usersByTenantId.nextToken;
+  } while(nextToken);
+
+  return count;
+}
+
 module.exports = {
     graphqlCreateUser,
     graphqlUpdateUser,
     graphqlDeleteUser,
+    graphqlGetTenant,
+    graphqlGetUserCount,
 };

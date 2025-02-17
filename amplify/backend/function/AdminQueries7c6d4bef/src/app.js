@@ -46,6 +46,8 @@ const {
   graphqlCreateUser,
   graphqlUpdateUser,
   graphqlDeleteUser,
+  graphqlGetTenant,
+  graphqlGetUserCount,
 } = require('./graphql');
 
 const app = express();
@@ -214,6 +216,15 @@ app.post('/createUser', async (req, res, next) => {
         err.statusCode = 400;
         return next(err);
       }
+    }
+
+    // 最大ユーザー数チェック
+    const maxUserCount = (await graphqlGetTenant({ id: req.body.tenantId })).maxUserCount;
+    const currentUserCount = await graphqlGetUserCount({ tenantId: req.body.tenantId });
+    if (currentUserCount >= maxUserCount) {
+      const err = new Error('Too many users');
+      err.statusCode = 400;
+      return next(err);
     }
 
     // ユーザー作成
