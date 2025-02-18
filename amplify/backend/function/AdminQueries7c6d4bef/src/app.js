@@ -438,6 +438,25 @@ app.post('/enableUser', async (req, res, next) => {
 });
 */
 
+app.get('/isAvailableUsername', async (req, res, next) => {
+  if (!req.query.username) {
+    const err = new Error('username is required');
+    err.statusCode = 400;
+    return next(err);
+  }
+
+  try {
+    await getUser(req.query.username);
+    res.status(200).json({ available: false });
+  } catch (err) {
+    if (err.name === "UserNotFoundException") {
+      res.status(200).json({ available: true });
+    } else {
+      next(err);
+    }
+  }
+});
+
 /*
 app.get('/getUser', async (req, res, next) => {
   if (!req.query.username) {

@@ -78,7 +78,7 @@ export const ReleaseSeatDialog: FC<ReleaseSeatDialogProps> = ({
         },
     });
     return (
-        <Dialog fullWidth maxWidth="sm" open={isOpened} onClose={close}>
+        <Dialog fullWidth maxWidth="sm" open={isOpened} onClose={() => !mutation.isPending && close()}>
             <DialogTitle>座席強制解放</DialogTitle>
             <DialogContent sx={{ display: "flex", flexDirection: "column" , gap: 2 }}>
                 <DialogContentText>{`選択中の${data?.length}件のユーザーの確保している座席を強制解放します。`}</DialogContentText>
@@ -97,6 +97,7 @@ export const ReleaseSeatDialog: FC<ReleaseSeatDialogProps> = ({
                 <Button
                     variant="contained"
                     onClick={close}
+                    disabled={mutation.isPending}
                 >
                     キャンセル
                 </Button>

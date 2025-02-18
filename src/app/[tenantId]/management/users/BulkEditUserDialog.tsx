@@ -113,7 +113,7 @@ export const BulkEditUserDialog: FC<BulkEditUserDialogProps> = ({
     const onSubmit = useCallback((values: FormValues) => mutation.mutate(values), [mutation]);
 
     return (
-        <Dialog fullWidth maxWidth="sm" open={isOpened} onClose={close}>
+        <Dialog fullWidth maxWidth="sm" open={isOpened} onClose={() => !mutation.isPending && close()}>
             <DialogTitle>ユーザー一括編集</DialogTitle>
             <Formik<FormValues>
                 validationSchema={validationSchema}
@@ -141,6 +141,7 @@ export const BulkEditUserDialog: FC<BulkEditUserDialogProps> = ({
                         <MiraCalButton
                             variant="contained"
                             onClick={close}
+                            disabled={mutation.isPending}
                         >
                             キャンセル
                         </MiraCalButton>

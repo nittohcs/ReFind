@@ -1,37 +1,69 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Floor } from "@/API";
+import { Floor, Seat } from "@/API";
 import { useTenantId } from "@/app/[tenantId]/hook";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { ConfirmDialogState } from "@/hooks/confirmDialogState";
+import { useSeatOccupancy } from "@/hooks/seatOccupancy";
 import { useEnqueueSnackbar } from "@/hooks/ui";
+import { graphqlDeleteFile, graphqlDeleteFloor, graphqlDeleteSeat } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
-import { graphqlDeleteFile, graphqlDeleteFloor } from "../operation";
 
 export default function DeleteFloorDialog(state: ConfirmDialogState<Floor>) {
     const tenantId = useTenantId();
+    const {isReady, allSeats} = useSeatOccupancy();
     const router = useRouter();
+
+    const [progressMessage, setProgressMessage] = useState("");
+    const [totalCount, setTotalCount] = useState(1);
+    const [currentCount, setCurrentCount] = useState(0);
+    const progressValue = 100.0 * currentCount / totalCount;
+    const progressLabel = `${currentCount}/${totalCount}`;
+
     const enqueueSnackbar = useEnqueueSnackbar();
     const queryClient = useQueryClient();
     const mutation = useMutation({
         async mutationFn() {
             const floor = state.data as Floor;
+            const ret = {
+                seats: [] as Seat[],
+                floor: floor,
+            };
 
-            // ストレージから画像を削除する
+            // 座席を削除
+            const seats = allSeats.filter(seat => seat.floorId === floor.id);
+            setProgressMessage("座席を削除中");
+            setTotalCount(seats.length);
+            setCurrentCount(0);
+            for(const seat of seats) {
+                ret.seats.push(await graphqlDeleteSeat({ id: seat.id }));
+                setCurrentCount(x => x + 1);
+            }
+
+            setProgressMessage("フロアを削除中");
+            setTotalCount(1);
+            setCurrentCount(0);
+
+            // 画像を削除
             const _result = await graphqlDeleteFile(floor.imagePath);
 
-            // テーブルからレコードを削除する
-            return await graphqlDeleteFloor({
-                id: floor.id,
-            });
+            // フロアを削除
+            ret.floor = await graphqlDeleteFloor({ id: floor.id });
+
+            setCurrentCount(1);
+
+            return ret;
         },
         onSuccess(data, _variables, _context) {
-            enqueueSnackbar(`フロア「${data.name}」を削除しました。`, { variant: "success" });
+            enqueueSnackbar(`フロア「${data.floor.name}」を削除しました。`, { variant: "success" });
 
-            // 削除したフロアをキャッシュから削除
-            queryClient.setQueryData(queryKeys.graphqlFloorsByTenantId(tenantId), (items: Floor[] = []) => items.filter(item => item.id !== data.id));
+            // クエリのキャッシュを更新
+            const deletedSeatIds = data.seats.map(x => x.id);
+            queryClient.setQueryData(queryKeys.graphqlSeatsByTenantId(tenantId), (items: Seat[] = []) => items.filter(item => !deletedSeatIds.includes(item.id)));
+            queryClient.setQueryData(queryKeys.graphqlFloorsByTenantId(tenantId), (items: Floor[] = []) => items.filter(item => item.id !== data.floor.id));
 
             // ダイアログを閉じる
             state.close();
@@ -54,11 +86,18 @@ export default function DeleteFloorDialog(state: ConfirmDialogState<Floor>) {
         },
     });
 
+    if (!isReady) {
+        return null;
+    }
+
     return (
         <ConfirmDialog
             {...state}
             onConfirm={() => mutation.mutate()}
             isPending={mutation.isPending}
+            progressMessage={progressMessage}
+            progressValue={progressValue}
+            progressLabel={progressLabel}
         />
     );
 }

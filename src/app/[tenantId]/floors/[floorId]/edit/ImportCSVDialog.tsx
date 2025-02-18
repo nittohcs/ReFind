@@ -13,8 +13,8 @@ import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalButton from "@/components/MiraCalButton";
 import MiraCalLinearProgressWithLabel from "@/components/MiraCalLinearProgressWithLabel";
 import { useEnqueueSnackbar } from "@/hooks/ui";
+import { graphqlCreateSeat, graphqlDeleteSeat } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
-import { graphqlCreateSeat, graphqlDeleteSeat } from "./operation";
 
 type FormValues = {
     csv: string,
@@ -170,7 +170,7 @@ export const ImportCSVDialog: FC<ImportCSVDialogProps> = ({
     const onSubmit = useCallback((values: FormValues) => mutation.mutate(values), [mutation]);
 
     return (
-        <Dialog fullWidth maxWidth="sm" open={isOpened} onClose={close}>
+        <Dialog fullWidth maxWidth="sm" open={isOpened} onClose={() => !mutation.isPending && close()}>
             <DialogTitle>CSVインポート</DialogTitle>
             <Formik<FormValues>
                 validationSchema={validationSchema}
@@ -204,6 +204,7 @@ export const ImportCSVDialog: FC<ImportCSVDialogProps> = ({
                         <MiraCalButton
                             variant="contained"
                             onClick={close}
+                            disabled={mutation.isPending}
                         >
                             キャンセル
                         </MiraCalButton>

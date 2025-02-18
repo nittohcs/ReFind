@@ -2,9 +2,10 @@
 
 import { GraphQLResult, graphqlOperation } from "@aws-amplify/api-graphql";
 import { useQuery } from "@tanstack/react-query";
-import { Floor, FloorsByTenantIdQuery, FloorsByTenantIdQueryVariables, GetTenantQuery, GetTenantQueryVariables, ListTenantsQuery, ListTenantsQueryVariables, Seat, SeatOccupanciesByDateAndTenantIdQuery, SeatOccupanciesByDateAndTenantIdQueryVariables, SeatOccupancy, SeatsByTenantIdQuery, SeatsByTenantIdQueryVariables, Tenant, User, UsersByTenantIdQuery, UsersByTenantIdQueryVariables } from "@/API";
+import { DeleteFileMutation, DeleteFileMutationVariables, Floor, FloorsByTenantIdQuery, FloorsByTenantIdQueryVariables, funcCreateFloorInput, FuncCreateFloorMutation, FuncCreateFloorMutationVariables, funcCreateSeatInput, FuncCreateSeatMutation, FuncCreateSeatMutationVariables, funcDeleteFloorInput, FuncDeleteFloorMutation, FuncDeleteFloorMutationVariables, funcDeleteSeatInput, FuncDeleteSeatMutation, FuncDeleteSeatMutationVariables, funcUpdateFloorInput, FuncUpdateFloorMutation, FuncUpdateFloorMutationVariables, funcUpdateSeatInput, FuncUpdateSeatMutation, FuncUpdateSeatMutationVariables, GetFileUploadUrlQuery, GetFileUploadUrlQueryVariables, GetTenantQuery, GetTenantQueryVariables, ListTenantsQuery, ListTenantsQueryVariables, Seat, SeatOccupanciesByDateAndTenantIdQuery, SeatOccupanciesByDateAndTenantIdQueryVariables, SeatOccupancy, SeatsByTenantIdQuery, SeatsByTenantIdQueryVariables, Tenant, User, UsersByTenantIdQuery, UsersByTenantIdQueryVariables } from "@/API";
 import { client } from "@/components/APIClientProvider";
-import { floorsByTenantId, getTenant, listTenants, seatOccupanciesByDateAndTenantId, seatsByTenantId, usersByTenantId } from "@/graphql/queries";
+import { deleteFile, funcCreateFloor, funcCreateSeat, funcDeleteFloor, funcDeleteSeat, funcUpdateFloor, funcUpdateSeat } from "@/graphql/mutations";
+import { floorsByTenantId, getFileUploadUrl, getTenant, listTenants, seatOccupanciesByDateAndTenantId, seatsByTenantId, usersByTenantId } from "@/graphql/queries";
 import { NextToken } from "@/types/graphql";
 import { queryKeys } from "./queryKeys";
 
@@ -49,7 +50,11 @@ export function useGetTenant(tenantId: string, staleTime?: number) {
     })
 }
 
-async function graphqlGetTenant(tenantId: string) {
+export async function graphqlGetTenant(tenantId: string) {
+    if (!tenantId) {
+        throw new Error("empty tenantId");
+    }
+
     const result = await client.graphql(
         graphqlOperation(
             getTenant,
@@ -71,7 +76,11 @@ export function useFloorsByTenantId(tenantId: string, staleTime?: number) {
     });
 }
 
-async function graphqlFloorsByTenantId(tenantId: string) {
+export async function graphqlFloorsByTenantId(tenantId: string) {
+    if (!tenantId) {
+        throw new Error("empty tenantId");
+    }
+
     const floors: Floor[] = [];
 
     let nextToken: NextToken = undefined;
@@ -105,7 +114,11 @@ export function useSeatsByTenantId(tenantId: string, staleTime?: number) {
     });
 }
 
-async function graphqlSeatsByTenantId(tenantId: string) {
+export async function graphqlSeatsByTenantId(tenantId: string) {
+    if (!tenantId) {
+        throw new Error("empty tenantId");
+    }
+
     const seats: Seat[] = [];
 
     let nextToken: NextToken = undefined;
@@ -174,7 +187,11 @@ export function useUsersByTenantId(tenantId: string, staleTime?: number) {
     });
 }
 
-async function graphqlUsersByTenantId(tenantId: string) {
+export async function graphqlUsersByTenantId(tenantId: string) {
+    if (!tenantId) {
+        throw new Error("empty tenantId");
+    }
+
     const users: User[] = [];
 
     let nextToken: NextToken = undefined;
@@ -198,4 +215,116 @@ async function graphqlUsersByTenantId(tenantId: string) {
     } while(nextToken);
 
     return users;
+}
+
+export async function graphqlCreateSeat(input: funcCreateSeatInput) {
+    const result = await client.graphql(
+        graphqlOperation(
+            funcCreateSeat,
+            {
+                input,
+            } as FuncCreateSeatMutationVariables
+        )
+    ) as GraphQLResult<FuncCreateSeatMutation>;
+    if (result.errors) { throw new Error(JSON.stringify(result.errors)); }
+    if (!result.data.funcCreateSeat) { throw new Error("座席の登録に失敗しました。"); }
+    return result.data.funcCreateSeat;
+}
+
+export async function graphqlUpdateSeat(input: funcUpdateSeatInput) {
+    const result = await client.graphql(
+        graphqlOperation(
+            funcUpdateSeat,
+            {
+                input,
+            } as FuncUpdateSeatMutationVariables
+        )
+    ) as GraphQLResult<FuncUpdateSeatMutation>;
+    if (result.errors) { throw new Error(JSON.stringify(result.errors)); }
+    if (!result.data.funcUpdateSeat) { throw new Error("座席の更新に失敗しました。"); }
+    return result.data.funcUpdateSeat;
+}
+
+export async function graphqlDeleteSeat(input: funcDeleteSeatInput) {
+    const result = await client.graphql(
+        graphqlOperation(
+            funcDeleteSeat,
+            {
+                input,
+            } as FuncDeleteSeatMutationVariables
+        )
+    ) as GraphQLResult<FuncDeleteSeatMutation>;
+    if (result.errors) { throw new Error(JSON.stringify(result.errors)); }
+    if (!result.data.funcDeleteSeat) { throw new Error("座席の削除に失敗しました。"); }
+    return result.data.funcDeleteSeat;
+}
+
+export async function graphqlUpdateFloor(input: funcUpdateFloorInput) {
+    const result = await client.graphql(
+        graphqlOperation(
+            funcUpdateFloor,
+            {
+                input,
+            } as FuncUpdateFloorMutationVariables
+        )
+    ) as GraphQLResult<FuncUpdateFloorMutation>;
+    if (result.errors) { throw new Error(JSON.stringify(result.errors)); }
+    if (!result.data.funcUpdateFloor) { throw new Error("フロアの更新に失敗しました"); }
+    return result.data.funcUpdateFloor;
+}
+
+export async function graphqlCreateFloor(input: funcCreateFloorInput) {
+    const result = await client.graphql(
+        graphqlOperation(
+            funcCreateFloor,
+            {
+                input,
+            } as FuncCreateFloorMutationVariables
+        )
+    ) as GraphQLResult<FuncCreateFloorMutation>;
+    if (result.errors) { throw new Error(JSON.stringify(result.errors)); }
+    if (!result.data.funcCreateFloor) { throw new Error("フロアの登録に失敗しました。"); }
+    return result.data.funcCreateFloor;
+}
+
+export async function graphqlDeleteFloor(input: funcDeleteFloorInput) {
+    const result = await client.graphql(
+        graphqlOperation(
+            funcDeleteFloor,
+            {
+                input,
+            } as FuncDeleteFloorMutationVariables
+        )
+    ) as GraphQLResult<FuncDeleteFloorMutation>;
+    if (result.errors) { throw new Error(JSON.stringify(result.errors)); }
+    if (!result.data.funcDeleteFloor) { throw new Error("フロアの削除に失敗しました。"); }
+    return result.data.funcDeleteFloor;
+}
+
+export async function graphqlGetFileUploadUrl(filePath: string) {
+    const result = await client.graphql(
+        graphqlOperation(
+            getFileUploadUrl,
+            {
+                filePath,
+            } as GetFileUploadUrlQueryVariables
+        )
+    ) as GraphQLResult<GetFileUploadUrlQuery>;
+    if (result.errors) { throw new Error(JSON.stringify(result.errors)); }
+    if (!result.data.getFileUploadUrl) { throw new Error("ファイルアップロード用URLの取得に失敗しました。"); }
+    return result.data.getFileUploadUrl;
+}
+
+export async function graphqlDeleteFile(filePath: string) {
+    const result = await client.graphql(
+        graphqlOperation(
+            deleteFile,
+            {
+                filePath,
+            } as DeleteFileMutationVariables
+        )
+    ) as GraphQLResult<DeleteFileMutation>;
+    if (result.errors) { throw new Error(JSON.stringify(result.errors)); }
+    if (!result.data.deleteFile) { throw new Error("ファイルの削除に失敗しました。"); }
+    return result.data.deleteFile;
 }

@@ -80,7 +80,7 @@ export const ResetPasswordDialog: FC<ResetPasswordDialogProps> = ({
     const onSubmit = useCallback((values: FormValues) => mutation.mutate(values), [mutation]);
 
     return (
-        <Dialog fullWidth maxWidth="sm" open={isOpened} onClose={close}>
+        <Dialog fullWidth maxWidth="sm" open={isOpened} onClose={() => !mutation.isPending && close()}>
             <DialogTitle>パスワードリセット</DialogTitle>
             <Formik<FormValues>
                 validationSchema={validationSchema}
@@ -112,6 +112,7 @@ export const ResetPasswordDialog: FC<ResetPasswordDialogProps> = ({
                         <MiraCalButton
                             variant="contained"
                             onClick={close}
+                            disabled={mutation.isPending}
                         >
                             キャンセル
                         </MiraCalButton>

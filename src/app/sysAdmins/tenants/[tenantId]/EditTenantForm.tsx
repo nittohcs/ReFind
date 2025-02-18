@@ -2,7 +2,7 @@
 
 import { FC, useCallback, useMemo } from "react";
 import Link from "next/link";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Tooltip, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -12,10 +12,11 @@ import MiraCalTextField from "@/components/MiraCalTextField";
 import MiraCalCheckbox from "@/components/MiraCalCheckbox";
 import MiraCalFormAction from "@/components/MiraCalFormAction";
 import MiraCalButton from "@/components/MiraCalButton";
-import { useEnqueueSnackbar } from "@/hooks/ui";
+import { useDialogStateWithData, useEnqueueSnackbar } from "@/hooks/ui";
 import { useListAllTenants } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
 import { graphqlUpdateTenant } from "../operation";
+import DeleteTenantDialog from "./DeleteTenantDialog";
 
 type FormValues = {
     id: string,
@@ -87,6 +88,18 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
     });
     const onSubmit = useCallback((values: FormValues) => mutation.mutate(values), [mutation]);
 
+    const deleteTenantDialogState = useDialogStateWithData<Tenant>();
+
+    if (!tenant) {
+        if (query.isFetched) {
+            return (
+                <Typography pt={2}>テナントが存在しません。</Typography>
+            );
+        } else {
+            return null;
+        }
+    }
+
     return (
         <Box maxWidth="sm">
             <Formik<FormValues>
@@ -125,6 +138,17 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
                         >
                             保存
                         </MiraCalButton>
+                        <Tooltip title={!initialValues.isSuspended ? "削除するには利用停止中である必要があります。" : ""}>
+                            <span>
+                                <Button
+                                    variant="contained"
+                                    disabled={!initialValues.isSuspended || mutation.isPending}
+                                    onClick={() => deleteTenantDialogState.open(tenant)}
+                                >
+                                    削除
+                                </Button>
+                            </span>
+                        </Tooltip>
                         <Link href={`/${tenantId}`} target="_blank" rel="noopener noreferrer">
                             <Button
                                 variant="contained"
@@ -135,6 +159,7 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
                     </MiraCalFormAction>
                 </MiraCalForm>
             </Formik>
+            <DeleteTenantDialog {...deleteTenantDialogState} />
         </Box>
     );
 };

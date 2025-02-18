@@ -6,8 +6,8 @@ import { useTenantId } from "@/app/[tenantId]/hook";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { ConfirmDialogState } from "@/hooks/confirmDialogState";
 import { useEnqueueSnackbar } from "@/hooks/ui";
+import { graphqlDeleteSeat } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
-import { graphqlDeleteSeat } from "./operation";
 
 type DeleteSeatDialogProps = ConfirmDialogState<Seat> & {
     closeParentDialog: () => void,

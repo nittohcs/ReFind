@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useCallback, useMemo } from "react";
+import { FC, useCallback, useMemo, useRef } from "react";
 import { Box } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -13,6 +13,7 @@ import MiraCalFormAction from "@/components/MiraCalFormAction";
 import MiraCalButton from "@/components/MiraCalButton";
 import { useReFindUsers } from "@/hooks/ReFindUser";
 import { useEnqueueSnackbar } from "@/hooks/ui";
+import { isUsernameAvailable } from "@/services/AdminQueries";
 import { useGetTenant } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
 import { ReFindUser } from "@/types/user";
@@ -33,9 +34,22 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
     const tenantId = useTenantId();
     const qTenant = useGetTenant(tenantId);
     const qUsers = useReFindUsers();
+    // ユーザーID存在チェック結果のキャッシュ用
+    const cacheRef = useRef(new Map<string, boolean>());
 
     const validationSchema = useMemo(() => yup.object().shape({
-        id: yup.string().required().default(""),
+        id: yup.string().required().default("").test("isAvailable", "このIDは既に使用されています。", async (value) => {
+            if (!value) {
+                return false;
+            }
+
+            if (cacheRef.current.has(value)) {
+                return cacheRef.current.get(value)!;
+            }
+            const isAvailable = await isUsernameAvailable(value);
+            cacheRef.current.set(value, isAvailable);
+            return isAvailable;
+        }),
         name: yup.string().required().default(""),
         email: yup.string().required().email().default(""),
         isAdmin: yup.bool().required().default(false),
@@ -106,6 +120,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
                         name="id"
                         label="ID"
                         type="text"
+                        debounceTime={300}
                     />
                     <MiraCalTextField
                         name="email"

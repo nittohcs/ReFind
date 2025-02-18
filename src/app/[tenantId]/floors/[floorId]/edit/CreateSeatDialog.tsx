@@ -6,13 +6,13 @@ import * as yup from "yup";
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Seat } from "@/API";
+import { useTenantId } from "@/app/[tenantId]/hook";
 import MiraCalButton from "@/components/MiraCalButton";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalTextField from "@/components/MiraCalTextField";
 import { useEnqueueSnackbar } from "@/hooks/ui";
+import { graphqlCreateSeat } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
-import { graphqlCreateSeat } from "./operation";
-import { useTenantId } from "@/app/[tenantId]/hook";
 
 type FormValues = {
     floorId: string,
@@ -92,7 +92,7 @@ export const CreateSeatDialog: FC<CreateSeatDialogProps> = ({
     const onSubmit = useCallback((values: FormValues) => mutation.mutate(values), [mutation]);
 
     return (
-        <Dialog fullWidth maxWidth="sm" open={isOpened} onClose={close}>
+        <Dialog fullWidth maxWidth="sm" open={isOpened} onClose={() => !mutation.isPending && close()}>
             <DialogTitle>座席作成</DialogTitle>
             <Formik<FormValues>
                 validationSchema={validationSchema}
@@ -128,6 +128,7 @@ export const CreateSeatDialog: FC<CreateSeatDialogProps> = ({
                         <MiraCalButton
                             variant="contained"
                             onClick={close}
+                            disabled={mutation.isPending}
                         >
                             キャンセル
                         </MiraCalButton>
