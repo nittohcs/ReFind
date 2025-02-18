@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useCallback, useMemo, useState } from "react";
+import { FC, useCallback, useMemo, useRef, useState } from "react";
 import { Alert, Stack } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from 'yup'
@@ -13,6 +13,7 @@ import MiraCalCsvField from "@/components/MiraCalCsvField";
 import MiraCalLinearProgressWithLabel from "@/components/MiraCalLinearProgressWithLabel";
 import { useReFindUsers } from "@/hooks/ReFindUser";
 import { useEnqueueSnackbar } from "@/hooks/ui";
+import { isUsernameAvailable } from "@/services/AdminQueries";
 import { useGetTenant } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
 import { ReFindUser } from "@/types/user";
@@ -33,7 +34,9 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
     const [inputErrors, setInputErrors] = useState<string[]>([]);
     const qTenant = useGetTenant(tenantId);
     const qUsers = useReFindUsers();
-    const currentUserIds = useMemo(() => new Set((qUsers.data ?? []).map(x => x.id)), [qUsers.data]);
+    const currentUserIds = useMemo(() => new Set((qUsers.data ?? []).map(x => x.id.toLowerCase())), [qUsers.data]);
+    // ユーザーID存在チェック結果のキャッシュ用
+    const cacheRef = useRef(new Map<string, boolean>());
 
     const validationSchema = useMemo(() => yup.object().shape({
         csv: yup.string().required().default(""),
@@ -42,7 +45,7 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
     const initialValues: FormValues = useMemo(() => validationSchema.cast({
     }), [validationSchema]);
 
-    const [totalCount, setTotalCount] = useState(1);
+    const [totalCount, setTotalCount] = useState(0);
     const [currentCount, setCurrentCount] = useState(0);
     const progressValue = 100.0 * currentCount / totalCount;
     const progressLabel = `${currentCount}/${totalCount}`;
@@ -58,16 +61,31 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
             if (users.length === 0) {
                 errors.push("有効なデータが入力されていません。");
             }
-            users.forEach((user, i) => {
+
+            const newUserIds = users.map(x => x.id.toLowerCase());
+            for(const [i, user] of users.entries()) {
                 const index = i + 1;
                 // idチェック
                 if (!user.id) {
                     errors.push(`${index}件目: IDが入力されていません。`);
                 }
-                if (currentUserIds.has(user.id.toLowerCase())) {
+                const userId = user.id.toLowerCase();
+                if (currentUserIds.has(userId)) {
                     errors.push(`${index}件目: 入力されたIDは既に使用されています。`);
-                } else if (users.findIndex(x => x.id === user.id) !== i) {
+                } else if (newUserIds.slice(0, i).findIndex(x => x === userId) >= 0) {
                     errors.push(`${index}件目: 入力されたIDは既に使用されています。`);
+                } else if (userId) {
+                    if (cacheRef.current.has(userId)) {
+                        if (!cacheRef.current.get(userId)) {
+                            errors.push(`${index}件目: 入力されたIDは既に使用されています。`);
+                        }
+                    } else {
+                        const isAvailable = await isUsernameAvailable(userId);
+                        cacheRef.current.set(userId, isAvailable);
+                        if (!isAvailable) {
+                            errors.push(`${index}件目: 入力されたIDは既に使用されています。`);
+                        }
+                    }
                 }
 
                 // 氏名チェック
@@ -83,7 +101,7 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
                         errors.push(`${index}件目: メールアドレスが正しくありません。`);
                     }
                 }
-            });
+            }
             setInputErrors(errors);
             if (errors.length > 0) {
                 throw new Error("入力データにエラーがあります。");
@@ -98,8 +116,6 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
             }
 
             // ユーザー作成
-            // Promise.allで並列処理すると大量データの場合にネットワークエラーが発生するので、1件ずつ処理する
-            //const createdUsers = await Promise.all(users.map(user => createMiraCalUser(user)));
             setTotalCount(users.length);
             setCurrentCount(0);
             const createdUsers: ReFindUser[] = [];
@@ -160,7 +176,7 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
                 <PreviewTable
                     name="csv"
                 />
-                {mutation.isPending && (
+                {mutation.isPending && totalCount > 0 && (
                     <MiraCalLinearProgressWithLabel value={progressValue} label={progressLabel} />
                 )}
                 <MiraCalFormAction>
