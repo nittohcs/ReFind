@@ -49,7 +49,7 @@ export const ChangePasswordForm: FC<ChangePasswordFormProps> = ({ update }) => {
     const onSubmit = useCallback((values: ChangePasswordFormValues) => mutation.mutate(values), [mutation]);
 
     return (
-        <Box>
+        <Box maxWidth="sm">
             <Typography variant="h6">パスワード</Typography>
             <Formik<ChangePasswordFormValues>
                 validationSchema={validationSchema}

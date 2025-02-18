@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Box, Button, Toolbar, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { Seat } from "@/API";
 import { useTenantId } from "@/app/[tenantId]/hook";
 import MiraCalBreadcrumbs from "@/components/MiraCalBreadcrumbs";
@@ -96,12 +96,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
                 <Link href={`/${tenantId}/floors/${floor?.id}`}>{floor?.name}</Link>
                 <Typography>座席編集</Typography>
             </MiraCalBreadcrumbs>
-            <Box>
-                <Toolbar variant="dense" sx={{ pt: 2 }}>
-                    <Typography variant="h5" flexGrow={1}>座席編集</Typography>
-                </Toolbar>
-            </Box>
-            <Box display="flex" flexDirection="row" flexWrap="wrap" gap={1} ref={elementRef}>
+            <Box display="flex" flexDirection="row" flexWrap="wrap" gap={1} pt={2} ref={elementRef}>
                 <Button
                     variant="contained"
                     onClick={handleCSVExport}

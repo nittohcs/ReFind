@@ -56,6 +56,10 @@ export default function UsersTable() {
 
     const table = useTable({ data, columns, options });
 
+    if (!query.isFetched) {
+        return null;
+    }
+
     return (
         <Box display="flex">
             <Box flexGrow={1}>

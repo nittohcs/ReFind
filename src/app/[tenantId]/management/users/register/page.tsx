@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Box, Toolbar, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useTenantId } from "@/app/[tenantId]/hook";
 import MiraCalBreadcrumbs from "@/components/MiraCalBreadcrumbs";
 import { useUpdatedAt } from "@/hooks/ui";
@@ -19,12 +19,9 @@ export default function Page() {
                 <Link href={`/${tenantId}/management/users/`}>ユーザー編集</Link>
                 <Typography>登録</Typography>
             </MiraCalBreadcrumbs>
-            <Toolbar sx={{ pt: 2 }}>
-                <Box display="flex" flexGrow={1} gap={1}>
-                    <Typography variant="h5" flexGrow={1}>登録</Typography>
-                </Box>
-            </Toolbar>
-            <RegisterUserForm key={updatedAt} update={update} />
+            <Box pt={2}>
+                <RegisterUserForm key={updatedAt} update={update} />
+            </Box>
         </>
     );
 }

@@ -99,16 +99,9 @@ export default function Page({ params }: { params: { floorId: string } }) {
                 <Link href={`/${tenantId}/floors`}>座席</Link>
                 <Typography>{floor?.name}</Typography>
             </MiraCalBreadcrumbs>
-            <Box>
-                <Toolbar variant="dense" sx={{ pt: 2 }}>
-                    <Typography variant="h5" flexGrow={1}>
-                        {floor?.name}
-                    </Typography>
-                </Toolbar>
-            </Box>
             {isReady && floor && imageQuery.isFetched && imageQuery.data && (
                 <>
-                    <Box ref={elementRef}>
+                    <Box pt={2} ref={elementRef}>
                         <Toolbar disableGutters>
                             <DebouncedTextField
                                 variant="filled"

@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Box, Typography } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import { SeatOccupancy } from "@/API";
 import QRCodeReader from "@/components/QRCodeReader";
@@ -12,6 +14,7 @@ import { useTodayYYYYMMDD } from "@/hooks/util";
 import { occupySeat, releaseSeat } from "@/services/occupancyUtil";
 import { queryKeys } from "@/services/queryKeys";
 import { useTenantId } from "../hook";
+import MiraCalBreadcrumbs from "@/components/MiraCalBreadcrumbs";
 
 export default function Page() {
     const tenantId = useTenantId();
@@ -67,9 +70,15 @@ export default function Page() {
 
     return (
         <>
-            {isReady && (
-                <QRCodeReader onRead={onRead} />
-            )}
+            <MiraCalBreadcrumbs>
+                <Link href={`/${tenantId}`}>ホーム</Link>
+                <Typography>QRコード読込</Typography>
+            </MiraCalBreadcrumbs>
+            <Box pt={2}>
+                {isReady && (
+                    <QRCodeReader onRead={onRead} />
+                )}
+            </Box>
         </>
     );
 }
