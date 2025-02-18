@@ -1,7 +1,7 @@
 "use client";
 
 import { fetchAuthSession } from "aws-amplify/auth";
-import { post } from "aws-amplify/api";
+import { get, post } from "aws-amplify/api";
 import { AdminQueriesGroup, AdminQueriesUser } from "@/types/user";
 
 /*
@@ -122,6 +122,28 @@ export function useListUsersInGroupByTenantId(tenantId: string, groupName: Admin
     });
 }
 */
+
+export async function isUsernameAvailable(username: string) {
+    const authSession = await fetchAuthSession();
+    const accessToken = authSession.tokens?.accessToken?.toString() ?? "";
+    const apiName = "AdminQueries";
+    const path = "/isAvailableUsername";
+    const options = {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: accessToken,
+        },
+        queryParams: {
+            username: username,
+        },
+    };
+    const operation = get({ apiName, path, options });
+    const response = await operation.response;
+    const json = await response.body.json();
+    const ret = json as { available: boolean };
+    return ret.available;
+}
+
 export async function adminSetUserPassword(user: AdminQueriesUser, password: string) {
     const authSession = await fetchAuthSession();
     const accessToken = authSession.tokens?.accessToken?.toString() ?? "";
