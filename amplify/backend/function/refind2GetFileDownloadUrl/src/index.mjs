@@ -28,7 +28,12 @@ export const handler = async (event) => {
         }
         
         if (!filePath.startsWith(`public/${tenantId}/`)) {
-            throw new Error("Invalid tenantId");
+            if (filePath.startsWith("public/common/")) {
+                // 共通ファイル置き場はセーフ
+            } else {
+                // 自分のテナントのフォルダ以外はアクセス不可
+                throw new Error("Invalid tenantId");
+            }
         }
     }
 

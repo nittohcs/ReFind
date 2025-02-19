@@ -8,7 +8,9 @@ import { Seat } from "@/API";
 import { useAuthState } from "@/hooks/auth";
 import { useConfirmDialogState } from "@/hooks/confirmDialogState";
 import { useSeatOccupancy } from "@/hooks/seatOccupancy";
+import { useDownloadStorageFile } from "@/hooks/storage";
 import { useMenu } from "@/hooks/ui";
+import { adminManualPath, userManualPath } from "@/services/manual";
 import { useTenantId } from "./hook";
 import ReleaseSeatDialog from "./ReleaseSeatDialog";
 
@@ -18,6 +20,7 @@ export function UserMenu() {
     const authState = useAuthState();
     const { isReady, mySeat, myFloor } = useSeatOccupancy();
     const confirmDialogState = useConfirmDialogState<Seat>();
+    const download = useDownloadStorageFile();
 
     return (
         <Box>
@@ -48,6 +51,10 @@ export function UserMenu() {
                 <Link href={`/${tenantId}/userSettings`}>
                     <MenuItem onClick={menu.closeHandler}>設定</MenuItem>
                 </Link>
+                <MenuItem onClick={menu.withClose(async () => await download(userManualPath))}>ユーザーマニュアル</MenuItem>
+                {authState.groups?.admins && (
+                    <MenuItem onClick={menu.withClose(async () => await download(adminManualPath))}>管理者マニュアル</MenuItem>
+                )}
                 <MenuItem onClick={() => signOut()}>ログアウト</MenuItem>
             </Menu>
             <ReleaseSeatDialog {...confirmDialogState} />

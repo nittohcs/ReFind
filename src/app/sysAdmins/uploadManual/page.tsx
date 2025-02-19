@@ -4,20 +4,19 @@ import Link from "next/link";
 import { Box, Typography } from "@mui/material";
 import MiraCalBreadcrumbs from "@/components/MiraCalBreadcrumbs";
 import { useUpdatedAt } from "@/hooks/ui";
-import CreateTenantForm from "./CreateTenantForm";
+import EditManualForm from "./EditManualForm";
 
 export default function Page() {
-    const [updatedAt, update] = useUpdatedAt("createTenant");
+    const [updatedAt, update] = useUpdatedAt("editManual");
 
     return (
         <>
             <MiraCalBreadcrumbs>
                 <Link href="/sysAdmins">ホーム</Link>
-                <Link href="/sysAdmins/tenants">テナント</Link>
-                <Typography>登録</Typography>
+                <Typography>ヘルプ編集</Typography>
             </MiraCalBreadcrumbs>
             <Box pt={2}>
-                <CreateTenantForm key={updatedAt} update={update} />
+                <EditManualForm key={updatedAt} update={update} />
             </Box>
         </>
     );
