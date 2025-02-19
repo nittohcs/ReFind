@@ -56,6 +56,14 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
         async mutationFn(values: FormValues) {
             const users = getReFindUsersFromCsv(values.csv, tenantId);
 
+            // 最大ユーザー数をチェック
+            const maxUserCount = qTenant.data?.maxUserCount ?? 0;
+            const currentUserCount = qUsers.data.length;
+            const creatableUserCount = maxUserCount - currentUserCount;
+            if (users.length > creatableUserCount) {
+                throw new Error(`あと${creatableUserCount}ユーザーまで作成可能です。`);
+            }
+
             // 入力チェック
             const errors: string[] = [];
             if (users.length === 0) {
@@ -72,7 +80,7 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
                 const userId = user.id.toLowerCase();
                 if (currentUserIds.has(userId)) {
                     errors.push(`${index}件目: 入力されたIDは既に使用されています。`);
-                } else if (newUserIds.slice(0, i).findIndex(x => x === userId) >= 0) {
+                } else if (newUserIds.slice(0, i).some(x => x === userId)) {
                     errors.push(`${index}件目: 入力されたIDは既に使用されています。`);
                 } else if (userId) {
                     if (cacheRef.current.has(userId)) {
@@ -105,14 +113,6 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
             setInputErrors(errors);
             if (errors.length > 0) {
                 throw new Error("入力データにエラーがあります。");
-            }
-
-            // 最大ユーザー数をチェック
-            const maxUserCount = qTenant.data?.maxUserCount ?? 0;
-            const currentUserCount = qUsers.data.length;
-            const creatableUserCount = maxUserCount - currentUserCount;
-            if (users.length > creatableUserCount) {
-                throw new Error(`あと${creatableUserCount}ユーザーまで作成可能です。`);
             }
 
             // ユーザー作成

@@ -9,7 +9,7 @@ const nextConfig = {
             },
             {
                 protocol: "https",
-                hostname: "refind266091c0821a8489db49f16b2384bf22778a18-main.s3.ap-northeast-3.amazonaws.com",
+                hostname: "refind266091c0821a8489db49f16b2384bf227169f7-main.s3.ap-northeast-3.amazonaws.com",
                 pathname: "/**"
             },
         ],

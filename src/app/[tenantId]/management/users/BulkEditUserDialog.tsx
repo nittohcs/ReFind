@@ -38,7 +38,7 @@ export const BulkEditUserDialog: FC<BulkEditUserDialogProps> = ({
     const validationSchema = useMemo(() => yup.object().shape({
         isAdmin: yup.bool().required().default(false).test("isAdmin", "操作中のユーザーを管理者ではなくすることはできません", value => {
             if (!value) {
-                return (data ?? []).findIndex(x => x.id === authState.username) < 0;
+                return !(data ?? []).some(x => x.id === authState.username);
             }
             return true;
         }),

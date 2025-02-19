@@ -33,7 +33,7 @@ type DeleteUserDialogProps = {
 export const DeleteUserDialog: FC<DeleteUserDialogProps> = ({ isOpened, close, data, resetRowSelection }) => {
     const tenantId = useTenantId();
     const authState = useAuthState();
-    const includeOperatingUser = !!data && data.findIndex(x => x.id === authState.username) >= 0;
+    const includeOperatingUser = !!data && data.some(x => x.id === authState.username);
 
     const validationSchema = useMemo(() => yup.object().shape({
         key: yup.string().required().default("").oneOf<string>(["delete"], "「delete」を入力してください。"),

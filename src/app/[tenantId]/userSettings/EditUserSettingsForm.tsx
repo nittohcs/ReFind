@@ -105,7 +105,7 @@ export const EditUserSettingsForm: FC<EditUserSettingsFormProps> = ({ /*confirmi
     const onSubmit = useCallback((values: EditUserSettingsFormValues) => mutation.mutate(values), [mutation]);
 
     return (
-        <Box>
+        <Box maxWidth="sm">
             <Typography variant="h6">ユーザー情報</Typography>
             <Formik<EditUserSettingsFormValues>
                 validationSchema={validationSchema}

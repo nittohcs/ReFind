@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Container, Stack, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import MiraCalBreadcrumbs from "@/components/MiraCalBreadcrumbs";
 import { useUpdatedAt } from "@/hooks/ui";
 import { useTenantId } from "../hook";
@@ -22,31 +22,28 @@ export default function Page() {
                 <Link href={`/${tenantId}`}>ホーム</Link>
                 <Typography>設定</Typography>
             </MiraCalBreadcrumbs>
-            <Container maxWidth="sm" sx={{ py: 1 }}>
-                <Stack spacing={4}>
-                    <Typography variant="h5">設定</Typography>
-                    {confirmingEmail ? (
-                        <ConfirmUserSettingsForm
+            <Box pt={2}>
+                {confirmingEmail ? (
+                    <ConfirmUserSettingsForm
+                        update={update_user}
+                        confirmingEmail={confirmingEmail}
+                        setConfirmingEmail={setConfirmingEmail}
+                    />
+                ) : (
+                    <>
+                        <EditUserSettingsForm
+                            key={updatedAt_user}
                             update={update_user}
-                            confirmingEmail={confirmingEmail}
+                            // confirmingEmail={confirmingEmail}
                             setConfirmingEmail={setConfirmingEmail}
                         />
-                    ) : (
-                        <>
-                            <EditUserSettingsForm
-                                key={updatedAt_user}
-                                update={update_user}
-                                // confirmingEmail={confirmingEmail}
-                                setConfirmingEmail={setConfirmingEmail}
-                            />
-                            <ChangePasswordForm
-                                key={updatedAt_password}
-                                update={update_password}
-                            />
-                        </>
-                    )}
-                </Stack>
-            </Container>
+                        <ChangePasswordForm
+                            key={updatedAt_password}
+                            update={update_password}
+                        />
+                    </>
+                )}
+            </Box>
         </>
     );
 }

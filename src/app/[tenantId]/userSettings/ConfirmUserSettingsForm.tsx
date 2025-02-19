@@ -73,7 +73,7 @@ export const ConfirmUserSettingsForm: FC<ConfirmUserSettingsFormProps> = ({ conf
     const cancel = useCallback(() => setConfirmingEmail(""), [setConfirmingEmail]);
 
     return (
-        <Box>
+        <Box maxWidth="sm">
             <Typography variant="h6">確認コード入力</Typography>
             <Typography variant="body1">{`${confirmingEmail}に確認コードが送信されました。確認コードを入力することでメールアドレスが変更されます。`}</Typography>
             <Formik<ConfirmUserSettingsFormValues>

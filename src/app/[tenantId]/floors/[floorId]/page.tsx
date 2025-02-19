@@ -4,7 +4,8 @@ import { useCallback, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Box, Button, Toolbar, Typography } from "@mui/material";
+import { Box, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
 import { Seat, SeatOccupancy } from "@/API";
 import MiraCalBreadcrumbs from "@/components/MiraCalBreadcrumbs";
 import DebouncedTextField from "@/components/DebouncedTextField";
@@ -98,25 +99,9 @@ export default function Page({ params }: { params: { floorId: string } }) {
                 <Link href={`/${tenantId}/floors`}>座席</Link>
                 <Typography>{floor?.name}</Typography>
             </MiraCalBreadcrumbs>
-            <Box>
-                <Toolbar variant="dense" sx={{ pt: 2 }}>
-                    <Typography variant="h5" flexGrow={1}>
-                        {floor?.name}
-                    </Typography>
-                </Toolbar>
-            </Box>
-            {authState.groups?.admins && floor && (
-                <Link href={`/${tenantId}/floors/${floor.id}/edit`}>
-                    <Button
-                        variant="contained"
-                    >
-                        座席編集
-                    </Button>
-                </Link>
-            )}
             {isReady && floor && imageQuery.isFetched && imageQuery.data && (
                 <>
-                    <Box ref={elementRef}>
+                    <Box pt={2} ref={elementRef}>
                         <Toolbar disableGutters>
                             <DebouncedTextField
                                 variant="filled"
@@ -127,6 +112,15 @@ export default function Page({ params }: { params: { floorId: string } }) {
                                 onChange={handleChange}
                                 fullWidth
                             />
+                            {authState.groups?.admins && floor && (
+                                <Link href={`/${tenantId}/floors/${floor.id}/edit`}>
+                                    <Tooltip title="座席編集">
+                                        <IconButton>
+                                            <EditIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                </Link>
+                            )}
                         </Toolbar>
                     </Box>
                     <Box sx={{ position: "relative", overflow: "auto", width: { xs: contentsWidth - 8, sm: contentsWidth - 16 }, height: contentsHeight }}>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Box, Toolbar, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useTenantId } from "@/app/[tenantId]/hook";
 import MiraCalBreadcrumbs from "@/components/MiraCalBreadcrumbs";
 import { useUpdatedAt } from "@/hooks/ui";
@@ -20,12 +20,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
                 <Link href={`/${tenantId}/management/editFloors`}>フロア編集</Link>
                 <Typography>{floorId}</Typography>
             </MiraCalBreadcrumbs>
-            <Toolbar sx={{ pt: 2 }}>
-                <Box display="flex" flexGrow={1} gap={1}>
-                    <Typography variant="h5" flexGrow={1}>{floorId}</Typography>
-                </Box>
-            </Toolbar>
-            <Box>
+            <Box pt={2}>
                 <EditFloorForm key={updatedAt} floorId={floorId} update={update}/>
             </Box>
         </>
