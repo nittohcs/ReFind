@@ -35,7 +35,12 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
     update,
 }) => {
     const validationSchema = useMemo(() => yup.object().shape({
-        id: yup.string().default(""),
+        id: yup.string().default("").test("deniedId", "このIDは使用できません", value => {
+            const deniedIds = [
+                "common",
+            ];
+            return !deniedIds.includes(value);
+        }),
         name: yup.string().required().default(""),
         maxUserCount: yup.number().required().default(0).min(1),
         isSuspended: yup.bool().required().default(false),

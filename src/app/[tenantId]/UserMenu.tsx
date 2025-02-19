@@ -1,14 +1,19 @@
 "use client";
 
+import { useCallback } from "react";
 import Link from "next/link";
 import { Box, Divider, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { signOut } from "aws-amplify/auth";
+import { useQueryClient } from "@tanstack/react-query";
 import { Seat } from "@/API";
 import { useAuthState } from "@/hooks/auth";
 import { useConfirmDialogState } from "@/hooks/confirmDialogState";
 import { useSeatOccupancy } from "@/hooks/seatOccupancy";
-import { useMenu } from "@/hooks/ui";
+import { graphqlGetFileDownloadUrl } from "@/hooks/storage";
+import { useEnqueueSnackbar, useMenu } from "@/hooks/ui";
+import { queryKeys } from "@/services/queryKeys";
+import { adminManualPath, userManualPath } from "@/services/manual";
 import { useTenantId } from "./hook";
 import ReleaseSeatDialog from "./ReleaseSeatDialog";
 
@@ -18,6 +23,34 @@ export function UserMenu() {
     const authState = useAuthState();
     const { isReady, mySeat, myFloor } = useSeatOccupancy();
     const confirmDialogState = useConfirmDialogState<Seat>();
+
+    const enqueueSnackbar = useEnqueueSnackbar();
+    const queryClient = useQueryClient();
+    const downloadManual = useCallback(async (filePath: string) => {
+        try {
+            const expiresIn = 900;
+            let storageUrl = queryClient.getQueryData<string>(queryKeys.storage(filePath)) ?? "";
+            if (storageUrl) {
+                const state = queryClient.getQueryState<string>(queryKeys.storage(filePath));
+                if (!state || Date.now() - state.dataUpdatedAt >= expiresIn * 1000) {
+                    storageUrl = "";
+                }
+            }
+
+            if (!storageUrl) {
+                storageUrl = await graphqlGetFileDownloadUrl(filePath, expiresIn);
+                if (!storageUrl) {
+                    throw new Error("ダウンロードURLの取得に失敗しました。");
+                }
+                queryClient.setQueryData(queryKeys.storage(filePath), (_data: string) => storageUrl);
+            }
+
+            window.open(storageUrl, "_blank", "noopener,noreferrer");
+        } catch (err) {
+            console.log(err);
+            enqueueSnackbar("ダウンロードに失敗しました。", { variant: "error" });
+        }
+    }, [queryClient, enqueueSnackbar]);
 
     return (
         <Box>
@@ -48,6 +81,10 @@ export function UserMenu() {
                 <Link href={`/${tenantId}/userSettings`}>
                     <MenuItem onClick={menu.closeHandler}>設定</MenuItem>
                 </Link>
+                <MenuItem onClick={menu.withClose(async () => await downloadManual(userManualPath))}>ユーザーマニュアル</MenuItem>
+                {authState.groups?.admins && (
+                    <MenuItem onClick={menu.withClose(async () => await downloadManual(adminManualPath))}>管理者マニュアル</MenuItem>
+                )}
                 <MenuItem onClick={() => signOut()}>ログアウト</MenuItem>
             </Menu>
             <ReleaseSeatDialog {...confirmDialogState} />

@@ -22,7 +22,7 @@ export function useStorageFileURL(filePath: string | null, expiresIn: number = 9
     });
 }
 
-async function graphqlGetFileDownloadUrl(filePath: string, expiresIn: number) {
+export async function graphqlGetFileDownloadUrl(filePath: string, expiresIn: number) {
     const result = await client.graphql(
         graphqlOperation(
             getFileDownloadUrl,

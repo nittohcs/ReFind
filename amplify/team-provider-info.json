@@ -37,7 +37,7 @@
         },
         "refind2GetFileDownloadUrl": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
-          "s3Key": "amplify-builds/refind2GetFileDownloadUrl-50546f72474d6f764c4f-build.zip"
+          "s3Key": "amplify-builds/refind2GetFileDownloadUrl-64734938504274537170-build.zip"
         },
         "refind2UpdateFloor": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
