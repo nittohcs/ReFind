@@ -50,7 +50,7 @@ export function useDownloadStorageFile(expiresIn: number = 900) {
             let storageUrl = queryClient.getQueryData<string>(queryKeys.storage(filePath)) ?? "";
             if (storageUrl) {
                 const state = queryClient.getQueryState<string>(queryKeys.storage(filePath));
-                if (!state || Date.now() - state.dataUpdatedAt >= expiresIn * 1000) {
+                if (!state || state.isInvalidated || Date.now() - state.dataUpdatedAt >= expiresIn * 1000) {
                     storageUrl = "";
                 }
             }
