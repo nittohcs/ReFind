@@ -3,7 +3,7 @@
 import { ChangeEvent, FC, RefObject, useCallback, useMemo } from "react";
 import { Box, Button, TextField } from "@mui/material";
 import { useField } from "formik";
-import { useStorageFileURL } from "@/hooks/storage";
+import { useDownloadStorageFile } from "@/hooks/storage";
 
 export const FileUploadState = {
     Upload: "upload",
@@ -47,8 +47,8 @@ export const MiraCalFileUpload: FC<MiraCalFileUploadProps> = ({ ...props }) => {
         }
     }, [helper, props.fileRef]);
 
-    const downloadQuery = useStorageFileURL(props.currentFilePath ?? null);
-                                    
+    const download = useDownloadStorageFile();
+
     return (
         <Box>
             <Box>
@@ -65,13 +65,10 @@ export const MiraCalFileUpload: FC<MiraCalFileUploadProps> = ({ ...props }) => {
                 />
             </Box>
             <Box>
-                {field.value === FileUploadState.Unchange && isSetFilePath && downloadQuery.isFetched && (
+                {field.value === FileUploadState.Unchange && isSetFilePath && (
                     <Button
-                        component="a"
-                        role={undefined}
                         variant="contained"
-                        href={downloadQuery.data ?? ""}
-                        download
+                        onClick={async () => await download(props.currentFilePath)}
                     >
                         ダウンロード
                     </Button>
