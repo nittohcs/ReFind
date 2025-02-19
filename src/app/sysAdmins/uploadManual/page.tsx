@@ -13,7 +13,7 @@ export default function Page() {
         <>
             <MiraCalBreadcrumbs>
                 <Link href="/sysAdmins">ホーム</Link>
-                <Typography>ヘルプ編集</Typography>
+                <Typography>マニュアル編集</Typography>
             </MiraCalBreadcrumbs>
             <Box pt={2}>
                 <EditManualForm key={updatedAt} update={update} />
