@@ -123,6 +123,7 @@ export const EditUserSettingsForm: FC<EditUserSettingsFormProps> = ({ /*confirmi
                         name="email"
                         label="メールアドレス"
                         type="email"
+                        disabled={true}
                     />
                     <MiraCalTextField
                         name="name"
