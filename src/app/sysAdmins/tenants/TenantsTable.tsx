@@ -43,6 +43,9 @@ export default function TenantsTable() {
         columnHelper.accessor("maxUserCount", {
             header: "最大ユーザー数",
         }),
+        columnHelper.accessor("retentionPeriodDays", {
+            header: "座席確保履歴保管日数",
+        }),
         columnHelper.accessor("isSuspendedString", {
             header: "利用停止中",
         }),

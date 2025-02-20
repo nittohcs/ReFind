@@ -22,6 +22,8 @@ type FormValues = {
     id: string,
     name: string,
     maxUserCount: number,
+    initialPassword: string,
+    retentionPeriodDays: number,
     isSuspended: boolean,
 };
 
@@ -41,6 +43,8 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
         id: yup.string().required(),
         name: yup.string().required(),
         maxUserCount: yup.number().required().min(1),
+        initialPassword: yup.string().required().default("").min(8),
+        retentionPeriodDays: yup.number().required().default(0).min(1),
         isSuspended: yup.bool().required(),
     }), []);
 
@@ -48,6 +52,8 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
         id: tenant?.id ?? "",
         name: tenant?.name ?? "",
         maxUserCount: tenant?.maxUserCount ?? 0,
+        initialPassword: tenant?.initialPassword ?? "",
+        retentionPeriodDays: tenant?.retentionPeriodDays ?? 0,
         isSuspended: tenant?.isSuspended ?? false,
     }), [validationSchema, tenant]);
 
@@ -60,6 +66,8 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
                 id: values.id,
                 name: values.name,
                 maxUserCount: values.maxUserCount,
+                initialPassword: values.initialPassword,
+                retentionPeriodDays: values.retentionPeriodDays,
                 isSuspended: values.isSuspended,
             });
         },
@@ -123,6 +131,16 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
                     <MiraCalTextField
                         name="maxUserCount"
                         label="最大ユーザー数"
+                        type="number"
+                    />
+                    <MiraCalTextField
+                        name="initialPassword"
+                        label="初期パスワード"
+                        type="text"
+                    />
+                    <MiraCalTextField
+                        name="retentionPeriodDays"
+                        label="座席確保履歴保管日数"
                         type="number"
                     />
                     <MiraCalCheckbox

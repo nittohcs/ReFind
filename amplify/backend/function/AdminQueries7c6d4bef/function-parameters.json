@@ -15,10 +15,5 @@
       ]
     }
   },
-  "environmentVariableList": [
-    {
-      "cloudFormationParameterName": "initialPassword",
-      "environmentVariableName": "INITIAL_PASSWORD"
-    }
-  ]
+  "environmentVariableList": []
 }

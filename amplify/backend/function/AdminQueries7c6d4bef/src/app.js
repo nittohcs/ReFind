@@ -218,8 +218,11 @@ app.post('/createUser', async (req, res, next) => {
       }
     }
 
+    // テナント取得
+    const tenant = await graphqlGetTenant({ id: req.body.tenantId });
+
     // 最大ユーザー数チェック
-    const maxUserCount = (await graphqlGetTenant({ id: req.body.tenantId })).maxUserCount;
+    const maxUserCount = tenant.maxUserCount;
     const currentUserCount = await graphqlGetUserCount({ tenantId: req.body.tenantId });
     if (currentUserCount >= maxUserCount) {
       const err = new Error('Too many users');
@@ -246,7 +249,7 @@ app.post('/createUser', async (req, res, next) => {
         Value: req.body.tenantId,
       }
     ];
-    const response = await createUser(req.body.username, attributes, req.body.messageAction);
+    const response = await createUser(req.body.username, attributes, req.body.messageAction, tenant.initialPassword);
 
     // グループに追加
     try {

@@ -161,6 +161,8 @@ export const createTenant = /* GraphQL */ `mutation CreateTenant(
     id
     name
     maxUserCount
+    initialPassword
+    retentionPeriodDays
     isSuspended
     createdAt
     updatedAt
@@ -179,6 +181,8 @@ export const updateTenant = /* GraphQL */ `mutation UpdateTenant(
     id
     name
     maxUserCount
+    initialPassword
+    retentionPeriodDays
     isSuspended
     createdAt
     updatedAt
@@ -197,6 +201,8 @@ export const deleteTenant = /* GraphQL */ `mutation DeleteTenant(
     id
     name
     maxUserCount
+    initialPassword
+    retentionPeriodDays
     isSuspended
     createdAt
     updatedAt

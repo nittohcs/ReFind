@@ -65,6 +65,8 @@ const getTenant = /* GraphQL */ `query GetTenant($id: ID!) {
     id
     name
     maxUserCount
+    initialPassword
+    retentionPeriodDays
     isSuspended
     createdAt
     updatedAt

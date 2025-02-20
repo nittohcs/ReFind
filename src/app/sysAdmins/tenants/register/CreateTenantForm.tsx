@@ -21,6 +21,8 @@ type FormValues = {
     id: string,
     name: string,
     maxUserCount: number,
+    initialPassword: string,
+    retentionPeriodDays: number,
     isSuspended: boolean,
     adminUserId: string,
     adminEmail: string,
@@ -43,6 +45,8 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
         }),
         name: yup.string().required().default(""),
         maxUserCount: yup.number().required().default(0).min(1),
+        initialPassword: yup.string().required().default("").min(8),
+        retentionPeriodDays: yup.number().required().default(0).min(1),
         isSuspended: yup.bool().required().default(false),
         adminUserId: yup.string().required().default(""),
         adminEmail: yup.string().required().default("").email(),
@@ -62,6 +66,8 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
                 ...(values.id && { id: values.id }),
                 name: values.name,
                 maxUserCount: values.maxUserCount,
+                initialPassword: values.initialPassword,
+                retentionPeriodDays: values.retentionPeriodDays,
                 isSuspended: values.isSuspended,
             });
 
@@ -132,6 +138,16 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
                     <MiraCalTextField
                         name="maxUserCount"
                         label="最大ユーザー数"
+                        type="number"
+                    />
+                    <MiraCalTextField
+                        name="initialPassword"
+                        label="初期パスワード"
+                        type="text"
+                    />
+                    <MiraCalTextField
+                        name="retentionPeriodDays"
+                        label="座席確保履歴保管日数"
                         type="number"
                     />
                     <MiraCalCheckbox
