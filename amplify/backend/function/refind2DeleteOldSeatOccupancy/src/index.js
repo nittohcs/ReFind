@@ -15,14 +15,43 @@ const GRAPHQL_ENDPOINT = process.env.API_REFIND2_GRAPHQLAPIENDPOINTOUTPUT;
 const AWS_REGION = process.env.AWS_REGION || 'us-east-1';
 const { Sha256 } = crypto;
 
-const DEFAULT_NUM_DAYS = process.env.DEFAULT_NUM_DAYS ? parseInt(process.env.DEFAULT_NUM_DAYS, 10) : 7;
+const listTenants = /* GraphQL */ `query ListTenants(
+  $filter: ModelTenantFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listTenants(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      name
+      maxUserCount
+      initialPassword
+      retentionPeriodDays
+      isSuspended
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+`;
 
-const listSeatOccupancies = /* GraphQL */ `query ListSeatOccupancies(
+const seatOccupanciesByTenantId = /* GraphQL */ `query SeatOccupanciesByTenantId(
+  $tenantId: ID!
+  $sortDirection: ModelSortDirection
   $filter: ModelSeatOccupancyFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  listSeatOccupancies(filter: $filter, limit: $limit, nextToken: $nextToken) {
+  seatOccupanciesByTenantId(
+    tenantId: $tenantId
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
     items {
       id
       tenantId
@@ -58,9 +87,86 @@ const deleteSeatOccupancy = /* GraphQL */ `mutation DeleteSeatOccupancy(
 }
 `;
 
+async function graphqlAccess(query, variables) {
+  const endpoint = new URL(GRAPHQL_ENDPOINT);
+
+  const signer = new SignatureV4({
+    credentials: defaultProvider(),
+    region: AWS_REGION,
+    service: 'appsync',
+    sha256: Sha256
+  });
+
+  const requestToBeSigned = new HttpRequest({
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      host: endpoint.host
+    },
+    hostname: endpoint.host,
+    body: JSON.stringify({
+      query,
+      variables
+    }),
+    path: endpoint.pathname
+  });
+
+  const signed = await signer.sign(requestToBeSigned);
+  const request = new Request(endpoint, signed);
+  const response = await fetch(request);
+  const body = await response.json();
+  return body;
+}
+
+async function listAllTenants() {
+  const ret = [];
+
+  /** @type {string | undefined} */
+  let nextToken = undefined;
+  do {
+    const response = await graphqlAccess(listTenants, {
+      nextToken,
+    });
+    const items = response.data?.listTenants?.items ?? [];
+    for(const item of items) {
+      if (item) {
+        ret.push(item);
+      }
+    }
+    nextToken = response.data?.listTenants?.nextToken;
+  } while(nextToken);
+
+  return ret;
+}
+
+async function listAllSeatOccupanciesByTenantIdBeforeDate(tenantId, date) {
+  const ret = [];
+
+  /** @type {string | undefined} */
+  let nextToken = undefined;
+  do {
+    const response = await graphqlAccess(seatOccupanciesByTenantId, {
+      tenantId,
+      filter: {
+        date: { le: date }
+      },
+      nextToken,
+    });
+    const items = response.data?.seatOccupanciesByTenantId?.items ?? [];
+    for(const item of items) {
+      if (item) {
+        ret.push(item);
+      }
+    }
+    nextToken = response.data?.seatOccupanciesByTenantId?.nextToken;
+  } while(nextToken);
+
+  return ret;
+}
+
 /**
- * @param {Date} date 
- * @returns 
+ * @param {Date} date 日時
+ * @returns yyyyMMdd形式の文字列
  */
 function getDateYYYYMMDD(date) {
   const yyyy = date.getFullYear();
@@ -69,118 +175,17 @@ function getDateYYYYMMDD(date) {
   return `${yyyy}${mm}${dd}`;
 }
 
-/**
- * @param {string} date 
- */
-async function listSeatOccupanciesBeforeDate(date) {
-  const ret = [];
-
-  /** @type {string | undefined} */ 
-  let nextToken = undefined;
-  do {
-    const response = await graphqlListSeatOccupanciesBeforeDate(date, nextToken);
-    const items = response.data?.listSeatOccupancies?.items ?? [];
-    for(let i = 0; i < items.length; ++i) {
-      const item = items[i];
-      if (item) {
-        ret.push(item);
-      }
-    }
-    nextToken = response.data?.listSeatOccupancies?.nextToken;
-  } while(nextToken);
-
-  return ret;
-}
-
-/**
- * @param {string} date 
- * @param {string | undefined} nextToken 
- */
-async function graphqlListSeatOccupanciesBeforeDate(date, nextToken) {
-  const endpoint = new URL(GRAPHQL_ENDPOINT);
-
-  const signer = new SignatureV4({
-    credentials: defaultProvider(),
-    region: AWS_REGION,
-    service: 'appsync',
-    sha256: Sha256
-  });
-
-  const requestToBeSigned = new HttpRequest({
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      host: endpoint.host
-    },
-    hostname: endpoint.host,
-    body: JSON.stringify({
-      query: listSeatOccupancies,
-      variables: {
-        filter: {
-          date: { le: date }
-        },
-        nextToken,
-      },
-    }),
-    path: endpoint.pathname
-  });
-
-  const signed = await signer.sign(requestToBeSigned);
-  const request = new Request(endpoint, signed);
-  const response = await fetch(request);
-  const body = await response.json();
-  if (body.errors) {
-    console.log(`error: graphqlListSeatOccupanciesBeforeDate: date=${date}, nextToken=${nextToken}, ${JSON.stringify(body.errors, null, 2)}`);
-  }
-  return body;
-}
-
 async function deleteSeatOccupancies(seatOccupancies) {
   const ret = [];
 
-  for(let i = 0; i < seatOccupancies.length; ++i) {
-    const seatOccupancy = seatOccupancies[i];
-    const response = await graphqlDeleteSeatOccupancy(seatOccupancy);
+  for(const seatOccupancy of seatOccupancies) {
+    const response = await graphqlAccess(deleteSeatOccupancy, {
+      input: { id: seatOccupancy.id },
+    });
     ret.push(response.data?.deleteSeatOccupancy);
   }
 
   return ret;
-}
-
-async function graphqlDeleteSeatOccupancy(seatOccupancy) {
-  const endpoint = new URL(GRAPHQL_ENDPOINT);
-
-  const signer = new SignatureV4({
-    credentials: defaultProvider(),
-    region: AWS_REGION,
-    service: 'appsync',
-    sha256: Sha256
-  });
-
-  const requestToBeSigned = new HttpRequest({
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      host: endpoint.host
-    },
-    hostname: endpoint.host,
-    body: JSON.stringify({
-      query: deleteSeatOccupancy,
-      variables: {
-        input: { id: seatOccupancy.id },
-      },
-    }),
-    path: endpoint.pathname
-  });
-
-  const signed = await signer.sign(requestToBeSigned);
-  const request = new Request(endpoint, signed);
-  const response = await fetch(request);
-  const body = await response.json();
-  if (body.errors) {
-    console.log(`error: graphqlDeleteSeatOccupancy: id=${seatOccupancy.id}, ${JSON.stringify(body.errors, null, 2)}`);
-  }
-  return body;
 }
 
 /**
@@ -188,16 +193,15 @@ async function graphqlDeleteSeatOccupancy(seatOccupancy) {
  */
 export const handler = async (event) => {
   console.log(`EVENT: ${JSON.stringify(event)}`);
-  let numDays = DEFAULT_NUM_DAYS;
-  if (event.arguments && typeof event.arguments.numDays === "number") {
-    numDays = event.arguments.numDays;
-  }
+
   const today = new Date();
-  const oldDate = new Date(today);
-  oldDate.setDate(today.getDate() - numDays);
-  const filterDate = getDateYYYYMMDD(oldDate);
-  const seatOccupancies = await listSeatOccupanciesBeforeDate(filterDate);
-  const ret = await deleteSeatOccupancies(seatOccupancies);
-  console.log(`${ret.length} data items have been deleted.`);
-  return ret;
+  const tenants = await listAllTenants();
+  for(const tenant of tenants) {
+    const oldDate = new Date(today);
+    oldDate.setDate(today.getDate() - tenant.retentionPeriodDays);
+    const filterDate = getDateYYYYMMDD(oldDate);
+    const seatOccupancies = await listAllSeatOccupanciesByTenantIdBeforeDate(tenant.id, filterDate);
+    const ret = await deleteSeatOccupancies(seatOccupancies);
+    console.log(`tenant=${tenant.id}: ${ret.length} data items have been deleted.`);
+  }
 };

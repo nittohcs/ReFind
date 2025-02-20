@@ -436,14 +436,6 @@
         }
       ]
     },
-    "AMPLIFY_function_refind2DeleteOldSeatOccupancy_defaultNumDays": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "refind2DeleteOldSeatOccupancy"
-        }
-      ]
-    },
     "AMPLIFY_function_refind2DeleteOldSeatOccupancy_deploymentBucketName": {
       "usedBy": [
         {
