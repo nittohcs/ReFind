@@ -14,7 +14,7 @@ import MiraCalFormAction from "@/components/MiraCalFormAction";
 import MiraCalButton from "@/components/MiraCalButton";
 import { useAuthState } from "@/hooks/auth";
 import { useReFindUsers } from "@/hooks/ReFindUser";
-import { uploadFile } from "@/hooks/storage";
+import { deleteFile, uploadFile } from "@/hooks/storage";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { addUserToGroup, adminUpdateUserAttributes, removeUserFromGroup } from "@/services/AdminQueries";
 import { queryKeys } from "@/services/queryKeys";
@@ -85,16 +85,21 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
                 await addUserToGroup(updated, updated.isAdmin ? "admins" : "users");
             }
 
-            // 画像をアップロード
-            function getFile(ref: RefObject<HTMLInputElement>) {
-                return ref.current?.files && ref.current?.files.length > 0 ? ref.current.files[0] : undefined;
-            }
-            const file = getFile(imageFileRef);
-            if (values.image === ImageUploadState.Upload && file) {
-                const _response = await uploadFile(imagePath, file);
-                // if (!_response.ok) {
-                //     throw new Error("登録に失敗しました。");
-                // }
+            if (values.image === ImageUploadState.Upload) {
+                // 画像をアップロード
+                function getFile(ref: RefObject<HTMLInputElement>) {
+                    return ref.current?.files && ref.current?.files.length > 0 ? ref.current.files[0] : undefined;
+                }
+                const file = getFile(imageFileRef);
+                if (file) {
+                    const _response = await uploadFile(imagePath, file);
+                    // if (!_response.ok) {
+                    //     throw new Error("登録に失敗しました。");
+                    // }
+                }
+            } else if (values.image === ImageUploadState.Delete) {
+                // ファイルを削除
+                await deleteFile(imagePath);
             }
         },
         onSuccess(_data, variables, _context) {
@@ -111,7 +116,7 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
             queryClient.setQueryData(queryKeys.graphqlUsersByTenantId(tenantId), (items: ReFindUser[] = []) => items.map(item => item.id === updated.id ? updated : item));
 
             // 画像URLのクエリを無効化して再取得されるようにする
-            if (variables.image === ImageUploadState.Upload) {
+            if (variables.image !== ImageUploadState.Unchange) {
                 queryClient.invalidateQueries({ queryKey: queryKeys.storage(imagePath) });
             }
 
@@ -174,6 +179,7 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
                         currentFilePath={imagePath}
                         accept="image/png, image/webp, image/jpeg"
                         fileRef={imageFileRef}
+                        canDelete={true}
                         previewImageWidth={48}
                         previewImageHeight={48}
                     />

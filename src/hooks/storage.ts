@@ -3,7 +3,7 @@
 import { useCallback } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fileTypeFromBlob } from "file-type";
-import { graphqlGetFileDownloadUrl, graphqlGetFileUploadUrl } from "@/services/graphql";
+import { graphqlDeleteFile, graphqlGetFileDownloadUrl, graphqlGetFileUploadUrl } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
 import { useEnqueueSnackbar } from "./ui";
 
@@ -64,5 +64,18 @@ export async function uploadFile(filePath: string, file: File) {
         headers: {
             "Content-Type": fileTypeResult?.mime ?? "", // ファイルのMIMEタイプを指定
         },
+    });
+}
+
+export async function deleteFile(filePath: string) {
+    return await graphqlDeleteFile(filePath);
+}
+
+export async function checkImageExists(fileUrl: string) {
+    return new Promise<boolean>((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = fileUrl;
     });
 }

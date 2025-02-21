@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Box, Divider, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import AccountCircle from "@mui/icons-material/AccountCircle";
@@ -8,7 +10,7 @@ import { Seat } from "@/API";
 import { useAuthState } from "@/hooks/auth";
 import { useConfirmDialogState } from "@/hooks/confirmDialogState";
 import { useSeatOccupancy } from "@/hooks/seatOccupancy";
-import { useDownloadStorageFile } from "@/hooks/storage";
+import { checkImageExists, useDownloadStorageFile, useStorageFileURL } from "@/hooks/storage";
 import { useMenu } from "@/hooks/ui";
 import { adminManualPath, userManualPath } from "@/services/manual";
 import { useTenantId } from "./hook";
@@ -21,11 +23,26 @@ export function UserMenu() {
     const { isReady, mySeat, myFloor } = useSeatOccupancy();
     const confirmDialogState = useConfirmDialogState<Seat>();
     const download = useDownloadStorageFile();
+    const [isExistUserIcon, setIsExitUserIcon] = useState(false);
+    const qUserIcon = useStorageFileURL(`public/${authState.tenantId}/users/${authState.username}`);
+    useEffect(() => {
+        const checkImage = async () => {
+            if (qUserIcon.isFetched) {
+                const isExist = await checkImageExists(qUserIcon.data ?? "");
+                setIsExitUserIcon(isExist);
+            }
+        };
+        checkImage();
+    }, [qUserIcon]);
 
     return (
         <Box>
             <IconButton size="large" onClick={menu.openHandler} color="inherit">
-                <AccountCircle style={{ color: isReady && mySeat ? "rgba(0, 192, 0, 1)" : "gray" }}/>
+                {isExistUserIcon ? (
+                    <Image src={qUserIcon.data!} alt="" width={24} height={24} />
+                ) : (
+                    <AccountCircle style={{ color: isReady && mySeat ? "rgba(0, 192, 0, 1)" : "gray" }}/>
+                )}
             </IconButton>
             <Menu open={menu.isOpened} anchorEl={menu.anchorEl} onClose={menu.closeHandler}>
                 {!!authState.name && (
