@@ -113,8 +113,7 @@
       "function": {
         "AdminQueries7c6d4bef": {
           "deploymentBucketName": "amplify-refind2-main-169f7-deployment",
-          "s3Key": "amplify-builds/AdminQueries7c6d4bef-47666d596f714e2b4b53-build.zip",
-          "initialPassword": "REFIND2025"
+          "s3Key": "amplify-builds/AdminQueries7c6d4bef-42364873383568673037-build.zip"
         },
         "refind2CreateFloor": {
           "deploymentBucketName": "amplify-refind2-main-169f7-deployment",
@@ -137,9 +136,8 @@
           "s3Key": "amplify-builds/refind2DeleteFloor-70612f42454e574b6451-build.zip"
         },
         "refind2DeleteOldSeatOccupancy": {
-          "defaultNumDays": "7",
           "deploymentBucketName": "amplify-refind2-main-169f7-deployment",
-          "s3Key": "amplify-builds/refind2DeleteOldSeatOccupancy-72734347374f63306c78-build.zip"
+          "s3Key": "amplify-builds/refind2DeleteOldSeatOccupancy-6d682b61694d632f4a57-build.zip"
         },
         "refind2DeleteSeat": {
           "deploymentBucketName": "amplify-refind2-main-169f7-deployment",
@@ -147,7 +145,7 @@
         },
         "refind2GetFileDownloadUrl": {
           "deploymentBucketName": "amplify-refind2-main-169f7-deployment",
-          "s3Key": "amplify-builds/refind2GetFileDownloadUrl-50546f72474d6f764c4f-build.zip"
+          "s3Key": "amplify-builds/refind2GetFileDownloadUrl-64734938504274537170-build.zip"
         },
         "refind2GetFileUploadUrl": {
           "deploymentBucketName": "amplify-refind2-main-169f7-deployment",
