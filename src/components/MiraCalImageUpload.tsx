@@ -46,9 +46,20 @@ export const MiraCalImageUpload: FC<MiraCalImageUploadProps> = ({ ...props }) =>
                                          "未選択"
                                     , [field.value, props.currentFilePath]);
 
+    useEffect(() => {
+        return () => {
+            if (imageUrl) {
+                URL.revokeObjectURL(imageUrl);
+            }
+        };
+    }, [imageUrl]);
     const onChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         const selectedFile = (e.target.files && e.target.files[0]) ?? null;
         helper.setValue(selectedFile ? ImageUploadState.Upload : ImageUploadState.Unchange);
+
+        if (imageUrl) {
+            URL.revokeObjectURL(imageUrl);
+        }
 
         if (selectedFile?.type.startsWith('image/')) {
             const url = URL.createObjectURL(selectedFile);
@@ -56,7 +67,7 @@ export const MiraCalImageUpload: FC<MiraCalImageUploadProps> = ({ ...props }) =>
         } else {
             setImageUrl("");
         }
-    }, [helper]);
+    }, [helper, imageUrl]);
     const onClickDelete = useCallback(() => {
         helper.setValue(ImageUploadState.Delete);
     }, [helper]);

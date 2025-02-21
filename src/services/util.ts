@@ -15,3 +15,24 @@ export function getDateYYYYMMDD(date: Date) {
     const dd = ("00" + date.getDate()).slice(-2);
     return `${yyyy}${mm}${dd}`;
 }
+
+export function downloadCSV<T extends object>(data: T[], filename: string) {
+    const convertToCSV = (data: T[]) => {
+        const headers = Object.keys(data[0]).join(",");
+        const rows = data.map(item => Object.values(item).join(","));
+        return [headers, ...rows].join("\n");
+    };
+
+    const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+    const csvData = convertToCSV(data);
+    const blob = new Blob([bom, csvData], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", filename);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
