@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -13,7 +13,7 @@ import DebouncedTextField from "@/components/DebouncedTextField";
 import { SeatBox } from "@/components/SeatBox";
 import { useAuthState } from "@/hooks/auth";
 import { useSeatOccupancy } from "@/hooks/seatOccupancy";
-import { useStorageFileURL } from "@/hooks/storage";
+import { checkImageExists, useStorageFileURL } from "@/hooks/storage";
 import { useContentsSize, useDialogStateWithData, useEnqueueSnackbar } from "@/hooks/ui";
 import { graphqlGetFileDownloadUrl, useUsersByTenantId } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
@@ -100,6 +100,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
     const queryClient = useQueryClient();
     const [popperComment, setPopperComment] = useState("");
     const [popperImageUrl, setPopperImageUrl] = useState("");
+    const [isExistPopperImage, setIsExitPopperImage] = useState(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
     const handleMouseEnter = useCallback(async (e: React.MouseEvent<HTMLElement>, user: User) => {
@@ -129,7 +130,15 @@ export default function Page({ params }: { params: { floorId: string } }) {
         setAnchorEl(null);
         setPopperComment("");
         setPopperImageUrl("");
+        setIsExitPopperImage(false);
     }, []);
+    useEffect(() => {
+        const checkImage = async () => {
+            const isExist = await checkImageExists(popperImageUrl);
+            setIsExitPopperImage(isExist);
+        };
+        checkImage();
+    }, [popperImageUrl]);
 
     return (
         <>
@@ -205,7 +214,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
                                 borderRadius: "5px",
                             }}>
                                 <Box>
-                                    {popperImageUrl ? (
+                                    {popperImageUrl && isExistPopperImage ? (
                                         <Image src={popperImageUrl} alt="" width={48} height={48} />
                                     ) : (
                                         <Box width={48} height={48} />
