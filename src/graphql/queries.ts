@@ -67,6 +67,7 @@ export const getUser = /* GraphQL */ `query GetUser($id: ID!) {
     tenantId
     email
     name
+    comment
     isAdmin
     confirmingEmail
     createdAt
@@ -86,6 +87,7 @@ export const listUsers = /* GraphQL */ `query ListUsers(
       tenantId
       email
       name
+      comment
       isAdmin
       confirmingEmail
       createdAt
@@ -116,6 +118,7 @@ export const usersByTenantId = /* GraphQL */ `query UsersByTenantId(
       tenantId
       email
       name
+      comment
       isAdmin
       confirmingEmail
       createdAt

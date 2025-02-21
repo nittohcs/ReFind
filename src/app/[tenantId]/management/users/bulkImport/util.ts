@@ -18,6 +18,7 @@ export function getReFindUsersFromCsv(csv: string, tenantId: string) {
                 id: row["ID"] ?? "",
                 name: row["氏名"] ?? "",
                 email: row["メールアドレス"] ?? "",
+                comment: row["コメント"] ?? "",
                 tenantId: tenantId,
                 isAdmin: !!row["管理者"]?.trim(),
                 seatId: "",

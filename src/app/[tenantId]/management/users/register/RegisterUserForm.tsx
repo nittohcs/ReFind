@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useCallback, useMemo, useRef } from "react";
+import { FC, RefObject, useCallback, useMemo, useRef } from "react";
 import { Box } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -9,9 +9,11 @@ import { useTenantId } from "@/app/[tenantId]/hook";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalTextField from "@/components/MiraCalTextField";
 import MiraCalCheckbox from "@/components/MiraCalCheckbox";
+import { ImageUploadState, MiraCalImageUpload } from "@/components/MiraCalImageUpload";
 import MiraCalFormAction from "@/components/MiraCalFormAction";
 import MiraCalButton from "@/components/MiraCalButton";
 import { useReFindUsers } from "@/hooks/ReFindUser";
+import { uploadFile } from "@/hooks/storage";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { isUsernameAvailable } from "@/services/AdminQueries";
 import { useGetTenant } from "@/services/graphql";
@@ -23,6 +25,8 @@ type FormValues = {
     id: string,
     name: string,
     email: string,
+    image: string,
+    comment: string,
     isAdmin: boolean,
 };
 
@@ -36,6 +40,8 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
     const qUsers = useReFindUsers();
     // ユーザーID存在チェック結果のキャッシュ用
     const cacheRef = useRef(new Map<string, boolean>());
+
+    const imageFileRef = useRef<HTMLInputElement>(null);
 
     const validationSchema = useMemo(() => yup.object().shape({
         id: yup.string().required().default("").test("isAvailable", "このIDは既に使用されています。", async (value) => {
@@ -52,6 +58,8 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
         }),
         name: yup.string().required().default(""),
         email: yup.string().required().email().default(""),
+        image: yup.string().required().default(ImageUploadState.Unchange),
+        comment: yup.string().required().default(""),
         isAdmin: yup.bool().required().default(false),
     }), []);
 
@@ -69,7 +77,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
                 throw new Error("ユーザーが最大数まで作成されています。");
             }
 
-            return await createReFindUser({
+            const ret = await createReFindUser({
                 ...values,
                 tenantId: tenantId,
                 seatId: "",
@@ -77,6 +85,21 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
                 floorId: "",
                 floorName: "",
             });
+
+            // 画像をアップロード
+            function getFile(ref: RefObject<HTMLInputElement>) {
+                return ref.current?.files && ref.current?.files.length > 0 ? ref.current.files[0] : undefined;
+            }
+            const file = getFile(imageFileRef);
+            if (values.image === ImageUploadState.Upload && file) {
+                const imagePath = `public/${tenantId}/users/${values.id}`;
+                const _response = await uploadFile(imagePath, file);
+                // if (!_response.ok) {
+                //     throw new Error("登録に失敗しました。");
+                // }
+            }
+
+            return ret;
         },
         onSuccess(data, _variables, _context) {
             enqueueSnackbar("登録しました。", { variant: "success" });
@@ -130,6 +153,20 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
                     <MiraCalTextField
                         name="name"
                         label="氏名"
+                        type="text"
+                    />
+                    <MiraCalImageUpload
+                        name="image"
+                        label="画像"
+                        currentFilePath={null}
+                        accept="image/png, image/webp, image/jpeg"
+                        fileRef={imageFileRef}
+                        previewImageWidth={48}
+                        previewImageHeight={48}
+                    />
+                    <MiraCalTextField
+                        name="comment"
+                        label="コメント"
                         type="text"
                     />
                     <MiraCalCheckbox

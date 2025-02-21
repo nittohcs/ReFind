@@ -19,6 +19,8 @@ type MiraCalImageUploadProps = {
     accept?: string,
     fileRef: RefObject<HTMLInputElement>
     canDelete?: boolean,
+    previewImageWidth?: number,
+    previewImageHeight?: number,
 };
 
 // このコンポーネントではファイルそのものではなく、操作内容（アップロード、削除、変更なし）をFormikで管理する値とし、
@@ -76,20 +78,16 @@ export const MiraCalImageUpload: FC<MiraCalImageUploadProps> = ({ ...props }) =>
                     <Image
                         src={downloadQuery.data}
                         alt="現在の画像"
-                        width={300}
-                        height={300}
+                        width={props.previewImageWidth || 300}
+                        height={props.previewImageHeight || 300}
                     />
                 )}
                 {field.value === ImageUploadState.Upload && (
                     <Image
                         src={imageUrl}
                         alt="選択された画像"
-                        // style={{
-                        //     maxWidth: "300px",
-                        //     maxHeight: "300px",
-                        // }}
-                        width={300}
-                        height={300}
+                        width={props.previewImageWidth || 300}
+                        height={props.previewImageHeight || 300}
                     />
                 )}
             </Box>

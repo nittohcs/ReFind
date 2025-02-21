@@ -5,7 +5,6 @@ import { Box } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { fileTypeFromBlob } from "file-type";
 import { useTenantId } from "@/app/[tenantId]/hook";
 import { Floor } from "@/API";
 import MiraCalForm from "@/components/MiraCalForm";
@@ -14,9 +13,10 @@ import { ImageUploadState, MiraCalImageUpload } from "@/components/MiraCalImageU
 import MiraCalButton from "@/components/MiraCalButton";
 import MiraCalFormAction from "@/components/MiraCalFormAction";
 import { useConfirmDialogState } from "@/hooks/confirmDialogState";
+import { uploadFile } from "@/hooks/storage";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { useFloorsByTenantId } from "@/services/graphql";
-import { graphqlGetFileUploadUrl, graphqlUpdateFloor } from "@/services/graphql";
+import { graphqlUpdateFloor } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
 import DeleteFloorDialog from "./DeleteFloorDialog";
 
@@ -71,15 +71,7 @@ export const EditFloorForm: FC<EditFloorFormProps> = ({
             let imagePath: string | undefined = undefined;
             if (values.image === ImageUploadState.Upload && file) {
                 imagePath = `public/${tenantId}/floors/${values.id}`;
-                const fileTypeResult = await fileTypeFromBlob(file);
-                const presignedUrl = await graphqlGetFileUploadUrl(imagePath) ?? "";
-                const response = await fetch(presignedUrl, {
-                    method: "PUT",
-                    body: file,
-                    headers: {
-                        "Content-Type": fileTypeResult?.mime ?? "", // ファイルのMIMEタイプを指定
-                    },
-                });
+                const response = await uploadFile(imagePath, file);
                 if (!response.ok) {
                     throw new Error("登録に失敗しました。");
                 }

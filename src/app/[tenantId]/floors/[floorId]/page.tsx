@@ -4,9 +4,10 @@ import { useCallback, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Box, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
+import { Box, IconButton, Popper, Toolbar, Tooltip, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { Seat, SeatOccupancy } from "@/API";
+import { useQueryClient } from "@tanstack/react-query";
+import { Seat, SeatOccupancy, User } from "@/API";
 import MiraCalBreadcrumbs from "@/components/MiraCalBreadcrumbs";
 import DebouncedTextField from "@/components/DebouncedTextField";
 import { SeatBox } from "@/components/SeatBox";
@@ -14,6 +15,8 @@ import { useAuthState } from "@/hooks/auth";
 import { useSeatOccupancy } from "@/hooks/seatOccupancy";
 import { useStorageFileURL } from "@/hooks/storage";
 import { useContentsSize, useDialogStateWithData, useEnqueueSnackbar } from "@/hooks/ui";
+import { graphqlGetFileDownloadUrl, useUsersByTenantId } from "@/services/graphql";
+import { queryKeys } from "@/services/queryKeys";
 import { useTenantId } from "../../hook";
 import { ConfirmDialog, ConfirmDialogData } from "./ConfirmDialog";
 
@@ -21,6 +24,8 @@ export default function Page({ params }: { params: { floorId: string } }) {
     const tenantId = useTenantId();
     const floorId = decodeURIComponent(params.floorId);
     const authState = useAuthState();
+    const qUsers = useUsersByTenantId(tenantId);
+    const users = useMemo(() => qUsers.data ?? [], [qUsers.data]);
     const {isReady, myOccupancy, mySeat, myFloor, seatOccupancyMap, allFloors, allSeats} = useSeatOccupancy();
     const floor = useMemo(() => allFloors.find(x => x.id === floorId) ?? null, [allFloors, floorId]);
     const seats = useMemo(() => allSeats.filter(x => x.floorId === floorId), [allSeats, floorId]);
@@ -92,6 +97,40 @@ export default function Page({ params }: { params: { floorId: string } }) {
 
     const { elementRef, contentsWidth, contentsHeight } = useContentsSize();
 
+    const queryClient = useQueryClient();
+    const [popperComment, setPopperComment] = useState("");
+    const [popperImageUrl, setPopperImageUrl] = useState("");
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+    const handleMouseEnter = useCallback(async (e: React.MouseEvent<HTMLElement>, user: User) => {
+        setAnchorEl(e.currentTarget);
+        setPopperComment(user.comment);
+
+        // ユーザー画像を取得
+        const expiresIn = 900;
+        const imagePath = `public/${tenantId}/users/${user.id}`;
+        let imageUrl = queryClient.getQueryData<string>(queryKeys.storage(imagePath));
+        if (imageUrl) {
+            const state = queryClient.getQueryState<string>(queryKeys.storage(imagePath));
+            if (!state || state.isInvalidated || Date.now() - state.dataUpdatedAt >= expiresIn * 1000) {
+                imageUrl = "";
+            }
+        }
+        if (!imageUrl) {
+            imageUrl = await graphqlGetFileDownloadUrl(imagePath, expiresIn);
+            if (!imageUrl) {
+                throw new Error("ダウンロードURLの取得に失敗しました。");
+            }
+            queryClient.setQueryData(queryKeys.storage(imagePath), (_data: string) => imageUrl);
+        }
+        setPopperImageUrl(imageUrl);
+    }, [queryClient, tenantId]);
+    const handleMouseLeave = useCallback((_e: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(null);
+        setPopperComment("");
+        setPopperImageUrl("");
+    }, []);
+
     return (
         <>
             <MiraCalBreadcrumbs>
@@ -99,7 +138,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
                 <Link href={`/${tenantId}/floors`}>座席</Link>
                 <Typography>{floor?.name}</Typography>
             </MiraCalBreadcrumbs>
-            {isReady && floor && imageQuery.isFetched && imageQuery.data && (
+            {isReady && floor && imageQuery.isFetched && imageQuery.data && qUsers.isFetched && (
                 <>
                     <Box pt={2} ref={elementRef}>
                         <Toolbar disableGutters>
@@ -132,9 +171,12 @@ export default function Page({ params }: { params: { floorId: string } }) {
                         />
                         {seats.map(seat => {
                             const occupancy = seatOccupancyMap.get(seat.id) ?? null;
+                            const userId = occupancy?.userId ?? null;
+                            let user = users.find(x => x.id === userId) ?? null;
                             let name = occupancy?.userName ?? null;
                             if (filterString && !name?.includes(filterString)) {
                                 name = null;
+                                user = null;
                             }
                             return (
                                 <SeatBox
@@ -142,12 +184,36 @@ export default function Page({ params }: { params: { floorId: string } }) {
                                     seat={seat}
                                     isChangeColor={!!name}
                                     onClick={() => handleSeatClick(seat, occupancy)}
+                                    onMouseEnter={(e) => user && handleMouseEnter(e, user)}
+                                    onMouseLeave={(e) => handleMouseLeave(e)}
                                 >
                                     {name ?? seat.name}
                                 </SeatBox>
                             );
                         })}
                         <ConfirmDialog {...confirmDialogState} />
+                        <Popper open={!!anchorEl} anchorEl={anchorEl}>
+                            <Box sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                backgroundColor: "rgba(0, 0, 128, 0.75)",
+                                color: "white",
+                                padding: "5px",
+                                border: "2px solid rgba(0, 0, 255, 0.75)",
+                                borderRadius: "5px",
+                            }}>
+                                <Box>
+                                    {popperImageUrl ? (
+                                        <Image src={popperImageUrl} alt="" width={48} height={48} />
+                                    ) : (
+                                        <Box width={48} height={48} />
+                                    )}
+                                </Box>
+                                <Box>{popperComment}</Box>
+                            </Box>
+                        </Popper>
                     </Box>
                 </>
             )}

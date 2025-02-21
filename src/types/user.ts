@@ -3,9 +3,10 @@
 export type AdminQueriesUser = {
     // cognitoのusername
     id: string,
+    tenantId: string,
     email: string,
     name: string,
-    tenantId: string,
+    comment: string,
     // cognitoでユーザーがadminsグループに所属しているかどうか
     isAdmin: boolean,
 };

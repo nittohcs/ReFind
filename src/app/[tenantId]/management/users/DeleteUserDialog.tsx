@@ -13,6 +13,7 @@ import MiraCalLinearProgressWithLabel from "@/components/MiraCalLinearProgressWi
 import { useAuthState } from "@/hooks/auth";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { useTodayYYYYMMDD } from "@/hooks/util";
+import { graphqlDeleteFile } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
 import { ReFindUser } from "@/types/user";
 import { useTenantId } from "../../hook";
@@ -57,6 +58,9 @@ export const DeleteUserDialog: FC<DeleteUserDialogProps> = ({ isOpened, close, d
             setCurrentCount(0);
             const deleted = [];
             for(const user of (data ?? [])) {
+                const filePath = `public/${tenantId}/users/${user.id}`;
+                const _ret = await graphqlDeleteFile(filePath);
+
                 deleted.push(await deleteReFindUser(user));
                 setCurrentCount(x => x + 1);
             }

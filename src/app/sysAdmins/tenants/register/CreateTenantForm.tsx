@@ -74,9 +74,10 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
             try {
                 const adminUser: AdminQueriesUser = {
                     id: values.adminUserId,
+                    tenantId: tenant.id,
                     email: values.adminEmail,
                     name: values.adminName,
-                    tenantId: tenant.id,
+                    comment: "",
                     isAdmin: true,
                 };
 

@@ -1,11 +1,9 @@
 "use client";
 
 import { useCallback } from "react";
-import { GraphQLResult, graphqlOperation } from "@aws-amplify/api-graphql";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { GetFileDownloadUrlQuery, GetFileDownloadUrlQueryVariables } from "@/API";
-import { client } from "@/components/APIClientProvider";
-import { getFileDownloadUrl } from "@/graphql/queries";
+import { fileTypeFromBlob } from "file-type";
+import { graphqlGetFileDownloadUrl, graphqlGetFileUploadUrl } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
 import { useEnqueueSnackbar } from "./ui";
 
@@ -21,21 +19,6 @@ export function useStorageFileURL(filePath: string | null, expiresIn: number = 9
         },
         staleTime: expiresIn * 1000,    // ミリ秒なので1000倍する
     });
-}
-
-export async function graphqlGetFileDownloadUrl(filePath: string, expiresIn: number) {
-    const result = await client.graphql(
-        graphqlOperation(
-            getFileDownloadUrl,
-            {
-                filePath,
-                expiresIn,
-            } as GetFileDownloadUrlQueryVariables
-        )
-    ) as GraphQLResult<GetFileDownloadUrlQuery>;
-    if (result.errors) { throw new Error(JSON.stringify(result.errors)); }
-    if (!result.data.getFileDownloadUrl) { throw new Error("ダウンロードURLの取得に失敗しました。"); }
-    return result.data.getFileDownloadUrl;
 }
 
 export function useDownloadStorageFile(expiresIn: number = 900) {
@@ -70,4 +53,16 @@ export function useDownloadStorageFile(expiresIn: number = 900) {
         }
     }, [queryClient, enqueueSnackbar, expiresIn]);
     return download;
+}
+
+export async function uploadFile(filePath: string, file: File) {
+    const fileTypeResult = await fileTypeFromBlob(file);
+    const presignedUrl = await graphqlGetFileUploadUrl(filePath);
+    return await fetch(presignedUrl, {
+        method: "PUT",
+        body: file,
+        headers: {
+            "Content-Type": fileTypeResult?.mime ?? "", // ファイルのMIMEタイプを指定
+        },
+    });
 }

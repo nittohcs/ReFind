@@ -185,6 +185,7 @@ app.post('/updateUserAttributes', async (req, res, next) => {
       id: req.body.username,
       email: req.body.email,
       name: req.body.name,
+      comment: req.body.comment,
     });
 
     res.status(200).json(ret);
@@ -261,6 +262,7 @@ app.post('/createUser', async (req, res, next) => {
         tenantId: req.body.tenantId,
         email: req.body.email,
         name: req.body.name,
+        comment: req.body.comment,
         isAdmin: req.body.groupname === 'admins'
       });
 

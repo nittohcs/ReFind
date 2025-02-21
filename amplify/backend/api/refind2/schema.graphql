@@ -73,6 +73,9 @@ type User @model @auth (
   # 氏名
   name: String!
 
+  # コメント
+  comment: String!
+
   # 管理者かどうか
   isAdmin: Boolean!
 

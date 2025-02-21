@@ -179,6 +179,7 @@ export async function adminUpdateUserAttributes(user: AdminQueriesUser) {
             username: user.id,
             email: user.email,
             name: user.name,
+            comment: user.comment,
         },
     };
     const operation = post({ apiName, path, options });
@@ -208,6 +209,7 @@ export async function createUser(user: AdminQueriesUser, isSuppress: boolean = t
             email_verified: "true",
             tenantId: user.tenantId,
             groupname: user.isAdmin ? "admins" : "users",
+            comment: user.comment,
 
             // SUPPRESSで初回ログイン用パスワードのお知らせメールが送信されなくなる
             ...(isSuppress && { messageAction: "SUPPRESS" }),

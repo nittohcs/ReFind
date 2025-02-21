@@ -18,7 +18,9 @@ const createUser = /* GraphQL */ `mutation CreateUser(
     tenantId
     email
     name
+    comment
     isAdmin
+    confirmingEmail
     createdAt
     updatedAt
     __typename
@@ -35,7 +37,9 @@ const updateUser = /* GraphQL */ `mutation UpdateUser(
     tenantId
     email
     name
+    comment
     isAdmin
+    confirmingEmail
     createdAt
     updatedAt
     __typename
@@ -52,7 +56,9 @@ const deleteUser = /* GraphQL */ `mutation DeleteUser(
     tenantId
     email
     name
+    comment
     isAdmin
+    confirmingEmail
     createdAt
     updatedAt
     __typename
@@ -132,23 +138,25 @@ async function graphqlAccess(query, variables) {
     return body;
 }
 
-async function graphqlCreateUser({ id, tenantId, email, name, isAdmin }) {
+async function graphqlCreateUser({ id, tenantId, email, name, comment, isAdmin }) {
     const input = {
         id,
         tenantId,
         email,
         name,
+        comment,
         isAdmin,
     };
     const ret = await graphqlAccess(createUser, { input });
     return ret.data.createUser;
 }
 
-async function graphqlUpdateUser({ id, email, name, isAdmin }) {
+async function graphqlUpdateUser({ id, email, name, comment, isAdmin }) {
     const input = {
         id,
         ...(email !== undefined && { email }),
         ...(name !== undefined && { name }),
+        ...(comment !== undefined && { comment }),
         ...(isAdmin !== undefined && { isAdmin }),
     };
     const ret = await graphqlAccess(updateUser, { input });

@@ -222,6 +222,7 @@ export const createUser = /* GraphQL */ `mutation CreateUser(
     tenantId
     email
     name
+    comment
     isAdmin
     confirmingEmail
     createdAt
@@ -242,6 +243,7 @@ export const updateUser = /* GraphQL */ `mutation UpdateUser(
     tenantId
     email
     name
+    comment
     isAdmin
     confirmingEmail
     createdAt
@@ -262,6 +264,7 @@ export const deleteUser = /* GraphQL */ `mutation DeleteUser(
     tenantId
     email
     name
+    comment
     isAdmin
     confirmingEmail
     createdAt
