@@ -110,6 +110,11 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
             };
             queryClient.setQueryData(queryKeys.graphqlUsersByTenantId(tenantId), (items: ReFindUser[] = []) => items.map(item => item.id === updated.id ? updated : item));
 
+            // 画像URLのクエリを無効化して再取得されるようにする
+            if (variables.image === ImageUploadState.Upload) {
+                queryClient.invalidateQueries({ queryKey: queryKeys.storage(imagePath) });
+            }
+
             // コンポーネントを再生成
             update();
         },

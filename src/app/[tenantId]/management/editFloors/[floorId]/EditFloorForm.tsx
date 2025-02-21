@@ -93,7 +93,7 @@ export const EditFloorForm: FC<EditFloorFormProps> = ({
             // クエリのキャッシュを更新する
             queryClient.setQueryData(queryKeys.graphqlFloorsByTenantId(tenantId), (items: Floor[] = []) => items.map(item => item.id === data.id ? data : item));
 
-            // 画像取得クエリを無効化して再取得されるようにする
+            // 画像URLのクエリを無効化して再取得されるようにする
             if (data.imagePath) {
                 queryClient.invalidateQueries({ queryKey: queryKeys.storage(data.imagePath) });
             }

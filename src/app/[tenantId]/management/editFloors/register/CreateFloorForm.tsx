@@ -81,6 +81,11 @@ export const CreateFloorForm: FC<CreateFloorFormProps> = ({
         onSuccess(data, _variables, _context) {
             enqueueSnackbar("登録しました。", { variant: "success" });
 
+            // 画像URLのクエリを無効化して再読み込みさせる
+            if (_variables.image === ImageUploadState.Upload) {
+                queryClient.invalidateQueries({ queryKey: queryKeys.storage(data.imagePath) });
+            }
+
             // 登録したフロアをキャッシュに追加
             queryClient.setQueryData(queryKeys.graphqlFloorsByTenantId(tenantId), (items: Floor[] = []) => [...items, data]);
 

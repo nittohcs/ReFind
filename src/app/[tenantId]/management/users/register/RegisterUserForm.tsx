@@ -101,11 +101,17 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
 
             return ret;
         },
-        onSuccess(data, _variables, _context) {
+        onSuccess(data, variables, _context) {
             enqueueSnackbar("登録しました。", { variant: "success" });
 
             // クエリのキャッシュを更新する
             queryClient.setQueryData(queryKeys.graphqlUsersByTenantId(tenantId), (items: ReFindUser[] = []) => [...items, data]);
+
+            // 画像URLのクエリを無効化して再取得されるようにする
+            if (variables.image === ImageUploadState.Upload) {
+                const imagePath = `public/${tenantId}/users/${data.id}`;
+                queryClient.invalidateQueries({ queryKey: queryKeys.storage(imagePath) })
+            }
 
             // 入力欄を初期化するため、このコンポーネントを再表示する
             update();

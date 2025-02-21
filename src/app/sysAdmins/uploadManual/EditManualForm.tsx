@@ -62,14 +62,14 @@ export const EditManualForm: FC<EditManualFormProps> = ({
                 await uploadManual(adminManualPath, file!);
             }
         },
-        onSuccess(_data, _variables, _context) {
+        onSuccess(_data, variables, _context) {
             enqueueSnackbar("保存しました。", { variant: "success" });
 
-            // 画像取得クエリを無効化して再取得されるようにする
-            if (_variables.userManual === FileUploadState.Upload) {
+            // 画像URLのクエリを無効化して再取得されるようにする
+            if (variables.userManual === FileUploadState.Upload) {
                 queryClient.invalidateQueries({ queryKey: queryKeys.storage(userManualPath) });
             }
-            if (_variables.adminManual === FileUploadState.Upload) {
+            if (variables.adminManual === FileUploadState.Upload) {
                 queryClient.invalidateQueries({ queryKey: queryKeys.storage(adminManualPath) });
             }
 
