@@ -8,10 +8,5 @@
     }
   },
   "lambdaLayers": [],
-  "environmentVariableList": [
-    {
-      "cloudFormationParameterName": "defaultNumDays",
-      "environmentVariableName": "DEFAULT_NUM_DAYS"
-    }
-  ]
+  "environmentVariableList": []
 }

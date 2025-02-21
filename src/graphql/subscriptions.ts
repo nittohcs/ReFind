@@ -30,6 +30,8 @@ export const onCreateTenant = /* GraphQL */ `subscription OnCreateTenant($filter
     id
     name
     maxUserCount
+    initialPassword
+    retentionPeriodDays
     isSuspended
     createdAt
     updatedAt
@@ -45,6 +47,8 @@ export const onUpdateTenant = /* GraphQL */ `subscription OnUpdateTenant($filter
     id
     name
     maxUserCount
+    initialPassword
+    retentionPeriodDays
     isSuspended
     createdAt
     updatedAt
@@ -60,6 +64,8 @@ export const onDeleteTenant = /* GraphQL */ `subscription OnDeleteTenant($filter
     id
     name
     maxUserCount
+    initialPassword
+    retentionPeriodDays
     isSuspended
     createdAt
     updatedAt
@@ -76,6 +82,7 @@ export const onCreateUser = /* GraphQL */ `subscription OnCreateUser($filter: Mo
     tenantId
     email
     name
+    comment
     isAdmin
     confirmingEmail
     createdAt
@@ -93,6 +100,7 @@ export const onUpdateUser = /* GraphQL */ `subscription OnUpdateUser($filter: Mo
     tenantId
     email
     name
+    comment
     isAdmin
     confirmingEmail
     createdAt
@@ -110,6 +118,7 @@ export const onDeleteUser = /* GraphQL */ `subscription OnDeleteUser($filter: Mo
     tenantId
     email
     name
+    comment
     isAdmin
     confirmingEmail
     createdAt

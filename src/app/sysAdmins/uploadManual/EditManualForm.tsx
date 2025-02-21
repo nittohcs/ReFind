@@ -5,13 +5,12 @@ import { Box } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { fileTypeFromBlob } from "file-type";
 import MiraCalForm from "@/components/MiraCalForm";
 import { FileUploadState, MiraCalFileUpload } from "@/components/MiraCalFileUpload";
 import MiraCalFormAction from "@/components/MiraCalFormAction";
 import MiraCalButton from "@/components/MiraCalButton";
+import { uploadFile } from "@/hooks/storage";
 import { useEnqueueSnackbar } from "@/hooks/ui";
-import { graphqlGetFileUploadUrl } from "@/services/graphql";
 import { adminManualPath, userManualPath } from "@/services/manual";
 import { queryKeys } from "@/services/queryKeys";
 
@@ -47,16 +46,8 @@ export const EditManualForm: FC<EditManualFormProps> = ({
             function getFile(ref: RefObject<HTMLInputElement>) {
                 return ref.current?.files && ref.current.files.length > 0 ? ref.current.files[0] : undefined;
             }
-            async function uploadFile(filePath: string, file: File) {
-                const fileTypeResult = await fileTypeFromBlob(file);
-                const presignedUrl = await graphqlGetFileUploadUrl(filePath);
-                const response = await fetch(presignedUrl, {
-                    method: "PUT",
-                    body: file,
-                    headers: {
-                        "Content-Type": fileTypeResult?.mime ?? "",
-                    }
-                });
+            async function uploadManual(filePath: string, file: File) {
+                const response = await uploadFile(filePath, file);
                 if (!response.ok) {
                     throw new Error("保存に失敗しました。");
                 }
@@ -64,21 +55,21 @@ export const EditManualForm: FC<EditManualFormProps> = ({
 
             if (values.userManual === FileUploadState.Upload) {
                 const file = getFile(userManualFileRef);
-                await uploadFile(userManualPath, file!);
+                await uploadManual(userManualPath, file!);
             }
             if (values.adminManual === FileUploadState.Upload) {
                 const file = getFile(adminManualFileRef);
-                await uploadFile(adminManualPath, file!);
+                await uploadManual(adminManualPath, file!);
             }
         },
-        onSuccess(_data, _variables, _context) {
+        onSuccess(_data, variables, _context) {
             enqueueSnackbar("保存しました。", { variant: "success" });
 
-            // 画像取得クエリを無効化して再取得されるようにする
-            if (_variables.userManual === FileUploadState.Upload) {
+            // 画像URLのクエリを無効化して再取得されるようにする
+            if (variables.userManual === FileUploadState.Upload) {
                 queryClient.invalidateQueries({ queryKey: queryKeys.storage(userManualPath) });
             }
-            if (_variables.adminManual === FileUploadState.Upload) {
+            if (variables.adminManual === FileUploadState.Upload) {
                 queryClient.invalidateQueries({ queryKey: queryKeys.storage(adminManualPath) });
             }
 

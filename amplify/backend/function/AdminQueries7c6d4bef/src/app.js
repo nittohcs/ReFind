@@ -185,6 +185,7 @@ app.post('/updateUserAttributes', async (req, res, next) => {
       id: req.body.username,
       email: req.body.email,
       name: req.body.name,
+      comment: req.body.comment,
     });
 
     res.status(200).json(ret);
@@ -218,8 +219,11 @@ app.post('/createUser', async (req, res, next) => {
       }
     }
 
+    // テナント取得
+    const tenant = await graphqlGetTenant({ id: req.body.tenantId });
+
     // 最大ユーザー数チェック
-    const maxUserCount = (await graphqlGetTenant({ id: req.body.tenantId })).maxUserCount;
+    const maxUserCount = tenant.maxUserCount;
     const currentUserCount = await graphqlGetUserCount({ tenantId: req.body.tenantId });
     if (currentUserCount >= maxUserCount) {
       const err = new Error('Too many users');
@@ -246,7 +250,7 @@ app.post('/createUser', async (req, res, next) => {
         Value: req.body.tenantId,
       }
     ];
-    const response = await createUser(req.body.username, attributes, req.body.messageAction);
+    const response = await createUser(req.body.username, attributes, req.body.messageAction, tenant.initialPassword);
 
     // グループに追加
     try {
@@ -258,6 +262,7 @@ app.post('/createUser', async (req, res, next) => {
         tenantId: req.body.tenantId,
         email: req.body.email,
         name: req.body.name,
+        comment: req.body.comment,
         isAdmin: req.body.groupname === 'admins'
       });
 

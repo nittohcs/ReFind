@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useCallback, useMemo } from "react";
+import { FC, RefObject, useCallback, useMemo, useRef } from "react";
 import { Box } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -9,10 +9,12 @@ import { useTenantId } from "@/app/[tenantId]/hook";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalTextField from "@/components/MiraCalTextField";
 import MiraCalCheckbox from "@/components/MiraCalCheckbox";
+import { ImageUploadState, MiraCalImageUpload } from "@/components/MiraCalImageUpload";
 import MiraCalFormAction from "@/components/MiraCalFormAction";
 import MiraCalButton from "@/components/MiraCalButton";
 import { useAuthState } from "@/hooks/auth";
 import { useReFindUsers } from "@/hooks/ReFindUser";
+import { deleteFile, uploadFile } from "@/hooks/storage";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { addUserToGroup, adminUpdateUserAttributes, removeUserFromGroup } from "@/services/AdminQueries";
 import { queryKeys } from "@/services/queryKeys";
@@ -22,6 +24,8 @@ type FormValues = {
     id: string,
     name: string,
     email: string,
+    image: string,
+    comment: string,
     isAdmin: boolean,
 };
 
@@ -37,10 +41,15 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
     const query = useReFindUsers();
     const user = useMemo(() => (query.data ?? []).find(x => x.id === id), [query.data, id]);
 
+    const imageFileRef = useRef<HTMLInputElement>(null);
+    const imagePath = `public/${tenantId}/users/${id}`;
+
     const validationSchema = useMemo(() => yup.object().shape({
         id: yup.string().required().default(""),
         name: yup.string().required().default(""),
         email: yup.string().required().email().default(""),
+        image: yup.string().required(),
+        comment: yup.string().required().default(""),
         isAdmin: yup.bool().required().default(false).test("isAdmin", "操作中のユーザーを管理者ではなくすることはできません", value => {
             if (authState.username === user?.id && user?.isAdmin && !value) {
                 return false;
@@ -53,6 +62,8 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
         id: user?.id,
         name: user?.name,
         email: user?.email,
+        image: ImageUploadState.Unchange,
+        comment: user?.comment,
         isAdmin: user?.isAdmin,
     }), [validationSchema, user]);
 
@@ -73,6 +84,23 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
                 await removeUserFromGroup(updated, initialValues.isAdmin ? "admins" : "users");
                 await addUserToGroup(updated, updated.isAdmin ? "admins" : "users");
             }
+
+            if (values.image === ImageUploadState.Upload) {
+                // 画像をアップロード
+                function getFile(ref: RefObject<HTMLInputElement>) {
+                    return ref.current?.files && ref.current?.files.length > 0 ? ref.current.files[0] : undefined;
+                }
+                const file = getFile(imageFileRef);
+                if (file) {
+                    const _response = await uploadFile(imagePath, file);
+                    // if (!_response.ok) {
+                    //     throw new Error("登録に失敗しました。");
+                    // }
+                }
+            } else if (values.image === ImageUploadState.Delete) {
+                // ファイルを削除
+                await deleteFile(imagePath);
+            }
         },
         onSuccess(_data, variables, _context) {
             enqueueSnackbar("保存しました。", { variant: "success" });
@@ -82,9 +110,15 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
                 ...user!,
                 name: variables.name,
                 email: variables.email,
+                comment: variables.comment,
                 isAdmin: variables.isAdmin,
             };
             queryClient.setQueryData(queryKeys.graphqlUsersByTenantId(tenantId), (items: ReFindUser[] = []) => items.map(item => item.id === updated.id ? updated : item));
+
+            // 画像URLのクエリを無効化して再取得されるようにする
+            if (variables.image !== ImageUploadState.Unchange) {
+                queryClient.invalidateQueries({ queryKey: queryKeys.storage(imagePath) });
+            }
 
             // コンポーネントを再生成
             update();
@@ -137,6 +171,21 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
                     <MiraCalTextField
                         name="name"
                         label="氏名"
+                        type="text"
+                    />
+                    <MiraCalImageUpload
+                        name="image"
+                        label="画像"
+                        currentFilePath={imagePath}
+                        accept="image/png, image/webp, image/jpeg"
+                        fileRef={imageFileRef}
+                        canDelete={true}
+                        previewImageWidth={48}
+                        previewImageHeight={48}
+                    />
+                    <MiraCalTextField
+                        name="comment"
+                        label="コメント"
                         type="text"
                     />
                     <MiraCalCheckbox

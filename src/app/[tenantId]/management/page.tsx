@@ -47,6 +47,17 @@ export default function Page() {
                         </CardActions>
                     </Card>
                 </Link>
+                <Link href={`/${tenantId}/management/seatOccupancies`}>
+                    <Card>
+                        <CardContent>
+                            <Typography variant="h6">座席確保履歴一覧</Typography>
+                            <Typography variant="caption">座席確保履歴の一覧を表示する</Typography>
+                        </CardContent>
+                        <CardActions>
+                            <Button size="small">設定を行う</Button>
+                        </CardActions>
+                    </Card>
+                </Link>
             </Box>
         </>
     )

@@ -5,7 +5,6 @@ import { Box } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { fileTypeFromBlob } from "file-type";
 import { v4 as uuidv4 } from "uuid";
 import { Floor } from "@/API";
 import { useTenantId } from "@/app/[tenantId]/hook";
@@ -14,8 +13,9 @@ import MiraCalTextField from "@/components/MiraCalTextField";
 import { ImageUploadState, MiraCalImageUpload } from "@/components/MiraCalImageUpload";
 import MiraCalFormAction from "@/components/MiraCalFormAction";
 import MiraCalButton from "@/components/MiraCalButton";
+import { uploadFile } from "@/hooks/storage";
 import { useEnqueueSnackbar } from "@/hooks/ui";
-import { graphqlCreateFloor, graphqlGetFileUploadUrl } from "@/services/graphql";
+import { graphqlCreateFloor } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
 
 type FormValues = {
@@ -62,20 +62,7 @@ export const CreateFloorForm: FC<CreateFloorFormProps> = ({
             const id = uuidv4();
             const imagePath = `public/${tenantId}/floors/${id}`;
             if (values.image === ImageUploadState.Upload && file) {
-                // ファイルタイプ
-                const fileTypeResult = await fileTypeFromBlob(file);
-
-                // アップロード用URLを取得
-                const presignedUrl = await graphqlGetFileUploadUrl(imagePath) ?? "";
-
-                // アップロード
-                const response = await fetch(presignedUrl, {
-                    method: "PUT",
-                    body: file,
-                    headers: {
-                        "Content-Type": fileTypeResult?.mime ?? "", // ファイルのMIMEタイプを指定
-                    },
-                });
+                const response = await uploadFile(imagePath, file);
                 if (!response.ok) {
                     throw new Error("登録に失敗しました。");
                 }
@@ -93,6 +80,11 @@ export const CreateFloorForm: FC<CreateFloorFormProps> = ({
         },
         onSuccess(data, _variables, _context) {
             enqueueSnackbar("登録しました。", { variant: "success" });
+
+            // 画像URLのクエリを無効化して再読み込みさせる
+            if (_variables.image === ImageUploadState.Upload) {
+                queryClient.invalidateQueries({ queryKey: queryKeys.storage(data.imagePath) });
+            }
 
             // 登録したフロアをキャッシュに追加
             queryClient.setQueryData(queryKeys.graphqlFloorsByTenantId(tenantId), (items: Floor[] = []) => [...items, data]);

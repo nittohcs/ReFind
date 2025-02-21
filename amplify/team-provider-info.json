@@ -24,8 +24,7 @@
         },
         "AdminQueries7c6d4bef": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
-          "s3Key": "amplify-builds/AdminQueries7c6d4bef-4345665a766264523877-build.zip",
-          "initialPassword": "REFIND2025"
+          "s3Key": "amplify-builds/AdminQueries7c6d4bef-42364873383568673037-build.zip"
         },
         "refind2GetFileUploadUrl": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
@@ -68,9 +67,8 @@
           "s3Key": "amplify-builds/refind2DeleteSeat-736c314c345a57527452-build.zip"
         },
         "refind2DeleteOldSeatOccupancy": {
-          "defaultNumDays": "7",
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
-          "s3Key": "amplify-builds/refind2DeleteOldSeatOccupancy-72734347374f63306c78-build.zip"
+          "s3Key": "amplify-builds/refind2DeleteOldSeatOccupancy-6d682b61694d632f4a57-build.zip"
         },
         "refind2a0622a88": {},
         "refind2": {},

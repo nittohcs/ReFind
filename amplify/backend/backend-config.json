@@ -348,14 +348,6 @@
         }
       ]
     },
-    "AMPLIFY_function_AdminQueries7c6d4bef_initialPassword": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "AdminQueries7c6d4bef"
-        }
-      ]
-    },
     "AMPLIFY_function_AdminQueries7c6d4bef_s3Key": {
       "usedBy": [
         {
@@ -441,14 +433,6 @@
         {
           "category": "function",
           "resourceName": "refind2DeleteFloor"
-        }
-      ]
-    },
-    "AMPLIFY_function_refind2DeleteOldSeatOccupancy_defaultNumDays": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "refind2DeleteOldSeatOccupancy"
         }
       ]
     },

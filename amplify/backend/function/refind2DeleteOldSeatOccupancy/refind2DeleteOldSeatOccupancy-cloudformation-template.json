@@ -23,9 +23,6 @@
     "apirefind2GraphQLAPIEndpointOutput": {
       "Type": "String",
       "Default": "apirefind2GraphQLAPIEndpointOutput"
-    },
-    "defaultNumDays": {
-      "Type": "String"
     }
   },
   "Conditions": {
@@ -86,9 +83,6 @@
             },
             "API_REFIND2_GRAPHQLAPIENDPOINTOUTPUT": {
               "Ref": "apirefind2GraphQLAPIEndpointOutput"
-            },
-            "DEFAULT_NUM_DAYS": {
-              "Ref": "defaultNumDays"
             }
           }
         },

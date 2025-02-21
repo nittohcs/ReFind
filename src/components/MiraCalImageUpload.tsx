@@ -1,10 +1,10 @@
 "use client";
 
-import { ChangeEvent, FC, RefObject, useCallback, useMemo, useState } from "react";
+import { ChangeEvent, FC, RefObject, useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { Box, Button, TextField } from "@mui/material";
 import { useField } from "formik";
-import { useStorageFileURL } from "@/hooks/storage";
+import { checkImageExists, useStorageFileURL } from "@/hooks/storage";
 
 export const ImageUploadState = {
     Upload: "upload",
@@ -19,23 +19,47 @@ type MiraCalImageUploadProps = {
     accept?: string,
     fileRef: RefObject<HTMLInputElement>
     canDelete?: boolean,
+    previewImageWidth?: number,
+    previewImageHeight?: number,
 };
 
 // このコンポーネントではファイルそのものではなく、操作内容（アップロード、削除、変更なし）をFormikで管理する値とし、
 // ファイルへのアクセスはinput要素へのref経由で行う
 export const MiraCalImageUpload: FC<MiraCalImageUploadProps> = ({ ...props }) => {
+    const downloadQuery = useStorageFileURL(props.currentFilePath);
+    const [isExistImage, setIsExistImage] = useState(false);
+    useEffect(() =>  {
+        const checkImage = async () => {
+            if (downloadQuery.isFetched && downloadQuery.data) {
+                const isExist = await checkImageExists(downloadQuery.data);
+                setIsExistImage(isExist);
+            }
+        };
+        checkImage();
+    }, [downloadQuery]);
+
     const [imageUrl, setImageUrl] = useState("");
     const [field, meta, helper] = useField(props.name);
-    const isSetFilePath = !!props.currentFilePath;
     const textFieldValue = useMemo(() => field.value === ImageUploadState.Upload ? "アップロード" :
                                          field.value === ImageUploadState.Delete ? "削除" :
                                          !!props.currentFilePath ? "変更なし" :
                                          "未選択"
                                     , [field.value, props.currentFilePath]);
 
+    useEffect(() => {
+        return () => {
+            if (imageUrl) {
+                URL.revokeObjectURL(imageUrl);
+            }
+        };
+    }, [imageUrl]);
     const onChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         const selectedFile = (e.target.files && e.target.files[0]) ?? null;
         helper.setValue(selectedFile ? ImageUploadState.Upload : ImageUploadState.Unchange);
+
+        if (imageUrl) {
+            URL.revokeObjectURL(imageUrl);
+        }
 
         if (selectedFile?.type.startsWith('image/')) {
             const url = URL.createObjectURL(selectedFile);
@@ -43,7 +67,7 @@ export const MiraCalImageUpload: FC<MiraCalImageUploadProps> = ({ ...props }) =>
         } else {
             setImageUrl("");
         }
-    }, [helper]);
+    }, [helper, imageUrl]);
     const onClickDelete = useCallback(() => {
         helper.setValue(ImageUploadState.Delete);
     }, [helper]);
@@ -53,15 +77,15 @@ export const MiraCalImageUpload: FC<MiraCalImageUploadProps> = ({ ...props }) =>
             props.fileRef.current.value = "";
         }
     }, [helper, props.fileRef]);
-
-    const downloadQuery = useStorageFileURL(props.currentFilePath);
                                     
     return (
         <Box>
             <Box>
                 <TextField
-                    InputLabelProps={{
-                        shrink: true,
+                    slotProps={{
+                        inputLabel: {
+                            shrink: true,
+                        },
                     }}
                     label={props.label}
                     value={textFieldValue}
@@ -72,24 +96,20 @@ export const MiraCalImageUpload: FC<MiraCalImageUploadProps> = ({ ...props }) =>
                 />
             </Box>
             <Box>
-                {field.value === ImageUploadState.Unchange && downloadQuery.isFetched && downloadQuery.data && (
+                {field.value === ImageUploadState.Unchange && downloadQuery.isFetched && downloadQuery.data && isExistImage && (
                     <Image
                         src={downloadQuery.data}
                         alt="現在の画像"
-                        width={300}
-                        height={300}
+                        width={props.previewImageWidth || 300}
+                        height={props.previewImageHeight || 300}
                     />
                 )}
                 {field.value === ImageUploadState.Upload && (
                     <Image
                         src={imageUrl}
                         alt="選択された画像"
-                        // style={{
-                        //     maxWidth: "300px",
-                        //     maxHeight: "300px",
-                        // }}
-                        width={300}
-                        height={300}
+                        width={props.previewImageWidth || 300}
+                        height={props.previewImageHeight || 300}
                     />
                 )}
             </Box>
@@ -112,7 +132,7 @@ export const MiraCalImageUpload: FC<MiraCalImageUploadProps> = ({ ...props }) =>
                         onChange={onChange}
                     />
                 </Button>
-                {props.canDelete && isSetFilePath && field.value === ImageUploadState.Unchange && (
+                {props.canDelete && isExistImage && field.value === ImageUploadState.Unchange && (
                     <Button
                         variant="contained"
                         onClick={onClickDelete}

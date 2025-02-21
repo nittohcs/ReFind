@@ -33,7 +33,6 @@ const {
 
 const cognitoIdentityProviderClient = new CognitoIdentityProviderClient({});
 const userPoolId = process.env.USERPOOL;
-const initialPassword = process.env.INITIAL_PASSWORD;
 
 async function setUserPassword(username, password) {
   const input = {
@@ -76,7 +75,7 @@ async function updateUserAttributes(username, attributes) {
   }
 }
 
-async function createUser(username, attributes, messageAction) {
+async function createUser(username, attributes, messageAction, initialPassword) {
   const input = {
     UserPoolId: userPoolId,
     Username: username,

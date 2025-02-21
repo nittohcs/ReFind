@@ -32,6 +32,9 @@ export const PreviewTable: FC<PreviewTableProps> = ({ name }) => {
         columnHelper.accessor("email", {
             header: "メールアドレス",
         }),
+        columnHelper.accessor("comment", {
+            header: "コメント",
+        }),
         columnHelper.accessor("isAdmin", {
             header: "管理者",
         }),

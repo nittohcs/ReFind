@@ -27,6 +27,12 @@ type Tenant @model @auth (
   # 最大ユーザー数
   maxUserCount: Int!
 
+  # 初期パスワード
+  initialPassword: String!
+
+  # 座席確保情報の履歴保管日数
+  retentionPeriodDays: Int!
+
   # 利用停止中かどうか
   isSuspended: Boolean!
 }
@@ -66,6 +72,9 @@ type User @model @auth (
 
   # 氏名
   name: String!
+
+  # コメント
+  comment: String!
 
   # 管理者かどうか
   isAdmin: Boolean!

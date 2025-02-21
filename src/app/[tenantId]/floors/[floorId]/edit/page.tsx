@@ -8,9 +8,10 @@ import { Seat } from "@/API";
 import { useTenantId } from "@/app/[tenantId]/hook";
 import MiraCalBreadcrumbs from "@/components/MiraCalBreadcrumbs";
 import SeatBox from "@/components/SeatBox";
+import { useSeatOccupancy } from "@/hooks/seatOccupancy";
 import { useStorageFileURL } from "@/hooks/storage";
 import { useContentsSize, useDialogState, useDialogStateWithData } from "@/hooks/ui";
-import { useSeatOccupancy } from "@/hooks/seatOccupancy";
+import { downloadCSV } from "@/services/util";
 import CreateSeatDialog from "./CreateSeatDialog";
 import EditSeatDialog from "./EditSeatDialog";
 import ImportCSVDialog from "./ImportCSVDialog";
@@ -65,24 +66,8 @@ export default function Page({ params }: { params: { floorId: string } }) {
         if (seats.length === 0) {
             return;
         }
-
-        const convertToCSV = (data: Seat[]) => {
-            const headers = Object.keys(data[0]).join(",");
-            const rows = data.map(item => Object.values(item).join(","));
-            return [headers, ...rows].join("\n");
-        };
-
-        const csvData = convertToCSV(seats);
-        const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.setAttribute("href", url);
-        link.setAttribute("download", "data.csv");
-        link.style.visibility = "hidden";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }, [seats]);
+        downloadCSV(seats, `座席一覧_${floor?.name ?? ""}.csv`);
+    }, [seats, floor?.name]);
 
     const state = useDialogState();
 

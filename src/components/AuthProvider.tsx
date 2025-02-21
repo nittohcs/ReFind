@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, PropsWithChildren, useEffect } from "react";
+import React, { FC, PropsWithChildren, useEffect } from "react";
 import { I18n } from "aws-amplify/utils";
 import { Authenticator, Image, View, translations, useAuthenticator, useTheme } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
@@ -111,6 +111,11 @@ const components = {
             </View>
         );
     },
+    SignIn: {
+        Footer() {
+            return <View></View>;
+        },
+    },
 };
 
 export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -123,7 +128,12 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
     }, []);
 
     if (authStatus !== "authenticated" || route !== "authenticated") {
-        return <Authenticator components={components} hideSignUp={true} />;
+        return (
+            <Authenticator
+                components={components}
+                hideSignUp={true}
+            />
+        );
     }
 
     return (
