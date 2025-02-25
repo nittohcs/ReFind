@@ -36,3 +36,30 @@ export function downloadCSV<T extends object>(data: T[], filename: string) {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
 }
+
+export function convertBMPtoPNG(file: File): Promise<Blob> {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (event: ProgressEvent<FileReader>) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                if (ctx) {
+                    ctx.drawImage(img, 0, 0);
+                    canvas.toBlob((blob) => {
+                        if (blob) {
+                            resolve(blob);
+                        }
+                    }, 'image/png');
+                }
+            };
+            if (event.target && typeof event.target.result === 'string') {
+                img.src = event.target.result;
+            }
+        };
+        reader.readAsDataURL(file);
+    });
+};

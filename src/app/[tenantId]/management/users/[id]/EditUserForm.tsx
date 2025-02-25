@@ -5,6 +5,7 @@ import { Box } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { fileTypeFromBlob } from "file-type";
 import { useTenantId } from "@/app/[tenantId]/hook";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalTextField from "@/components/MiraCalTextField";
@@ -18,6 +19,7 @@ import { deleteFile, uploadFile } from "@/hooks/storage";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { addUserToGroup, adminUpdateUserAttributes, removeUserFromGroup } from "@/services/AdminQueries";
 import { queryKeys } from "@/services/queryKeys";
+import { convertBMPtoPNG } from "@/services/util";
 import { ReFindUser } from "@/types/user";
 
 type FormValues = {
@@ -90,8 +92,15 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
                 function getFile(ref: RefObject<HTMLInputElement>) {
                     return ref.current?.files && ref.current?.files.length > 0 ? ref.current.files[0] : undefined;
                 }
-                const file = getFile(imageFileRef);
+                let file = getFile(imageFileRef);
                 if (file) {
+                    // BMPの場合、PNGに変換
+                    const fileType = await fileTypeFromBlob(file);
+                    if (fileType?.mime === "image/bmp") {
+                        const blob = await convertBMPtoPNG(file);
+                        file = new File([blob], `${file.name}.png`, { type: "image/png" });
+                    }
+
                     const _response = await uploadFile(imagePath, file);
                     // if (!_response.ok) {
                     //     throw new Error("登録に失敗しました。");
@@ -177,7 +186,7 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
                         name="image"
                         label="画像"
                         currentFilePath={imagePath}
-                        accept="image/png, image/webp, image/jpeg"
+                        accept="image/png, image/webp, image/jpeg, image/bmp"
                         fileRef={imageFileRef}
                         canDelete={true}
                         previewImageWidth={48}

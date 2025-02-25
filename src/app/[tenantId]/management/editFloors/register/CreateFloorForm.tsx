@@ -6,6 +6,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { v4 as uuidv4 } from "uuid";
+import { fileTypeFromBlob } from "file-type";
 import { Floor } from "@/API";
 import { useTenantId } from "@/app/[tenantId]/hook";
 import MiraCalForm from "@/components/MiraCalForm";
@@ -17,6 +18,7 @@ import { uploadFile } from "@/hooks/storage";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { graphqlCreateFloor } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
+import { convertBMPtoPNG } from "@/services/util";
 
 type FormValues = {
     name: string,
@@ -57,11 +59,19 @@ export const CreateFloorForm: FC<CreateFloorFormProps> = ({
             function getFile(ref: RefObject<HTMLInputElement>) {
                 return ref.current?.files && ref.current?.files.length > 0 ? ref.current.files[0] : undefined;
             }
-            const file = getFile(imageFileRef);
+            let file = getFile(imageFileRef);
 
             const id = uuidv4();
             const imagePath = `public/${tenantId}/floors/${id}`;
             if (values.image === ImageUploadState.Upload && file) {
+                const fileType = await fileTypeFromBlob(file);
+
+                // BMPの場合、PNGに変換
+                if (fileType?.mime === "image/bmp") {
+                    const blob = await convertBMPtoPNG(file);
+                    file = new File([blob], `${file.name}.png`, { type: "image/png" });
+                }
+
                 const response = await uploadFile(imagePath, file);
                 if (!response.ok) {
                     throw new Error("登録に失敗しました。");
@@ -125,7 +135,7 @@ export const CreateFloorForm: FC<CreateFloorFormProps> = ({
                         name="image"
                         label="画像"
                         currentFilePath={null}
-                        accept="image/png, image/webp, image/jpeg"
+                        accept="image/png, image/webp, image/jpeg, image/bmp"
                         fileRef={imageFileRef}
                     />
                     <MiraCalTextField
