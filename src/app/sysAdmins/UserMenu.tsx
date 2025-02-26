@@ -4,11 +4,14 @@ import { Box, Divider, IconButton, Menu, MenuItem, Typography } from "@mui/mater
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { signOut } from "aws-amplify/auth";
 import { useAuthState } from "@/hooks/auth";
+import { useDownloadStorageFile } from "@/hooks/storage";
 import { useMenu } from "@/hooks/ui";
+import { sysAdminManualPath } from "@/services/manual";
 
 export function UserMenu() {
     const menu = useMenu();
     const authState = useAuthState();
+    const download = useDownloadStorageFile();
 
     return (
         <Box>
@@ -25,6 +28,7 @@ export function UserMenu() {
                         <Divider sx={{ mb: 1 }} />
                     </Box>
                 )}
+                <MenuItem onClick={menu.withClose(async () => await download(sysAdminManualPath))}>マニュアル</MenuItem>
                 <MenuItem onClick={() => signOut()}>ログアウト</MenuItem>
             </Menu>
         </Box>
