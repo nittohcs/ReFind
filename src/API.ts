@@ -95,13 +95,29 @@ export type funcUpdateUserAttributesInput = {
   accessToken: string,
   email?: string | null,
   name?: string | null,
+  comment?: string | null,
 };
 
 export type funcUpdateUserAttributesResponse = {
   __typename: "funcUpdateUserAttributesResponse",
   isUpdatedEmail: boolean,
   isUpdatedName: boolean,
+  isUpdatedComment: boolean,
   isRequiredVerification: boolean,
+  updatedUser?: User | null,
+};
+
+export type User = {
+  __typename: "User",
+  id: string,
+  tenantId: string,
+  email: string,
+  name: string,
+  comment: string,
+  isAdmin: boolean,
+  confirmingEmail?: string | null,
+  createdAt: string,
+  updatedAt: string,
 };
 
 export type funcVerifyUserAttributeInput = {
@@ -254,19 +270,6 @@ export type ModelIDInput = {
   attributeExists?: boolean | null,
   attributeType?: ModelAttributeTypes | null,
   size?: ModelSizeInput | null,
-};
-
-export type User = {
-  __typename: "User",
-  id: string,
-  tenantId: string,
-  email: string,
-  name: string,
-  comment: string,
-  isAdmin: boolean,
-  confirmingEmail?: string | null,
-  createdAt: string,
-  updatedAt: string,
 };
 
 export type UpdateUserInput = {
@@ -756,7 +759,20 @@ export type FuncUpdateUserAttributesMutation = {
     __typename: "funcUpdateUserAttributesResponse",
     isUpdatedEmail: boolean,
     isUpdatedName: boolean,
+    isUpdatedComment: boolean,
     isRequiredVerification: boolean,
+    updatedUser?:  {
+      __typename: "User",
+      id: string,
+      tenantId: string,
+      email: string,
+      name: string,
+      comment: string,
+      isAdmin: boolean,
+      confirmingEmail?: string | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
   } | null,
 };
 

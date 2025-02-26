@@ -28,7 +28,7 @@
         },
         "refind2GetFileUploadUrl": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
-          "s3Key": "amplify-builds/refind2GetFileUploadUrl-6b2f4434575065795071-build.zip"
+          "s3Key": "amplify-builds/refind2GetFileUploadUrl-3947386935756b736c68-build.zip"
         },
         "refind2CreateFloor": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
@@ -44,7 +44,7 @@
         },
         "refind2DeleteFile": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
-          "s3Key": "amplify-builds/refind2DeleteFile-5574527333726f314b65-build.zip"
+          "s3Key": "amplify-builds/refind2DeleteFile-444a436943564f30494e-build.zip"
         },
         "refind2DeleteFloor": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
@@ -76,7 +76,7 @@
         "userPoolGroups": {},
         "refind2UpdateUserAttributes": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
-          "s3Key": "amplify-builds/refind2UpdateUserAttributes-62787a494b66306b4257-build.zip"
+          "s3Key": "amplify-builds/refind2UpdateUserAttributes-366538514c6d34517456-build.zip"
         },
         "refind2VerifyUserAttribute": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",

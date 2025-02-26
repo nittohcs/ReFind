@@ -9,15 +9,17 @@ import { funcUpdateUserAttributes, funcVerifyUserAttribute } from "@/graphql/mut
 type UpdateUserAttributesInput = {
     email?: string,
     name?: string,
+    comment?: string,
 };
 
-export async function graphqlUpdateUserAttributes({ email, name }: UpdateUserAttributesInput) {
+export async function graphqlUpdateUserAttributes({ email, name, comment }: UpdateUserAttributesInput) {
     const authSession = await fetchAuthSession();
     const accessToken = authSession.tokens?.accessToken?.toString() ?? "";
     const input = {
         accessToken,
-        ...(email && { email }),
-        ...(name && { name }),
+        ...(email !== undefined && { email }),
+        ...(name !== undefined && { name }),
+        ...(comment !== undefined && { comment }),
     };
     const result = await client.graphql(
         graphqlOperation(

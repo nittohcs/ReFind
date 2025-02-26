@@ -269,12 +269,15 @@ input funcUpdateUserAttributesInput {
   accessToken: String!
   email: String
   name: String
+  comment: String
 }
 
 type funcUpdateUserAttributesResponse {
   isUpdatedEmail: Boolean!
   isUpdatedName: Boolean!
+  isUpdatedComment: Boolean!
   isRequiredVerification: Boolean!
+  updatedUser: User
 }
 
 input funcVerifyUserAttributeInput {

@@ -29,6 +29,7 @@ const updateUser = /* GraphQL */ `mutation UpdateUser(
     tenantId
     email
     name
+    comment
     isAdmin
     confirmingEmail
     createdAt
@@ -72,17 +73,18 @@ async function graphqlAccess(query, variables) {
 /**
  * @type {import('@types/aws-lambda').AppSyncResolverHandler}
  */
- export const handler = async (event) => {
+export const handler = async (event) => {
   console.log(`EVENT: ${JSON.stringify(event)}`);
 
   const ret = {
     isUpdatedEmail: false,
     isUpdatedName: false,
+    isUpdatedComment: false,
     isRequiredVerification: false,
   };
 
   const username = event.identity?.username;
-  const { accessToken, email, name } = event.arguments?.input || {};
+  const { accessToken, email, name, comment } = event.arguments?.input || {};
 
   const userAttributes = [];
   if (email) {
@@ -92,16 +94,18 @@ async function graphqlAccess(query, variables) {
     userAttributes.push({ Name: "name", Value: name });
   }
 
-  const command = new UpdateUserAttributesCommand({
-    AccessToken: accessToken,
-    UserAttributes: userAttributes,
-  });
-  const response = await cognitoClient.send(command);
+  if (userAttributes.length > 0) {
+    const command = new UpdateUserAttributesCommand({
+      AccessToken: accessToken,
+      UserAttributes: userAttributes,
+    });
+    const response = await cognitoClient.send(command);
 
-  console.log(`response: ${JSON.stringify(response)}`);
+    console.log(`response: ${JSON.stringify(response)}`);
 
-  if (response.CodeDeliveryDetailsList && response.CodeDeliveryDetailsList.length > 0) {
-    ret.isRequiredVerification = true;
+    if (response.CodeDeliveryDetailsList && response.CodeDeliveryDetailsList.length > 0) {
+      ret.isRequiredVerification = true;
+    }
   }
 
   // DB更新
@@ -120,8 +124,15 @@ async function graphqlAccess(query, variables) {
     input.name = name;
     ret.isUpdatedName = true;
   }
-  const updateResult = await graphqlAccess(updateUser, { input });
-  console.log(`updateResult: ${JSON.stringify(updateResult)}`);
+  if (comment !== undefined) {
+    input.comment = comment ?? "";
+    ret.isUpdatedComment = true;
+  }
+  if (input.email || input.name || input.comment !== undefined) {
+    const updateResult = await graphqlAccess(updateUser, { input });
+    console.log(`updateResult: ${JSON.stringify(updateResult)}`);
+    ret.updatedUser = updateResult.data.updateUser;
+  }
 
   return ret;
 };

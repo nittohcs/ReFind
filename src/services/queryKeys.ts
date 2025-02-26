@@ -7,5 +7,6 @@ export const queryKeys = {
     graphqlSeatsByTenantId: (tenantId: string) => ["Seat", tenantId] as const,
     graphqlSeatOccupanciesByDateAndTenantId: (date: string, tenantId: string) => ["SeatOccupanciesByDateAndTenantId", date, tenantId] as const,
     graphqlSeatOccupanciesByTenantId: (tenantId: string) => ["SeatOccupanciesByTenantId", tenantId] as const,
-    graphqlUsersByTenantId: (tenantId: string) => ["User", tenantId] as const,
+    graphqlUsersByTenantId: (tenantId: string) => ["UsersByTenantId", tenantId] as const,
+    graphqlGetUser: (userId: string) => ["GetUser", userId] as const,
 };
