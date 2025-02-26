@@ -51,7 +51,7 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
         name: yup.string().required().default(""),
         email: yup.string().required().email().default(""),
         image: yup.string().required(),
-        comment: yup.string().required().default(""),
+        comment: yup.string().default(""),
         isAdmin: yup.bool().required().default(false).test("isAdmin", "操作中のユーザーを管理者ではなくすることはできません", value => {
             if (authState.username === user?.id && user?.isAdmin && !value) {
                 return false;

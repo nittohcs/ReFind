@@ -61,7 +61,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
         name: yup.string().required().default(""),
         email: yup.string().required().email().default(""),
         image: yup.string().required().default(ImageUploadState.Unchange),
-        comment: yup.string().required().default(""),
+        comment: yup.string().default(""),
         isAdmin: yup.bool().required().default(false),
     }), []);
 
