@@ -69,7 +69,12 @@ export const CreateSeatDialog: FC<CreateSeatDialogProps> = ({
             enqueueSnackbar(`座席「${data.name}」を作成しました。`, { variant: "success" });
 
             // クエリのキャッシュに登録したデータを追加する
-            queryClient.setQueryData(queryKeys.graphqlSeatsByTenantId(tenantId), (item: Seat[] = []) => [...item, data]);
+            queryClient.setQueryData<Seat[]>(queryKeys.graphqlSeatsByTenantId(tenantId), items => {
+                if (!items) {
+                    return items;
+                }
+                return [...items, data];
+            });
 
             // ダイアログを閉じる
             close();

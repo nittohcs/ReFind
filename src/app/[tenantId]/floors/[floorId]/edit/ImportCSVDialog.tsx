@@ -145,10 +145,20 @@ export const ImportCSVDialog: FC<ImportCSVDialogProps> = ({
 
             // クエリのキャッシュから削除されたSeatを削除する
             const deletedSet = new Set(data.deleted.map(x => x.id));
-            queryClient.setQueryData(queryKeys.graphqlSeatsByTenantId(tenantId), (items: Seat[] = []) => items.filter(item => !deletedSet.has(item.id)));
+            queryClient.setQueryData<Seat[]>(queryKeys.graphqlSeatsByTenantId(tenantId), items => {
+                if (!items) {
+                    return items;
+                }
+                return items.filter(item => !deletedSet.has(item.id));
+            });
 
             // クエリのキャッシュに登録されたSeatを追加する
-            queryClient.setQueryData(queryKeys.graphqlSeatsByTenantId(tenantId), (items: Seat[] = []) => [...items, ...data.created]);
+            queryClient.setQueryData<Seat[]>(queryKeys.graphqlSeatsByTenantId(tenantId), items => {
+                if (!items) {
+                    return items;
+                }
+                return [...items, ...data.created];
+            });
 
             // ダイアログを閉じる
             close();

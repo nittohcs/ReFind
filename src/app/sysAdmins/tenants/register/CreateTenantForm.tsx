@@ -97,7 +97,12 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
             enqueueSnackbar("登録しました。", { variant: "success" });
 
             // 登録したテナントをキャッシュに追加
-            queryClient.setQueryData(queryKeys.graphqlListAllTenants, (items: Tenant[] = []) => [...items, data]);
+            queryClient.setQueryData<Tenant[]>(queryKeys.graphqlListAllTenants, items => {
+                if (!items) {
+                    return items;
+                }
+                return [...items, data];
+            });
 
             // このコンポーネントを再表示させる
             update();

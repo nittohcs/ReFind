@@ -103,10 +103,15 @@ export const DeleteTenantDialog: FC<DeleteTenantDialogProps> = ({
             enqueueSnackbar(`テナント「${tenant.name}」を削除しました。`, { variant: "success" });
 
             // クエリのキャッシュを更新
-            queryClient.setQueryData(queryKeys.graphqlUsersByTenantId(tenant.id), (_items: User[] = []) => []);
-            queryClient.setQueryData(queryKeys.graphqlSeatsByTenantId(tenant.id), (_items: Seat[] = []) => []);
-            queryClient.setQueryData(queryKeys.graphqlFloorsByTenantId(tenant.id), (_items: Floor[] = []) => []);
-            queryClient.setQueryData(queryKeys.graphqlListAllTenants, (items: Tenant[] = []) => items.filter(item => item.id !== tenant.id));
+            queryClient.setQueryData<User[]>(queryKeys.graphqlUsersByTenantId(tenant.id), (_items) => []);
+            queryClient.setQueryData<Seat[]>(queryKeys.graphqlSeatsByTenantId(tenant.id), (_items) => []);
+            queryClient.setQueryData<Floor[]>(queryKeys.graphqlFloorsByTenantId(tenant.id), (_items) => []);
+            queryClient.setQueryData<Tenant[]>(queryKeys.graphqlListAllTenants, items => {
+                if (!items) {
+                    return items;
+                }
+                return items.filter(item => item.id !== tenant.id);
+            });
 
             // ダイアログを閉じる
             close();

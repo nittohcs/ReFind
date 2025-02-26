@@ -122,7 +122,12 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
                 comment: variables.comment,
                 isAdmin: variables.isAdmin,
             };
-            queryClient.setQueryData(queryKeys.graphqlUsersByTenantId(tenantId), (items: ReFindUser[] = []) => items.map(item => item.id === updated.id ? updated : item));
+            queryClient.setQueryData<ReFindUser[]>(queryKeys.graphqlUsersByTenantId(tenantId), items => {
+                if (!items) {
+                    return items;
+                }
+                return items.map(item => item.id === updated.id ? updated : item);
+            });
 
             // 画像URLのクエリを無効化して再取得されるようにする
             if (variables.image !== ImageUploadState.Unchange) {

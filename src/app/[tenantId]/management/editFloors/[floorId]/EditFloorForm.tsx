@@ -101,7 +101,12 @@ export const EditFloorForm: FC<EditFloorFormProps> = ({
             enqueueSnackbar("フロアを更新しました。", { variant: "success" });
 
             // クエリのキャッシュを更新する
-            queryClient.setQueryData(queryKeys.graphqlFloorsByTenantId(tenantId), (items: Floor[] = []) => items.map(item => item.id === data.id ? data : item));
+            queryClient.setQueryData<Floor[]>(queryKeys.graphqlFloorsByTenantId(tenantId), items => {
+                if (!items) {
+                    return items;
+                }
+                return items.map(item => item.id === data.id ? data : item);
+            });
 
             // 画像URLのクエリを無効化して再取得されるようにする
             if (data.imagePath) {

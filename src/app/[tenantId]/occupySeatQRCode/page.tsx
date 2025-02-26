@@ -63,7 +63,12 @@ export default function Page() {
             occupancies.push(await occupySeat(seat, authState.username ?? "", authState.name ?? ""));
             enqueueSnackbar(`フロア「${floor.name}」の座席「${seat.name}」を確保しました。`, { variant: "success" });
         }
-        queryClient.setQueryData(queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId), (items: SeatOccupancy[] = []) => [...items, ...occupancies]);
+        queryClient.setQueryData<SeatOccupancy[]>(queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId), items => {
+            if (!items) {
+                return items;
+            }
+            return [...items, ...occupancies];
+        });
         router.push(`/${tenantId}/floors/${floor.id}`);
         return true;
     }, [allSeats, authState.name, authState.username, enqueueSnackbar, myOccupancy, mySeat, router, seatOccupancyMap, queryClient, today, allFloors, myFloor, tenantId]);

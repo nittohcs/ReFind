@@ -129,7 +129,12 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
             enqueueSnackbar("取り込みました。", { variant: "success" });
 
             // クエリのキャッシュを更新する
-            queryClient.setQueryData(queryKeys.graphqlUsersByTenantId(tenantId), (items: ReFindUser[] = []) => [...items, ...data]);
+            queryClient.setQueryData<ReFindUser[]>(queryKeys.graphqlUsersByTenantId(tenantId), items => {
+                if (!items) {
+                    return items;
+                }
+                return [...items, ...data];
+            });
 
             // 入力欄を初期化するため、このコンポーネントを再表示する
             update();

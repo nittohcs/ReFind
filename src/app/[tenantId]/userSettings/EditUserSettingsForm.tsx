@@ -125,8 +125,13 @@ export const EditUserSettingsForm: FC<EditUserSettingsFormProps> = ({ /*confirmi
 
             // クエリのキャッシュを更新
             if (data.updatedUser) {
-                queryClient.setQueryData(queryKeys.graphqlUsersByTenantId(tenantId), (items: User[] = []) => items.map(user => user.id === variables.username ? data.updatedUser : user));
-                queryClient.setQueryData(queryKeys.graphqlGetUser(variables.username), (_user: User) => data.updatedUser);
+                queryClient.setQueryData<User[]>(queryKeys.graphqlUsersByTenantId(tenantId), items => {
+                    if (!items) {
+                        return items;
+                    }
+                    return items.map(user => user.id === variables.username ? data.updatedUser! : user);
+                });
+                queryClient.setQueryData<User>(queryKeys.graphqlGetUser(variables.username), _user => data.updatedUser!);
             }
             if (data.imageChanged) {
                 queryClient.invalidateQueries({ queryKey: queryKeys.storage(imagePath) });
@@ -148,10 +153,6 @@ export const EditUserSettingsForm: FC<EditUserSettingsFormProps> = ({ /*confirmi
     }));
 
     const onSubmit = useCallback((values: EditUserSettingsFormValues) => mutation.mutate(values), [mutation]);
-
-    if (!qUser.isFetched) {
-        return null;
-    }
 
     return (
         <Box maxWidth="sm">
@@ -199,7 +200,7 @@ export const EditUserSettingsForm: FC<EditUserSettingsFormProps> = ({ /*confirmi
                         <MiraCalButton
                             variant="contained"
                             type="submit"
-                            disabled={mutation.isPending}
+                            disabled={mutation.isPending || !qUser.isFetched}
                             disabledWhenNotDirty={true}
                         >
                             保存

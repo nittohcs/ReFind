@@ -74,7 +74,12 @@ export const EditSeatDialog: FC<EditSeatDialogProps> = ({
             enqueueSnackbar(`座席「${data.name}」を更新しました。`, { variant: "success" });
 
             // クエリのキャッシュを更新
-            queryClient.setQueryData(queryKeys.graphqlSeatsByTenantId(tenantId), (items: Seat[] = []) => items.map(item => item.id === data.id ? data : item));
+            queryClient.setQueryData<Seat[]>(queryKeys.graphqlSeatsByTenantId(tenantId), items => {
+                if (!items) {
+                    return items;
+                }
+                return items.map(item => item.id === data.id ? data : item);
+            });
 
             // ダイアログを閉じる
             close();

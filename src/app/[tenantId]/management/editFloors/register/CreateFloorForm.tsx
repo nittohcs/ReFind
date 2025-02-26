@@ -97,7 +97,12 @@ export const CreateFloorForm: FC<CreateFloorFormProps> = ({
             }
 
             // 登録したフロアをキャッシュに追加
-            queryClient.setQueryData(queryKeys.graphqlFloorsByTenantId(tenantId), (items: Floor[] = []) => [...items, data]);
+            queryClient.setQueryData<Floor[]>(queryKeys.graphqlFloorsByTenantId(tenantId), items => {
+                if (!items) {
+                    return items;
+                }
+                return [...items, data];
+            });
 
             // このコンポーネントを再表示させる
             update();

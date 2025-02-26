@@ -115,7 +115,12 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
             enqueueSnackbar("登録しました。", { variant: "success" });
 
             // クエリのキャッシュを更新する
-            queryClient.setQueryData(queryKeys.graphqlUsersByTenantId(tenantId), (items: ReFindUser[] = []) => [...items, data]);
+            queryClient.setQueryData<ReFindUser[]>(queryKeys.graphqlUsersByTenantId(tenantId), items => {
+                if (!items) {
+                    return items;
+                }
+                return [...items, data];
+            });
 
             // 画像URLのクエリを無効化して再取得されるようにする
             if (variables.image === ImageUploadState.Upload) {

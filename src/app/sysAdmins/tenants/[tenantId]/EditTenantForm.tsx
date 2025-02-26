@@ -75,7 +75,12 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
             enqueueSnackbar("テナントを更新しました。", { variant: "success" });
 
             // 更新したテナントだけキャッシュを更新
-            queryClient.setQueryData(queryKeys.graphqlListAllTenants, (items: Tenant[]) => items.map(item => item.id === data.id ? data : item));
+            queryClient.setQueryData<Tenant[]>(queryKeys.graphqlListAllTenants, items => {
+                if (!items) {
+                    return items;
+                }
+                return items.map(item => item.id === data.id ? data : item);
+            });
 
             // コンポーネントを再生成
             update();

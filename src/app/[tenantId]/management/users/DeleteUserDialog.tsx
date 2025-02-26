@@ -71,12 +71,22 @@ export const DeleteUserDialog: FC<DeleteUserDialogProps> = ({ isOpened, close, d
 
             // ユーザー一覧のクエリのキャッシュを更新する
             const deletedUserIds = data.map(x => x.user.id);
-            queryClient.setQueryData(queryKeys.graphqlUsersByTenantId(tenantId), (items: ReFindUser[] = []) => items.filter(user => !deletedUserIds.includes(user.id)))
+            queryClient.setQueryData<ReFindUser[]>(queryKeys.graphqlUsersByTenantId(tenantId), items => {
+                if (!items) {
+                    return items;
+                }
+                return items.filter(user => !deletedUserIds.includes(user.id));
+            })
 
             // 座席確保情報のクエリのキャッシュを更新する
             const seatOccupancies = data.map(x => x.seatOccupancy).filter(x => !!x);
             if (seatOccupancies.length > 0) {
-                queryClient.setQueryData(queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId), (items: SeatOccupancy[] = []) => [...items, ...seatOccupancies]);
+                queryClient.setQueryData<SeatOccupancy[]>(queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId), items => {
+                    if (!items) {
+                        return items;
+                    }
+                    return [...items, ...seatOccupancies];
+                });
             }
 
             // テーブルの行選択をリセット

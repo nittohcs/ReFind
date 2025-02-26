@@ -122,7 +122,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
             if (!imageUrl) {
                 throw new Error("ダウンロードURLの取得に失敗しました。");
             }
-            queryClient.setQueryData(queryKeys.storage(imagePath), (_data: string) => imageUrl);
+            queryClient.setQueryData<string>(queryKeys.storage(imagePath), _item => imageUrl);
         }
         setPopperImageUrl(imageUrl);
     }, [queryClient, tenantId]);

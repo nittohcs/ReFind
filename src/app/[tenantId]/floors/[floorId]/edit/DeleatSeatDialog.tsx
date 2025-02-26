@@ -30,7 +30,12 @@ export default function DeleteSeatDialog(
             enqueueSnackbar(`座席「${data.name}」を削除しました。`, { variant: "success" });
 
             // クエリのキャッシュから削除したデータを除外する
-            queryClient.setQueryData(queryKeys.graphqlSeatsByTenantId(tenantId), (items: Seat[] = []) => items.filter(x => x.id !== data.id));
+            queryClient.setQueryData<Seat[]>(queryKeys.graphqlSeatsByTenantId(tenantId), items => {
+                if (!items) {
+                    return items;
+                }
+                return items.filter(x => x.id !== data.id);
+            });
 
             // ダイアログを閉じる
             state.close();
