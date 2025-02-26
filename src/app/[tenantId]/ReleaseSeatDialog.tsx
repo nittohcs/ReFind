@@ -26,7 +26,12 @@ export default function ReleaseSeatDialog(state: ConfirmDialogState<Seat>) {
             enqueueSnackbar("座席を解放しました。", { variant: "success" });
 
             // クエリのキャッシュを更新する
-            queryClient.setQueryData(queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId), (items: SeatOccupancy[] = []) => [...items, data]);
+            queryClient.setQueryData<SeatOccupancy[]>(queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId), items => {
+                if (!items) {
+                    return items;
+                }
+                return [...items, data];
+            });
 
             // ダイアログを閉じる
             state.close();

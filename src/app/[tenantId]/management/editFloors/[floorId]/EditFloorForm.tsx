@@ -5,6 +5,7 @@ import { Box } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { fileTypeFromBlob } from "file-type";
 import { useTenantId } from "@/app/[tenantId]/hook";
 import { Floor } from "@/API";
 import MiraCalForm from "@/components/MiraCalForm";
@@ -18,6 +19,7 @@ import { useEnqueueSnackbar } from "@/hooks/ui";
 import { useFloorsByTenantId } from "@/services/graphql";
 import { graphqlUpdateFloor } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
+import { convertBMPtoPNG } from "@/services/util";
 import DeleteFloorDialog from "./DeleteFloorDialog";
 
 type FormValues = {
@@ -66,11 +68,19 @@ export const EditFloorForm: FC<EditFloorFormProps> = ({
             function getFile(ref: RefObject<HTMLInputElement>) {
                 return ref.current?.files && ref.current?.files.length > 0 ? ref.current.files[0] : undefined;
             }
-            const file = getFile(imageFileRef);
+            let file = getFile(imageFileRef);
 
             let imagePath: string | undefined = undefined;
             if (values.image === ImageUploadState.Upload && file) {
                 imagePath = `public/${tenantId}/floors/${values.id}`;
+
+                // BMPの場合、PNGに変換
+                const fileType = await fileTypeFromBlob(file);
+                if (fileType?.mime === "image/bmp") {
+                    const blob = await convertBMPtoPNG(file);
+                    file = new File([blob], `${file.name}.png`, { type: "image/png" });
+                }
+
                 const response = await uploadFile(imagePath, file);
                 if (!response.ok) {
                     throw new Error("登録に失敗しました。");
@@ -91,7 +101,12 @@ export const EditFloorForm: FC<EditFloorFormProps> = ({
             enqueueSnackbar("フロアを更新しました。", { variant: "success" });
 
             // クエリのキャッシュを更新する
-            queryClient.setQueryData(queryKeys.graphqlFloorsByTenantId(tenantId), (items: Floor[] = []) => items.map(item => item.id === data.id ? data : item));
+            queryClient.setQueryData<Floor[]>(queryKeys.graphqlFloorsByTenantId(tenantId), items => {
+                if (!items) {
+                    return items;
+                }
+                return items.map(item => item.id === data.id ? data : item);
+            });
 
             // 画像URLのクエリを無効化して再取得されるようにする
             if (data.imagePath) {
@@ -143,7 +158,7 @@ export const EditFloorForm: FC<EditFloorFormProps> = ({
                         name="image"
                         label="画像"
                         currentFilePath={floor?.imagePath ?? null}
-                        accept="image/png, image/webp, image/jpeg"
+                        accept="image/png, image/webp, image/jpeg, image/bmp"
                         fileRef={imageFileRef}
                     />
                     <MiraCalTextField

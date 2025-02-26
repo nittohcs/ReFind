@@ -2,10 +2,10 @@
 
 import { GraphQLResult, graphqlOperation } from "@aws-amplify/api-graphql";
 import { useQuery } from "@tanstack/react-query";
-import { DeleteFileMutation, DeleteFileMutationVariables, Floor, FloorsByTenantIdQuery, FloorsByTenantIdQueryVariables, funcCreateFloorInput, FuncCreateFloorMutation, FuncCreateFloorMutationVariables, funcCreateSeatInput, FuncCreateSeatMutation, FuncCreateSeatMutationVariables, funcDeleteFloorInput, FuncDeleteFloorMutation, FuncDeleteFloorMutationVariables, funcDeleteSeatInput, FuncDeleteSeatMutation, FuncDeleteSeatMutationVariables, funcUpdateFloorInput, FuncUpdateFloorMutation, FuncUpdateFloorMutationVariables, funcUpdateSeatInput, FuncUpdateSeatMutation, FuncUpdateSeatMutationVariables, GetFileDownloadUrlQuery, GetFileDownloadUrlQueryVariables, GetFileUploadUrlQuery, GetFileUploadUrlQueryVariables, GetTenantQuery, GetTenantQueryVariables, ListTenantsQuery, ListTenantsQueryVariables, Seat, SeatOccupanciesByDateAndTenantIdQuery, SeatOccupanciesByDateAndTenantIdQueryVariables, SeatOccupanciesByTenantIdQuery, SeatOccupancy, SeatsByTenantIdQuery, SeatsByTenantIdQueryVariables, Tenant, User, UsersByTenantIdQuery, UsersByTenantIdQueryVariables } from "@/API";
+import { DeleteFileMutation, DeleteFileMutationVariables, Floor, FloorsByTenantIdQuery, FloorsByTenantIdQueryVariables, funcCreateFloorInput, FuncCreateFloorMutation, FuncCreateFloorMutationVariables, funcCreateSeatInput, FuncCreateSeatMutation, FuncCreateSeatMutationVariables, funcDeleteFloorInput, FuncDeleteFloorMutation, FuncDeleteFloorMutationVariables, funcDeleteSeatInput, FuncDeleteSeatMutation, FuncDeleteSeatMutationVariables, funcUpdateFloorInput, FuncUpdateFloorMutation, FuncUpdateFloorMutationVariables, funcUpdateSeatInput, FuncUpdateSeatMutation, FuncUpdateSeatMutationVariables, GetFileDownloadUrlQuery, GetFileDownloadUrlQueryVariables, GetFileUploadUrlQuery, GetFileUploadUrlQueryVariables, GetTenantQuery, GetTenantQueryVariables, GetUserQuery, GetUserQueryVariables, ListTenantsQuery, ListTenantsQueryVariables, Seat, SeatOccupanciesByDateAndTenantIdQuery, SeatOccupanciesByDateAndTenantIdQueryVariables, SeatOccupanciesByTenantIdQuery, SeatOccupancy, SeatsByTenantIdQuery, SeatsByTenantIdQueryVariables, Tenant, User, UsersByTenantIdQuery, UsersByTenantIdQueryVariables } from "@/API";
 import { client } from "@/components/APIClientProvider";
 import { deleteFile, funcCreateFloor, funcCreateSeat, funcDeleteFloor, funcDeleteSeat, funcUpdateFloor, funcUpdateSeat } from "@/graphql/mutations";
-import { floorsByTenantId, getFileDownloadUrl, getFileUploadUrl, getTenant, listTenants, seatOccupanciesByDateAndTenantId, seatOccupanciesByTenantId, seatsByTenantId, usersByTenantId } from "@/graphql/queries";
+import { floorsByTenantId, getFileDownloadUrl, getFileUploadUrl, getTenant, getUser, listTenants, seatOccupanciesByDateAndTenantId, seatOccupanciesByTenantId, seatsByTenantId, usersByTenantId } from "@/graphql/queries";
 import { NextToken } from "@/types/graphql";
 import { queryKeys } from "./queryKeys";
 
@@ -249,6 +249,27 @@ export async function graphqlUsersByTenantId(tenantId: string) {
     } while(nextToken);
 
     return users;
+}
+
+export function useGetUser(id: string, staleTime?: number) {
+    return useQuery({
+        queryKey: queryKeys.graphqlGetUser(id),
+        async queryFn() { return await graphqlGetUser(id); },
+        ...(!!staleTime && {staleTime }),
+    });
+}
+
+async function graphqlGetUser(id: string) {
+    const result = await client.graphql(
+        graphqlOperation(
+            getUser,
+            {
+                id
+            } as GetUserQueryVariables
+        )
+    ) as GraphQLResult<GetUserQuery>;
+    if (result.errors || !result.data) { throw new Error(JSON.stringify(result.errors)); }
+    return result.data.getUser;
 }
 
 export async function graphqlCreateSeat(input: funcCreateSeatInput) {

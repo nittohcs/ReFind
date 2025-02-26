@@ -62,8 +62,18 @@ export default function DeleteFloorDialog(state: ConfirmDialogState<Floor>) {
 
             // クエリのキャッシュを更新
             const deletedSeatIds = data.seats.map(x => x.id);
-            queryClient.setQueryData(queryKeys.graphqlSeatsByTenantId(tenantId), (items: Seat[] = []) => items.filter(item => !deletedSeatIds.includes(item.id)));
-            queryClient.setQueryData(queryKeys.graphqlFloorsByTenantId(tenantId), (items: Floor[] = []) => items.filter(item => item.id !== data.floor.id));
+            queryClient.setQueryData<Seat[]>(queryKeys.graphqlSeatsByTenantId(tenantId), items => {
+                if (!items) {
+                    return items;
+                }
+                return items.filter(item => !deletedSeatIds.includes(item.id));
+            });
+            queryClient.setQueryData<Floor[]>(queryKeys.graphqlFloorsByTenantId(tenantId), items => {
+                if (!items) {
+                    return items;
+                }
+                return items.filter(item => item.id !== data.floor.id);
+            });
 
             // ダイアログを閉じる
             state.close();

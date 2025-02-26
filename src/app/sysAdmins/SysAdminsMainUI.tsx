@@ -11,6 +11,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import HomeIcon from "@mui/icons-material/Home"
 import BusinessIcon from "@mui/icons-material/Business";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
 //import { useAuthState } from "@/hooks/auth";
 import { SideBarOpenContext } from "@/hooks/sideBar";
 import { useEnvName } from "@/hooks/ui";
@@ -164,6 +165,11 @@ export const SysAdminsMainUI: FC<PropsWithChildren> = ({
                         href="/sysAdmins/tenants"
                         text="テナント"
                         icon={<BusinessIcon />}
+                    />
+                    <LinkItem
+                        href="/sysAdmins/uploadManual"
+                        text="マニュアル編集"
+                        icon={<UploadFileIcon />}
                     />
                 </List>
             </Drawer>

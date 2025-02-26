@@ -45,7 +45,23 @@ export const MiraCalImageUpload: FC<MiraCalImageUploadProps> = ({ ...props }) =>
                                          !!props.currentFilePath ? "変更なし" :
                                          "未選択"
                                     , [field.value, props.currentFilePath]);
-
+    // imageUrlとダイアログの選択状態をクリア
+    const clearImageState = useCallback(() => {
+        if (imageUrl) {
+            URL.revokeObjectURL(imageUrl);
+        }
+        setImageUrl("");
+        if (props.fileRef.current) {
+            props.fileRef.current.value = "";
+        }
+    }, [imageUrl, props.fileRef]);
+    // 利用側でreset処理が実行されたときの処理
+    useEffect(() => {
+        if (field.value === meta.initialValue) {
+            clearImageState();
+        }
+    }, [field.value, meta.initialValue, clearImageState]);
+    // アンマウント時にURLを解放
     useEffect(() => {
         return () => {
             if (imageUrl) {
@@ -53,6 +69,7 @@ export const MiraCalImageUpload: FC<MiraCalImageUploadProps> = ({ ...props }) =>
             }
         };
     }, [imageUrl]);
+    // ダイアログで画像を選択した時の処理
     const onChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         const selectedFile = (e.target.files && e.target.files[0]) ?? null;
         helper.setValue(selectedFile ? ImageUploadState.Upload : ImageUploadState.Unchange);
@@ -68,15 +85,15 @@ export const MiraCalImageUpload: FC<MiraCalImageUploadProps> = ({ ...props }) =>
             setImageUrl("");
         }
     }, [helper, imageUrl]);
+    // 削除ボタンの処理
     const onClickDelete = useCallback(() => {
         helper.setValue(ImageUploadState.Delete);
     }, [helper]);
+    // リセットボタンの処理
     const onClickReset = useCallback(() => {
         helper.setValue(ImageUploadState.Unchange);
-        if (props.fileRef.current) {
-            props.fileRef.current.value = "";
-        }
-    }, [helper, props.fileRef]);
+        clearImageState();
+    }, [helper, clearImageState]);
                                     
     return (
         <Box>

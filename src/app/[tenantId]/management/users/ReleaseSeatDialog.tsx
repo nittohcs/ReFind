@@ -55,7 +55,12 @@ export const ReleaseSeatDialog: FC<ReleaseSeatDialogProps> = ({
             enqueueSnackbar("座席を強制解放しました。", { variant: "success" });
 
             // クエリのキャッシュを更新する
-            queryClient.setQueryData(queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId), (items: SeatOccupancy[] = []) => [...items, ...data]);
+            queryClient.setQueryData<SeatOccupancy[]>(queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId), items => {
+                if (!items) {
+                    return items;
+                }
+                return [...items, ...data];
+            });
 
             // テーブルの行選択をリセット
             resetRowSelection();

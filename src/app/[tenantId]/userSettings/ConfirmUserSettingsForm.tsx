@@ -5,13 +5,13 @@ import { Box, Button, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { User } from "@/API";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalFormAction from "@/components/MiraCalFormAction";
 import MiraCalTextField from "@/components/MiraCalTextField";
 import { useAuthState, useUpdateUserInfo } from "@/hooks/auth";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { queryKeys } from "@/services/queryKeys";
-import { ReFindUser } from "@/types/user";
 import { useTenantId } from "../hook";
 import { graphqlVerifyUserAttribute } from "./operation";
 
@@ -45,7 +45,18 @@ export const ConfirmUserSettingsForm: FC<ConfirmUserSettingsFormProps> = ({ conf
         },
         onSuccess(_data, _variables, _context) {
             // クエリのキャッシュを更新
-            queryClient.setQueryData(queryKeys.graphqlUsersByTenantId(tenantId), (items: ReFindUser[] = []) => items.map(user => user.id === authState.username ? {...user, email: confirmingEmail } : user));
+            queryClient.setQueryData<User[]>(queryKeys.graphqlUsersByTenantId(tenantId), items => {
+                if (!items) {
+                    return items;
+                }
+                return items.map(user => user.id === authState.username ? {...user, email: confirmingEmail, confirmingEmail: null } : user);
+            });
+            queryClient.setQueryData<User>(queryKeys.graphqlGetUser(authState.username!), item => {
+                if (!item) {
+                    return item;
+                }
+                return { ...item, email: confirmingEmail, confirmingEmail: null };
+            });
 
             updateUserInfo({
                 email: confirmingEmail,

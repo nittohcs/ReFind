@@ -17,11 +17,7 @@ export const handler = async (event) => {
     console.log(`EVENT: ${JSON.stringify(event)}`);
 
     const filePath = event.arguments?.filePath ?? "";
-
-    const groups = event.identity?.groups;
-    if (groups.indexOf("admins") < 0) {
-        throw new Error("User does not have permissions to upload files");
-    }
+    const groups = event.identity?.groups ?? [];
 
     // sysAdminsじゃないならtenantIdをチェックする
     if (groups.indexOf("sysAdmins") < 0) {
@@ -32,6 +28,14 @@ export const handler = async (event) => {
 
         if (!filePath.startsWith(`public/${tenantId}/`)) {
             throw new Error("Invalid tenantId");
+        }
+
+        // admins以外の場合、アップロードできるのは自分のアイコン画像だけ
+        if (groups.indexOf("admins") < 0) {
+            const userId = event.identity?.username ?? "";
+            if (filePath !== `public/${tenantId}/users/${userId}`) {
+                throw new Error("Invalid filePath");
+            }
         }
     }
 

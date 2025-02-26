@@ -64,7 +64,12 @@ export const ConfirmDialog: FC<ConfirmDialogProps> = ({
             }
 
             // クエリのキャッシュに登録したデータを追加
-            queryClient.setQueryData(queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId), (items: SeatOccupancy[] = []) => [...items, ...data]);
+            queryClient.setQueryData<SeatOccupancy[]>(queryKeys.graphqlSeatOccupanciesByDateAndTenantId(today, tenantId), items => {
+                if (!items) {
+                    return items;
+                }
+                return [...items, ...data];
+            });
 
             // ダイアログを閉じる
             close();

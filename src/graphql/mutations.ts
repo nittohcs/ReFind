@@ -138,7 +138,20 @@ export const funcUpdateUserAttributes = /* GraphQL */ `mutation FuncUpdateUserAt
   funcUpdateUserAttributes(input: $input) {
     isUpdatedEmail
     isUpdatedName
+    isUpdatedComment
     isRequiredVerification
+    updatedUser {
+      id
+      tenantId
+      email
+      name
+      comment
+      isAdmin
+      confirmingEmail
+      createdAt
+      updatedAt
+      __typename
+    }
     __typename
   }
 }

@@ -43,7 +43,7 @@ export function useDownloadStorageFile(expiresIn: number = 900) {
                 if (!storageUrl) {
                     throw new Error("ダウンロードURLの取得に失敗しました。");
                 }
-                queryClient.setQueryData(queryKeys.storage(filePath), (_data: string) => storageUrl);
+                queryClient.setQueryData<string>(queryKeys.storage(filePath), _item => storageUrl);
             }
 
             window.open(storageUrl, "_blank", "noopener,noreferrer");

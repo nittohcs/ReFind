@@ -11,12 +11,13 @@ import MiraCalFormAction from "@/components/MiraCalFormAction";
 import MiraCalButton from "@/components/MiraCalButton";
 import { uploadFile } from "@/hooks/storage";
 import { useEnqueueSnackbar } from "@/hooks/ui";
-import { adminManualPath, userManualPath } from "@/services/manual";
+import { adminManualPath, sysAdminManualPath, userManualPath } from "@/services/manual";
 import { queryKeys } from "@/services/queryKeys";
 
 type FormValues = {
     userManual: string,
     adminManual: string,
+    sysAdminManual: string,
 };
 
 type EditManualFormProps = {
@@ -29,15 +30,18 @@ export const EditManualForm: FC<EditManualFormProps> = ({
     const validationSchema = useMemo(() => yup.object().shape({
         userManual: yup.string().required(),
         adminManual: yup.string().required(),
+        sysAdminManual: yup.string().required(),
     }), []);
 
     const initialValues: FormValues = useMemo(() => validationSchema.cast({
         userManual: FileUploadState.Unchange,
         adminManual: FileUploadState.Unchange,
+        sysAdminManual: FileUploadState.Unchange,
     }), [validationSchema]);
 
     const userManualFileRef = useRef<HTMLInputElement>(null);
     const adminManualFileRef = useRef<HTMLInputElement>(null);
+    const sysAdminManualFileRef = useRef<HTMLInputElement>(null);
 
     const enqueueSnackbar = useEnqueueSnackbar();
     const queryClient = useQueryClient();
@@ -61,6 +65,10 @@ export const EditManualForm: FC<EditManualFormProps> = ({
                 const file = getFile(adminManualFileRef);
                 await uploadManual(adminManualPath, file!);
             }
+            if (values.sysAdminManual === FileUploadState.Upload) {
+                const file = getFile(sysAdminManualFileRef);
+                await uploadManual(sysAdminManualPath, file!);
+            }
         },
         onSuccess(_data, variables, _context) {
             enqueueSnackbar("保存しました。", { variant: "success" });
@@ -71,6 +79,9 @@ export const EditManualForm: FC<EditManualFormProps> = ({
             }
             if (variables.adminManual === FileUploadState.Upload) {
                 queryClient.invalidateQueries({ queryKey: queryKeys.storage(adminManualPath) });
+            }
+            if (variables.sysAdminManual === FileUploadState.Upload) {
+                queryClient.invalidateQueries({ queryKey: queryKeys.storage(sysAdminManualPath) });
             }
 
             // コンポーネントを再生成
@@ -115,6 +126,13 @@ export const EditManualForm: FC<EditManualFormProps> = ({
                         currentFilePath={adminManualPath}
                         accept="application/pdf"
                         fileRef={adminManualFileRef}
+                    />
+                    <MiraCalFileUpload
+                        name="sysAdminManual"
+                        label="システム管理者マニュアル"
+                        currentFilePath={sysAdminManualPath}
+                        accept="application/pdf"
+                        fileRef={sysAdminManualFileRef}
                     />
                     <MiraCalFormAction>
                         <MiraCalButton
