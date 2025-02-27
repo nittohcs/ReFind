@@ -102,10 +102,23 @@ export default function Page({ params }: { params: { floorId: string } }) {
     const [popperImageUrl, setPopperImageUrl] = useState("");
     const [isExistPopperImage, setIsExitPopperImage] = useState(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [commentForegroundColor, setCommentForegroundColor] = useState("");
+    const [commentBackgroundColor, setCommentBackgroundColor] = useState("");
+    const [popperBorderColor, setPopperBorderColor] = useState("");
 
     const handleMouseEnter = useCallback(async (e: React.MouseEvent<HTMLElement>, user: User) => {
         setAnchorEl(e.currentTarget);
         setPopperComment(user.comment);
+        setCommentForegroundColor(user.commentForegroundColor ?? "#000000ff");
+        const backgroundColor = user.commentBackgroundColor ?? "#ffffffff";
+        setCommentBackgroundColor(backgroundColor);
+        const [r, g, b, a] = backgroundColor.substring(1).match(/.{2}/g)!.map(x => parseInt(x, 16));
+        const r2 = r * 0.5;
+        const g2 = g * 0.5;
+        const b2 = b * 0.5;
+        const toHex = (value: number) => Math.round(value).toString(16).padStart(2, "0");
+        const borderColor = `#${toHex(r2)}${toHex(g2)}${toHex(b2)}${toHex(a)}`;
+        setPopperBorderColor(borderColor);
 
         // ユーザー画像を取得
         const expiresIn = 900;
@@ -207,10 +220,10 @@ export default function Page({ params }: { params: { floorId: string } }) {
                                 flexDirection: "column",
                                 justifyContent: "center",
                                 alignItems: "center",
-                                backgroundColor: "rgba(0, 0, 128, 0.75)",
-                                color: "white",
+                                backgroundColor: commentBackgroundColor,
+                                color: commentForegroundColor,
                                 padding: "5px",
-                                border: "2px solid rgba(0, 0, 255, 0.75)",
+                                border: `2px solid ${popperBorderColor}`,
                                 borderRadius: "5px",
                             }}>
                                 <Box>

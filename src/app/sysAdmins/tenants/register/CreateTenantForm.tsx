@@ -13,7 +13,6 @@ import MiraCalButton from "@/components/MiraCalButton";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { createUser } from "@/services/AdminQueries";
 import { queryKeys } from "@/services/queryKeys";
-import { AdminQueriesUser } from "@/types/user";
 import { graphqlCreateTenant, graphqlDeleteTenant } from "../operation";
 import { Tenant } from "@/API";
 
@@ -72,7 +71,7 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
             });
 
             try {
-                const adminUser: AdminQueriesUser = {
+                const adminUser = {
                     id: values.adminUserId,
                     tenantId: tenant.id,
                     email: values.adminEmail,

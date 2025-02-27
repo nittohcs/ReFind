@@ -30,6 +30,8 @@ const updateUser = /* GraphQL */ `mutation UpdateUser(
     email
     name
     comment
+    commentForegroundColor
+    commentBackgroundColor
     isAdmin
     confirmingEmail
     createdAt
@@ -79,12 +81,11 @@ export const handler = async (event) => {
   const ret = {
     isUpdatedEmail: false,
     isUpdatedName: false,
-    isUpdatedComment: false,
     isRequiredVerification: false,
   };
 
   const username = event.identity?.username;
-  const { accessToken, email, name, comment } = event.arguments?.input || {};
+  const { accessToken, email, name, comment, commentForegroundColor, commentBackgroundColor } = event.arguments?.input || {};
 
   const userAttributes = [];
   if (email) {
@@ -126,9 +127,14 @@ export const handler = async (event) => {
   }
   if (comment !== undefined) {
     input.comment = comment ?? "";
-    ret.isUpdatedComment = true;
   }
-  if (input.email || input.name || input.comment !== undefined) {
+  if (commentForegroundColor !== undefined) {
+    input.commentForegroundColor = commentForegroundColor;
+  }
+  if (commentBackgroundColor !== undefined) {
+    input.commentBackgroundColor = commentBackgroundColor;
+  }
+  if (input.email || input.name || input.comment !== undefined || commentForegroundColor || commentBackgroundColor) {
     const updateResult = await graphqlAccess(updateUser, { input });
     console.log(`updateResult: ${JSON.stringify(updateResult)}`);
     ret.updatedUser = updateResult.data.updateUser;

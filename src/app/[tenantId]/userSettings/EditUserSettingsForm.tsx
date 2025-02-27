@@ -11,6 +11,7 @@ import MiraCalButton from "@/components/MiraCalButton";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalTextField from "@/components/MiraCalTextField";
 import { ImageUploadState, MiraCalImageUpload } from "@/components/MiraCalImageUpload";
+import MiraCalColorPicker from "@/components/MiraCalColorPicker";
 import MiraCalFormAction from "@/components/MiraCalFormAction";
 import { useAuthState, useUpdateUserInfo } from "@/hooks/auth";
 import { deleteFile, uploadFile } from "@/hooks/storage";
@@ -27,6 +28,8 @@ type EditUserSettingsFormValues = {
     email: string,
     image: string,
     comment: string,
+    commentForegroundColor: string,
+    commentBackgroundColor: string,
 };
 
 type EditUserSettingsFormProps = {
@@ -51,6 +54,8 @@ export const EditUserSettingsForm: FC<EditUserSettingsFormProps> = ({ /*confirmi
         email: yup.string().default("").email().required(),
         image: yup.string().required(),
         comment: yup.string().default(""),
+        commentForegroundColor: yup.string().default(""),
+        commentBackgroundColor: yup.string().default(""),
     }), []);
 
     const initialValues: EditUserSettingsFormValues = useMemo(() => validationSchema.cast({
@@ -59,7 +64,9 @@ export const EditUserSettingsForm: FC<EditUserSettingsFormProps> = ({ /*confirmi
         email: authState.email,
         image: ImageUploadState.Unchange,
         comment: qUser.data?.comment,
-    }), [validationSchema, authState.username, authState.name, authState.email, qUser.data?.comment]);
+        commentForegroundColor: qUser.data?.commentForegroundColor ?? "#000000ff",
+        commentBackgroundColor: qUser.data?.commentBackgroundColor ?? "#ffffffff",
+    }), [validationSchema, authState.username, authState.name, authState.email, qUser.data]);
 
     const mutation = useMutation(({
         async mutationFn(values: EditUserSettingsFormValues) {
@@ -67,6 +74,8 @@ export const EditUserSettingsForm: FC<EditUserSettingsFormProps> = ({ /*confirmi
                 ...(values.email !== initialValues.email && { email: values.email }),
                 ...(values.name !== initialValues.name && { name: values.name }),
                 ...(values.comment !== initialValues.comment && { comment: values.comment }),
+                ...(values.commentForegroundColor !== initialValues.commentForegroundColor && { commentForegroundColor: values.commentForegroundColor }),
+                ...(values.commentBackgroundColor !== initialValues.commentBackgroundColor && { commentBackgroundColor: values.commentBackgroundColor }),
             };
             const ret = await graphqlUpdateUserAttributes(input);
 
@@ -195,6 +204,14 @@ export const EditUserSettingsForm: FC<EditUserSettingsFormProps> = ({ /*confirmi
                         name="comment"
                         label="コメント"
                         type="text"
+                    />
+                    <MiraCalColorPicker
+                        name="commentForegroundColor"
+                        label="コメント文字色"
+                    />
+                    <MiraCalColorPicker
+                        name="commentBackgroundColor"
+                        label="コメント背景色"
                     />
                     <MiraCalFormAction>
                         <MiraCalButton

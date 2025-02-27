@@ -83,6 +83,8 @@ export const onCreateUser = /* GraphQL */ `subscription OnCreateUser($filter: Mo
     email
     name
     comment
+    commentForegroundColor
+    commentBackgroundColor
     isAdmin
     confirmingEmail
     createdAt
@@ -101,6 +103,8 @@ export const onUpdateUser = /* GraphQL */ `subscription OnUpdateUser($filter: Mo
     email
     name
     comment
+    commentForegroundColor
+    commentBackgroundColor
     isAdmin
     confirmingEmail
     createdAt
@@ -119,6 +123,8 @@ export const onDeleteUser = /* GraphQL */ `subscription OnDeleteUser($filter: Mo
     email
     name
     comment
+    commentForegroundColor
+    commentBackgroundColor
     isAdmin
     confirmingEmail
     createdAt

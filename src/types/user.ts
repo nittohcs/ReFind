@@ -1,17 +1,7 @@
 
-// cognitoから取得するユーザー情報
-export type AdminQueriesUser = {
-    // cognitoのusername
-    id: string,
-    tenantId: string,
-    email: string,
-    name: string,
-    comment: string,
-    // cognitoでユーザーがadminsグループに所属しているかどうか
-    isAdmin: boolean,
-};
+import { User } from "@/API";
 
-export type ReFindUser = AdminQueriesUser & {
+export type ReFindUser = User & {
     // 使用中の座席のID。使用中の座席が無いなら空文字
     seatId: string,
 

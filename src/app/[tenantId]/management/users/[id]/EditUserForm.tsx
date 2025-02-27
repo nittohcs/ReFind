@@ -6,6 +6,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { fileTypeFromBlob } from "file-type";
+import { User } from "@/API";
 import { useTenantId } from "@/app/[tenantId]/hook";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalTextField from "@/components/MiraCalTextField";
@@ -20,7 +21,6 @@ import { useEnqueueSnackbar } from "@/hooks/ui";
 import { addUserToGroup, adminUpdateUserAttributes, removeUserFromGroup } from "@/services/AdminQueries";
 import { queryKeys } from "@/services/queryKeys";
 import { convertBMPtoPNG } from "@/services/util";
-import { ReFindUser } from "@/types/user";
 
 type FormValues = {
     id: string,
@@ -83,8 +83,8 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
 
             // cognitoのグループに追加
             if (updated.isAdmin !== initialValues.isAdmin) {
-                await removeUserFromGroup(updated, initialValues.isAdmin ? "admins" : "users");
-                await addUserToGroup(updated, updated.isAdmin ? "admins" : "users");
+                await removeUserFromGroup(updated.id, initialValues.isAdmin ? "admins" : "users");
+                await addUserToGroup(updated.id, updated.isAdmin ? "admins" : "users");
             }
 
             if (values.image === ImageUploadState.Upload) {
@@ -115,14 +115,14 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
             enqueueSnackbar("保存しました。", { variant: "success" });
 
             // クエリのキャッシュを更新する
-            const updated: ReFindUser = {
+            const updated = {
                 ...user!,
                 name: variables.name,
                 email: variables.email,
                 comment: variables.comment,
                 isAdmin: variables.isAdmin,
             };
-            queryClient.setQueryData<ReFindUser[]>(queryKeys.graphqlUsersByTenantId(tenantId), items => {
+            queryClient.setQueryData<User[]>(queryKeys.graphqlUsersByTenantId(tenantId), items => {
                 if (!items) {
                     return items;
                 }

@@ -10,16 +10,16 @@ type UpdateUserAttributesInput = {
     email?: string,
     name?: string,
     comment?: string,
+    commentForegroundColor?: string,
+    commentBackgroundColor?: string,
 };
 
-export async function graphqlUpdateUserAttributes({ email, name, comment }: UpdateUserAttributesInput) {
+export async function graphqlUpdateUserAttributes(updateInput: UpdateUserAttributesInput) {
     const authSession = await fetchAuthSession();
     const accessToken = authSession.tokens?.accessToken?.toString() ?? "";
     const input = {
+        ...updateInput,
         accessToken,
-        ...(email !== undefined && { email }),
-        ...(name !== undefined && { name }),
-        ...(comment !== undefined && { comment }),
     };
     const result = await client.graphql(
         graphqlOperation(

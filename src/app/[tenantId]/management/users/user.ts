@@ -1,16 +1,14 @@
 "use client";
 
-import { SeatOccupancy } from "@/API";
+import { CreateUserInput, SeatOccupancy } from "@/API";
 import { createUser, deleteUser } from "@/services/AdminQueries";
 import { releaseSeatBySeatId } from "@/services/occupancyUtil";
 import { ReFindUser } from "@/types/user";
 
-export async function createReFindUser(user: ReFindUser) {
+export async function createReFindUser(user: CreateUserInput) {
     // TODO ユーザー作成時にcognitoがメールを送るようにしているが、自前でメールを送るようにするかも
     // cognitoユーザー作成
-    await createUser(user);
-
-    return user;
+    return await createUser(user);
 }
 
 export async function deleteReFindUser(user: ReFindUser) {
@@ -22,7 +20,7 @@ export async function deleteReFindUser(user: ReFindUser) {
     }
 
     // cognitoのユーザーを削除
-    await deleteUser(user);
+    await deleteUser(user.id);
 
     return {
         user,

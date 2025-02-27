@@ -38,7 +38,7 @@ export const ResetPasswordDialog: FC<ResetPasswordDialogProps> = ({
             setTotalCount(users.length);
             setCurrentCount(0);
             for(const user of users) {
-                await adminSetUserPassword(user, qTenant.data!.initialPassword);
+                await adminSetUserPassword(user.id, qTenant.data!.initialPassword);
                 setCurrentCount(x => x + 1);
             }
         },
