@@ -24,7 +24,7 @@
         },
         "AdminQueries7c6d4bef": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
-          "s3Key": "amplify-builds/AdminQueries7c6d4bef-42364873383568673037-build.zip"
+          "s3Key": "amplify-builds/AdminQueries7c6d4bef-67672f56312f69685467-build.zip"
         },
         "refind2GetFileUploadUrl": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
@@ -76,7 +76,7 @@
         "userPoolGroups": {},
         "refind2UpdateUserAttributes": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
-          "s3Key": "amplify-builds/refind2UpdateUserAttributes-366538514c6d34517456-build.zip"
+          "s3Key": "amplify-builds/refind2UpdateUserAttributes-6d76617a52526f796c34-build.zip"
         },
         "refind2VerifyUserAttribute": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",

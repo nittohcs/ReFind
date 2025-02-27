@@ -19,6 +19,8 @@ const createUser = /* GraphQL */ `mutation CreateUser(
     email
     name
     comment
+    commentForegroundColor
+    commentBackgroundColor
     isAdmin
     confirmingEmail
     createdAt
@@ -38,6 +40,8 @@ const updateUser = /* GraphQL */ `mutation UpdateUser(
     email
     name
     comment
+    commentForegroundColor
+    commentBackgroundColor
     isAdmin
     confirmingEmail
     createdAt
@@ -57,6 +61,8 @@ const deleteUser = /* GraphQL */ `mutation DeleteUser(
     email
     name
     comment
+    commentForegroundColor
+    commentBackgroundColor
     isAdmin
     confirmingEmail
     createdAt
@@ -138,35 +144,17 @@ async function graphqlAccess(query, variables) {
     return body;
 }
 
-async function graphqlCreateUser({ id, tenantId, email, name, comment, isAdmin }) {
-    const input = {
-        id,
-        tenantId,
-        email,
-        name,
-        comment,
-        isAdmin,
-    };
+async function graphqlCreateUser(input) {
     const ret = await graphqlAccess(createUser, { input });
     return ret.data.createUser;
 }
 
-async function graphqlUpdateUser({ id, email, name, comment, isAdmin }) {
-    const input = {
-        id,
-        ...(email !== undefined && { email }),
-        ...(name !== undefined && { name }),
-        ...(comment !== undefined && { comment }),
-        ...(isAdmin !== undefined && { isAdmin }),
-    };
+async function graphqlUpdateUser(input) {
     const ret = await graphqlAccess(updateUser, { input });
     return ret.data.updateUser;
 }
 
-async function graphqlDeleteUser({ id }) {
-    const input = {
-        id,
-    };
+async function graphqlDeleteUser(input) {
     const ret = await graphqlAccess(deleteUser, { input });
     return ret.data.deleteUser;
 }

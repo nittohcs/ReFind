@@ -76,6 +76,12 @@ type User @model @auth (
   # コメント
   comment: String!
 
+  # コメント文字色
+  commentForegroundColor: String
+
+  # コメント背景色
+  commentBackgroundColor: String
+
   # 管理者かどうか
   isAdmin: Boolean!
 
@@ -270,12 +276,13 @@ input funcUpdateUserAttributesInput {
   email: String
   name: String
   comment: String
+  commentForegroundColor: String
+  commentBackgroundColor: String
 }
 
 type funcUpdateUserAttributesResponse {
   isUpdatedEmail: Boolean!
   isUpdatedName: Boolean!
-  isUpdatedComment: Boolean!
   isRequiredVerification: Boolean!
   updatedUser: User
 }

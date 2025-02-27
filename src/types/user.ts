@@ -12,6 +12,9 @@ export type AdminQueriesUser = {
 };
 
 export type ReFindUser = AdminQueriesUser & {
+    commentForegroundColor?: string | null,
+    commentBackgroundColor?: string | null,
+
     // 使用中の座席のID。使用中の座席が無いなら空文字
     seatId: string,
 

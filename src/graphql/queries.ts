@@ -68,6 +68,8 @@ export const getUser = /* GraphQL */ `query GetUser($id: ID!) {
     email
     name
     comment
+    commentForegroundColor
+    commentBackgroundColor
     isAdmin
     confirmingEmail
     createdAt
@@ -88,6 +90,8 @@ export const listUsers = /* GraphQL */ `query ListUsers(
       email
       name
       comment
+      commentForegroundColor
+      commentBackgroundColor
       isAdmin
       confirmingEmail
       createdAt
@@ -119,6 +123,8 @@ export const usersByTenantId = /* GraphQL */ `query UsersByTenantId(
       email
       name
       comment
+      commentForegroundColor
+      commentBackgroundColor
       isAdmin
       confirmingEmail
       createdAt

@@ -138,7 +138,6 @@ export const funcUpdateUserAttributes = /* GraphQL */ `mutation FuncUpdateUserAt
   funcUpdateUserAttributes(input: $input) {
     isUpdatedEmail
     isUpdatedName
-    isUpdatedComment
     isRequiredVerification
     updatedUser {
       id
@@ -146,6 +145,8 @@ export const funcUpdateUserAttributes = /* GraphQL */ `mutation FuncUpdateUserAt
       email
       name
       comment
+      commentForegroundColor
+      commentBackgroundColor
       isAdmin
       confirmingEmail
       createdAt
@@ -236,6 +237,8 @@ export const createUser = /* GraphQL */ `mutation CreateUser(
     email
     name
     comment
+    commentForegroundColor
+    commentBackgroundColor
     isAdmin
     confirmingEmail
     createdAt
@@ -257,6 +260,8 @@ export const updateUser = /* GraphQL */ `mutation UpdateUser(
     email
     name
     comment
+    commentForegroundColor
+    commentBackgroundColor
     isAdmin
     confirmingEmail
     createdAt
@@ -278,6 +283,8 @@ export const deleteUser = /* GraphQL */ `mutation DeleteUser(
     email
     name
     comment
+    commentForegroundColor
+    commentBackgroundColor
     isAdmin
     confirmingEmail
     createdAt
