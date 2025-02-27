@@ -9,7 +9,7 @@ import { useTenantId } from "../hook";
 export default function Page() {
     const tenantId = useTenantId();
     const {isReady, allFloors} = useSeatOccupancy();
-
+    
     return (
         <>
             <MiraCalBreadcrumbs>
@@ -18,7 +18,7 @@ export default function Page() {
             </MiraCalBreadcrumbs>
             {isReady && (
                 <Box display="flex" flexDirection="row" flexWrap="wrap" gap={2} pt={2}>
-                    {allFloors.map(floor => (
+                    {allFloors.toSorted((a, b) => a.name.localeCompare(b.name)).map(floor => (
                         <Link key={floor.id} href={`/${tenantId}/floors/${floor.id}`}>
                             <Card>
                                 <CardContent>
