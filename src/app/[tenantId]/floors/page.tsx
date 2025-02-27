@@ -10,6 +10,11 @@ export default function Page() {
     const tenantId = useTenantId();
     const {isReady, allFloors} = useSeatOccupancy();
 
+    // 座席の名前でソート
+    allFloors.sort((a,b) =>
+        a.name > b.name ? 1 : -1
+    );
+
     return (
         <>
             <MiraCalBreadcrumbs>
