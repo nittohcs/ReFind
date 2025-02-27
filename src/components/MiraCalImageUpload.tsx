@@ -119,6 +119,7 @@ export const MiraCalImageUpload: FC<MiraCalImageUploadProps> = ({ ...props }) =>
                         alt="現在の画像"
                         width={props.previewImageWidth || 300}
                         height={props.previewImageHeight || 300}
+                        unoptimized={true}
                     />
                 )}
                 {field.value === ImageUploadState.Upload && (
@@ -127,6 +128,7 @@ export const MiraCalImageUpload: FC<MiraCalImageUploadProps> = ({ ...props }) =>
                         alt="選択された画像"
                         width={props.previewImageWidth || 300}
                         height={props.previewImageHeight || 300}
+                        unoptimized={true}
                     />
                 )}
             </Box>
