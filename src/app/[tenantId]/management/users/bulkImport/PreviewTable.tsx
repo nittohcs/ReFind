@@ -3,13 +3,13 @@
 import { FC, useMemo } from "react";
 import { useField } from "formik";
 import { createColumnHelper } from "@tanstack/react-table";
+import { CreateUserInput } from "@/API";
 import { useTenantId } from "@/app/[tenantId]/hook";
 import MiraCalTable from "@/components/MiraCalTable";
 import { useTable, useTableOption } from "@/hooks/table";
-import { ReFindUser } from "@/types/user";
-import { getReFindUsersFromCsv } from "./util";
+import { getCreateUserInputsFromCsv } from "./util";
 
-const columnHelper = createColumnHelper<ReFindUser>();
+const columnHelper = createColumnHelper<CreateUserInput>();
 
 type PreviewTableProps = {
     name: string,
@@ -19,7 +19,7 @@ export const PreviewTable: FC<PreviewTableProps> = ({ name }) => {
     const tenantId = useTenantId();
     const [field, _meta, _helper] = useField<string>(name);
 
-    const users = useMemo(() => getReFindUsersFromCsv(field.value, tenantId), [field.value, tenantId]);
+    const users = useMemo(() => getCreateUserInputsFromCsv(field.value, tenantId), [field.value, tenantId]);
 
     const columns = useMemo(() => [
         columnHelper.accessor("id", {
@@ -40,7 +40,7 @@ export const PreviewTable: FC<PreviewTableProps> = ({ name }) => {
         }),
     ], []);
 
-    const options = useTableOption<ReFindUser>({
+    const options = useTableOption<CreateUserInput>({
         // sorting: [{
         //     id: "id",
         //     desc: false,

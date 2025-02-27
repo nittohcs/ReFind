@@ -1,10 +1,10 @@
 "use client";
 
 import { parse } from "csv-parse/sync";
-import { ReFindUser } from "@/types/user";
+import { CreateUserInput } from "@/API";
 
-export function getReFindUsersFromCsv(csv: string, tenantId: string) {
-    const users: ReFindUser[] = [];
+export function getCreateUserInputsFromCsv(csv: string, tenantId: string) {
+    const ret = [];
 
     try {
         const rows: { [key: string]: string | undefined }[] = parse(csv, {
@@ -14,25 +14,21 @@ export function getReFindUsersFromCsv(csv: string, tenantId: string) {
         });
 
         for(const row of rows) {
-            const user: ReFindUser = {
+            const user: CreateUserInput = {
                 id: row["ID"] ?? "",
                 name: row["氏名"] ?? "",
                 email: row["メールアドレス"] ?? "",
                 comment: row["コメント"] ?? "",
                 tenantId: tenantId,
                 isAdmin: !!row["管理者"]?.trim(),
-                seatId: "",
-                seatName: "",
-                floorId: "",
-                floorName: "",
             };
-            users.push(user);
+            ret.push(user);
         }
     } catch (error) {
         console.log(error);
     }
 
-    return users;
+    return ret;
 }
 
 // yupのemail()と同じチェックになるよう、次のURLのrEmailの値を使用している

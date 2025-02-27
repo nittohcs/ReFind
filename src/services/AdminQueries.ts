@@ -2,7 +2,8 @@
 
 import { fetchAuthSession } from "aws-amplify/auth";
 import { get, post } from "aws-amplify/api";
-import { AdminQueriesGroup, AdminQueriesUser } from "@/types/user";
+import { CreateUserInput, UpdateUserInput, User } from "@/API";
+import { AdminQueriesGroup } from "@/types/user";
 
 /*
 async function listAllUsers() {
@@ -134,7 +135,7 @@ export async function isUsernameAvailable(username: string) {
             Authorization: accessToken,
         },
         queryParams: {
-            username: username,
+            username,
         },
     };
     const operation = get({ apiName, path, options });
@@ -144,7 +145,7 @@ export async function isUsernameAvailable(username: string) {
     return ret.available;
 }
 
-export async function adminSetUserPassword(user: AdminQueriesUser, password: string) {
+export async function adminSetUserPassword(username: string, password: string) {
     const authSession = await fetchAuthSession();
     const accessToken = authSession.tokens?.accessToken?.toString() ?? "";
     const apiName = "AdminQueries";
@@ -155,8 +156,8 @@ export async function adminSetUserPassword(user: AdminQueriesUser, password: str
             Authorization: accessToken,
         },
         body: {
-            username: user.id,
-            password: password,
+            username,
+            password,
         },
     };
     const operation = post({ apiName, path, options });
@@ -165,7 +166,7 @@ export async function adminSetUserPassword(user: AdminQueriesUser, password: str
     return json;
 }
 
-export async function adminUpdateUserAttributes(user: AdminQueriesUser) {
+export async function adminUpdateUserAttributes(user: UpdateUserInput) {
     const authSession = await fetchAuthSession();
     const accessToken = authSession.tokens?.accessToken?.toString() ?? "";
     const apiName = "AdminQueries";
@@ -176,10 +177,8 @@ export async function adminUpdateUserAttributes(user: AdminQueriesUser) {
             Authorization: accessToken,
         },
         body: {
+            ...user,
             username: user.id,
-            email: user.email,
-            name: user.name,
-            comment: user.comment,
         },
     };
     const operation = post({ apiName, path, options });
@@ -192,7 +191,11 @@ export async function adminUpdateUserAttributes(user: AdminQueriesUser) {
  * Cognitoのユーザーを追加する。
  * 既に存在するユーザーと同じIDで追加しようとするとエラー。
  */
-export async function createUser(user: AdminQueriesUser, isSuppress: boolean = true) {
+export async function createUser(user: CreateUserInput, isSuppress: boolean = true) {
+    if (!user.id) {
+        throw new Error("empty user id");
+    }
+
     const authSession = await fetchAuthSession();
     const accessToken = authSession.tokens?.accessToken?.toString() ?? "";
     const apiName = "AdminQueries";
@@ -218,14 +221,14 @@ export async function createUser(user: AdminQueriesUser, isSuppress: boolean = t
     const operation = post({ apiName, path, options });
     const response = await operation.response;
     const json = await response.body.json();
-    return json;
+    return json as User;
 }
 
 /**
  * Cognitoのユーザーを削除する。
  * 存在しないユーザーを削除しようとするとエラー。
  */
-export async function deleteUser(user: AdminQueriesUser) {
+export async function deleteUser(username: string) {
     const authSession = await fetchAuthSession();
     const accessToken = authSession.tokens?.accessToken?.toString() ?? "";
     const apiName = "AdminQueries";
@@ -236,7 +239,7 @@ export async function deleteUser(user: AdminQueriesUser) {
             Authorization: accessToken,
         },
         body: {
-            username: user.id,
+            username,
         },
     };
     const operation = post({ apiName, path, options });
@@ -249,7 +252,7 @@ export async function deleteUser(user: AdminQueriesUser) {
  * ユーザーをグループに追加する。
  * 既に追加されているグループにもう一度追加しようとしてもエラーは起きない。
  */
-export async function addUserToGroup(user: AdminQueriesUser, group: AdminQueriesGroup) {
+export async function addUserToGroup(username: string, group: AdminQueriesGroup) {
     const authSession = await fetchAuthSession();
     const accessToken = authSession.tokens?.accessToken?.toString() ?? "";
     const apiName = "AdminQueries";
@@ -260,7 +263,7 @@ export async function addUserToGroup(user: AdminQueriesUser, group: AdminQueries
             Authorization: accessToken,
         },
         body: {
-            username: user.id,
+            username,
             groupname: group,
         },
     };
@@ -274,7 +277,7 @@ export async function addUserToGroup(user: AdminQueriesUser, group: AdminQueries
  * グループからユーザーを削除する。
  * ユーザーが所属していないグループから削除しようとしてもエラーは起きない。
  */
-export async function removeUserFromGroup(user: AdminQueriesUser, group: AdminQueriesGroup) {
+export async function removeUserFromGroup(username: string, group: AdminQueriesGroup) {
     const authSession = await fetchAuthSession();
     const accessToken = authSession.tokens?.accessToken?.toString() ?? "";
     const apiName = "AdminQueries";
@@ -285,7 +288,7 @@ export async function removeUserFromGroup(user: AdminQueriesUser, group: AdminQu
             Authorization: accessToken,
         },
         body: {
-            username: user.id,
+            username,
             groupname: group,
         },
     };

@@ -5,7 +5,7 @@ import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } 
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { SeatOccupancy } from "@/API";
+import { SeatOccupancy, User } from "@/API";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalTextField from "@/components/MiraCalTextField";
 import MiraCalButton from "@/components/MiraCalButton";
@@ -71,7 +71,7 @@ export const DeleteUserDialog: FC<DeleteUserDialogProps> = ({ isOpened, close, d
 
             // ユーザー一覧のクエリのキャッシュを更新する
             const deletedUserIds = data.map(x => x.user.id);
-            queryClient.setQueryData<ReFindUser[]>(queryKeys.graphqlUsersByTenantId(tenantId), items => {
+            queryClient.setQueryData<User[]>(queryKeys.graphqlUsersByTenantId(tenantId), items => {
                 if (!items) {
                     return items;
                 }

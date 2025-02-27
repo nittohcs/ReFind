@@ -5,6 +5,7 @@ import { Alert, Stack } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from 'yup'
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { User } from "@/API";
 import { useTenantId } from "@/app/[tenantId]/hook";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalFormAction from "@/components/MiraCalFormAction";
@@ -16,10 +17,9 @@ import { useEnqueueSnackbar } from "@/hooks/ui";
 import { isUsernameAvailable } from "@/services/AdminQueries";
 import { useGetTenant } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
-import { ReFindUser } from "@/types/user";
 import { createReFindUser } from "../user";
 import PreviewTable from "./PreviewTable";
-import { getReFindUsersFromCsv, isValidEmail } from "./util";
+import { getCreateUserInputsFromCsv, isValidEmail } from "./util";
 
 type FormValues = {
     csv: string,
@@ -54,7 +54,7 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
     const queryClient = useQueryClient();
     const mutation = useMutation({
         async mutationFn(values: FormValues) {
-            const users = getReFindUsersFromCsv(values.csv, tenantId);
+            const users = getCreateUserInputsFromCsv(values.csv, tenantId);
 
             // 最大ユーザー数をチェック
             const maxUserCount = qTenant.data?.maxUserCount ?? 0;
@@ -70,28 +70,29 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
                 errors.push("有効なデータが入力されていません。");
             }
 
-            const newUserIds = users.map(x => x.id.toLowerCase());
+            const newUserIds = users.map(x => x.id!.toLowerCase());
             for(const [i, user] of users.entries()) {
                 const index = i + 1;
                 // idチェック
                 if (!user.id) {
                     errors.push(`${index}件目: IDが入力されていません。`);
-                }
-                const userId = user.id.toLowerCase();
-                if (currentUserIds.has(userId)) {
-                    errors.push(`${index}件目: 入力されたIDは既に使用されています。`);
-                } else if (newUserIds.slice(0, i).some(x => x === userId)) {
-                    errors.push(`${index}件目: 入力されたIDは既に使用されています。`);
-                } else if (userId) {
-                    if (cacheRef.current.has(userId)) {
-                        if (!cacheRef.current.get(userId)) {
-                            errors.push(`${index}件目: 入力されたIDは既に使用されています。`);
-                        }
-                    } else {
-                        const isAvailable = await isUsernameAvailable(userId);
-                        cacheRef.current.set(userId, isAvailable);
-                        if (!isAvailable) {
-                            errors.push(`${index}件目: 入力されたIDは既に使用されています。`);
+                } else {
+                    const userId = user.id.toLowerCase();
+                    if (currentUserIds.has(userId)) {
+                        errors.push(`${index}件目: 入力されたIDは既に使用されています。`);
+                    } else if (newUserIds.slice(0, i).some(x => x === userId)) {
+                        errors.push(`${index}件目: 入力されたIDは既に使用されています。`);
+                    } else if (userId) {
+                        if (cacheRef.current.has(userId)) {
+                            if (!cacheRef.current.get(userId)) {
+                                errors.push(`${index}件目: 入力されたIDは既に使用されています。`);
+                            }
+                        } else {
+                            const isAvailable = await isUsernameAvailable(userId);
+                            cacheRef.current.set(userId, isAvailable);
+                            if (!isAvailable) {
+                                errors.push(`${index}件目: 入力されたIDは既に使用されています。`);
+                            }
                         }
                     }
                 }
@@ -118,7 +119,7 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
             // ユーザー作成
             setTotalCount(users.length);
             setCurrentCount(0);
-            const createdUsers: ReFindUser[] = [];
+            const createdUsers = [];
             for(const user of users) {
                 createdUsers.push(await createReFindUser(user));
                 setCurrentCount(x => x + 1);
@@ -129,7 +130,7 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
             enqueueSnackbar("取り込みました。", { variant: "success" });
 
             // クエリのキャッシュを更新する
-            queryClient.setQueryData<ReFindUser[]>(queryKeys.graphqlUsersByTenantId(tenantId), items => {
+            queryClient.setQueryData<User[]>(queryKeys.graphqlUsersByTenantId(tenantId), items => {
                 if (!items) {
                     return items;
                 }

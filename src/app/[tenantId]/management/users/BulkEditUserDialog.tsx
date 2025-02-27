@@ -65,14 +65,14 @@ export const BulkEditUserDialog: FC<BulkEditUserDialogProps> = ({
                         // 元々管理者なので何もしない
                     } else {
                         // 管理者にする
-                        await removeUserFromGroup(user, "users");
-                        await addUserToGroup(user, "admins");
+                        await removeUserFromGroup(user.id, "users");
+                        await addUserToGroup(user.id, "admins");
                     }
                 } else {
                     if (user.isAdmin) {
                         // 一般ユーザーにする
-                        await removeUserFromGroup(user, "admins");
-                        await addUserToGroup(user, "users");
+                        await removeUserFromGroup(user.id, "admins");
+                        await addUserToGroup(user.id, "users");
                     } else {
                         // 元々一般ユーザーなので何もしない
                     }

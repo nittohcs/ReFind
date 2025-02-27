@@ -6,6 +6,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { useMutation, useQueryClient  } from "@tanstack/react-query";
 import { fileTypeFromBlob } from "file-type";
+import { User } from "@/API";
 import { useTenantId } from "@/app/[tenantId]/hook";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalTextField from "@/components/MiraCalTextField";
@@ -20,7 +21,6 @@ import { isUsernameAvailable } from "@/services/AdminQueries";
 import { useGetTenant } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
 import { convertBMPtoPNG } from "@/services/util";
-import { ReFindUser } from "@/types/user";
 import { createReFindUser } from "../user";
 
 type FormValues = {
@@ -82,10 +82,6 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
             const ret = await createReFindUser({
                 ...values,
                 tenantId: tenantId,
-                seatId: "",
-                seatName: "",
-                floorId: "",
-                floorName: "",
             });
 
             // 画像をアップロード
@@ -115,7 +111,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
             enqueueSnackbar("登録しました。", { variant: "success" });
 
             // クエリのキャッシュを更新する
-            queryClient.setQueryData<ReFindUser[]>(queryKeys.graphqlUsersByTenantId(tenantId), items => {
+            queryClient.setQueryData<User[]>(queryKeys.graphqlUsersByTenantId(tenantId), items => {
                 if (!items) {
                     return items;
                 }

@@ -68,7 +68,7 @@ export const DeleteTenantDialog: FC<DeleteTenantDialogProps> = ({
             for(const user of users) {
                 const filePath = `public/${user.tenantId}/users/${user.id}`;
                 await graphqlDeleteFile(filePath);
-                await deleteUser(user);
+                await deleteUser(user.id);
                 ret.users.push(user);
                 setCurrentCount(x => x + 1);
             }
