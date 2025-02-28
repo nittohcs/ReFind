@@ -130,6 +130,9 @@ type Floor @model @auth (
 
   # 画像高さ
   imageHeight: Int!
+
+  # ソート順
+  sortId: Int!
 }
 
 # 座席マスタ
@@ -225,6 +228,7 @@ input funcCreateFloorInput {
   imagePath: String!
   imageWidth: Int!
   imageHeight: Int!
+  sortId: Int!
 }
 
 input funcUpdateFloorInput {
@@ -234,6 +238,7 @@ input funcUpdateFloorInput {
   imagePath: String
   imageWidth: Int
   imageHeight: Int
+  sortId: Int!
 }
 
 input funcDeleteFloorInput {

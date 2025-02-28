@@ -28,6 +28,7 @@ type FormValues = {
     image: string,
     imageWidth: number,
     imageHeight: number,
+    sortId: number,
 };
 
 type EditFloorFormProps = {
@@ -49,6 +50,7 @@ export const EditFloorForm: FC<EditFloorFormProps> = ({
         image: yup.string().required(),
         imageWidth: yup.number().required().min(1),
         imageHeight: yup.number().required().min(1),
+        sortId: yup.number().required().min(1),
     }), []);
 
     const initialValues: FormValues = useMemo(() => validationSchema.cast({
@@ -57,6 +59,7 @@ export const EditFloorForm: FC<EditFloorFormProps> = ({
         image: ImageUploadState.Unchange,
         imageWidth: floor?.imageWidth ?? 0,
         imageHeight: floor?.imageHeight?? 0,
+        sortId: floor?.sortId?? 0,
     }), [validationSchema, floor]);
 
     const imageFileRef = useRef<HTMLInputElement>(null);
@@ -95,6 +98,7 @@ export const EditFloorForm: FC<EditFloorFormProps> = ({
                 ...(!!imagePath && { imagePath }),
                 imageWidth: values.imageWidth,
                 imageHeight: values.imageHeight,
+                sortId: values.sortId,
             });
         },
         onSuccess(data, _variables, _context) {
@@ -116,7 +120,7 @@ export const EditFloorForm: FC<EditFloorFormProps> = ({
             // コンポーネントを再生成
             update();
         },
-        onError(error, _variables, _context) {
+        onError(error, _variables, _context) {            
             if (!!error.message) {
                 enqueueSnackbar(error.message, { variant: "error" });
                 return;
@@ -125,7 +129,7 @@ export const EditFloorForm: FC<EditFloorFormProps> = ({
             // Error型以外でエラーが飛んでくる場合に対応
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const tmp = error as any;
-            for(const e of tmp.errors) {
+            for(const e of tmp.errors) {                
                 enqueueSnackbar(e.message, { variant: "error" });
             }
         },
@@ -169,6 +173,11 @@ export const EditFloorForm: FC<EditFloorFormProps> = ({
                     <MiraCalTextField
                         name="imageHeight"
                         label="画像表示高さ"
+                        type="number"
+                    />
+                    <MiraCalTextField
+                        name="sortId"
+                        label="ソート順"
                         type="number"
                     />
                     <MiraCalFormAction>

@@ -23,6 +23,7 @@ const getFloor = /* GraphQL */ `query GetFloor($id: ID!) {
     imagePath
     imageWidth
     imageHeight
+    sortId
     createdAt
     updatedAt
     __typename
@@ -41,6 +42,7 @@ const deleteFloor = /* GraphQL */ `mutation DeleteFloor(
     imagePath
     imageWidth
     imageHeight
+    sortId
     createdAt
     updatedAt
     __typename

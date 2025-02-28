@@ -147,6 +147,7 @@ export const getFloor = /* GraphQL */ `query GetFloor($id: ID!) {
     imagePath
     imageWidth
     imageHeight
+    sortId
     createdAt
     updatedAt
     __typename
@@ -166,6 +167,7 @@ export const listFloors = /* GraphQL */ `query ListFloors(
       imagePath
       imageWidth
       imageHeight
+      sortId
       createdAt
       updatedAt
       __typename
@@ -199,6 +201,7 @@ export const floorsByTenantId = /* GraphQL */ `query FloorsByTenantId(
       imagePath
       imageWidth
       imageHeight
+      sortId
       createdAt
       updatedAt
       __typename

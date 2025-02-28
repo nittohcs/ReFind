@@ -9,6 +9,7 @@ export type funcCreateFloorInput = {
   imagePath: string,
   imageWidth: number,
   imageHeight: number,
+  sortId: number,
 };
 
 export type Floor = {
@@ -19,6 +20,7 @@ export type Floor = {
   imagePath: string,
   imageWidth: number,
   imageHeight: number,
+  sortId: number,
   createdAt: string,
   updatedAt: string,
 };
@@ -30,6 +32,7 @@ export type funcUpdateFloorInput = {
   imagePath?: string | null,
   imageWidth?: number | null,
   imageHeight?: number | null,
+  sortId: number,
 };
 
 export type funcDeleteFloorInput = {
@@ -302,6 +305,7 @@ export type CreateFloorInput = {
   imagePath: string,
   imageWidth: number,
   imageHeight: number,
+  sortId: number,
 };
 
 export type ModelFloorConditionInput = {
@@ -310,6 +314,7 @@ export type ModelFloorConditionInput = {
   imagePath?: ModelStringInput | null,
   imageWidth?: ModelIntInput | null,
   imageHeight?: ModelIntInput | null,
+  sortId?: ModelIntInput | null,
   and?: Array< ModelFloorConditionInput | null > | null,
   or?: Array< ModelFloorConditionInput | null > | null,
   not?: ModelFloorConditionInput | null,
@@ -324,6 +329,7 @@ export type UpdateFloorInput = {
   imagePath?: string | null,
   imageWidth?: number | null,
   imageHeight?: number | null,
+  sortId?: number | null,
 };
 
 export type DeleteFloorInput = {
@@ -456,6 +462,7 @@ export type ModelFloorFilterInput = {
   imagePath?: ModelStringInput | null,
   imageWidth?: ModelIntInput | null,
   imageHeight?: ModelIntInput | null,
+  sortId?: ModelIntInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
   and?: Array< ModelFloorFilterInput | null > | null,
@@ -599,6 +606,7 @@ export type ModelSubscriptionFloorFilterInput = {
   imagePath?: ModelSubscriptionStringInput | null,
   imageWidth?: ModelSubscriptionIntInput | null,
   imageHeight?: ModelSubscriptionIntInput | null,
+  sortId?: ModelSubscriptionIntInput | null,
   createdAt?: ModelSubscriptionStringInput | null,
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionFloorFilterInput | null > | null,
@@ -650,6 +658,7 @@ export type FuncCreateFloorMutation = {
     imagePath: string,
     imageWidth: number,
     imageHeight: number,
+    sortId: number,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -668,6 +677,7 @@ export type FuncUpdateFloorMutation = {
     imagePath: string,
     imageWidth: number,
     imageHeight: number,
+    sortId: number,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -686,6 +696,7 @@ export type FuncDeleteFloorMutation = {
     imagePath: string,
     imageWidth: number,
     imageHeight: number,
+    sortId: number,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -935,6 +946,7 @@ export type CreateFloorMutation = {
     imagePath: string,
     imageWidth: number,
     imageHeight: number,
+    sortId: number,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -954,6 +966,7 @@ export type UpdateFloorMutation = {
     imagePath: string,
     imageWidth: number,
     imageHeight: number,
+    sortId: number,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -973,6 +986,7 @@ export type DeleteFloorMutation = {
     imagePath: string,
     imageWidth: number,
     imageHeight: number,
+    sortId: number,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1241,6 +1255,7 @@ export type GetFloorQuery = {
     imagePath: string,
     imageWidth: number,
     imageHeight: number,
+    sortId: number,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1263,6 +1278,7 @@ export type ListFloorsQuery = {
       imagePath: string,
       imageWidth: number,
       imageHeight: number,
+      sortId: number,
       createdAt: string,
       updatedAt: string,
     } | null >,
@@ -1289,6 +1305,7 @@ export type FloorsByTenantIdQuery = {
       imagePath: string,
       imageWidth: number,
       imageHeight: number,
+      sortId: number,
       createdAt: string,
       updatedAt: string,
     } | null >,
@@ -1607,6 +1624,7 @@ export type OnCreateFloorSubscription = {
     imagePath: string,
     imageWidth: number,
     imageHeight: number,
+    sortId: number,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1625,6 +1643,7 @@ export type OnUpdateFloorSubscription = {
     imagePath: string,
     imageWidth: number,
     imageHeight: number,
+    sortId: number,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1643,6 +1662,7 @@ export type OnDeleteFloorSubscription = {
     imagePath: string,
     imageWidth: number,
     imageHeight: number,
+    sortId: number,
     createdAt: string,
     updatedAt: string,
   } | null,

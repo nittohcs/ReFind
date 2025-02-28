@@ -31,6 +31,9 @@ export default function FloorsTable() {
         columnHelper.accessor("name", {
             header: "名前",
         }),
+        columnHelper.accessor("sortId", {
+            header: "ソート順",
+        })
     ], []);
 
     const options = useTableOption<Floor>({
