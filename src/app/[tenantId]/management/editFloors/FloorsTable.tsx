@@ -77,6 +77,10 @@ export default function FloorsTable() {
             sorted[i].tmpSortValue = i;
         }
         setData(() => sorted);
+        table.setSorting(x => [{
+            id: "tmpSortValue",
+            desc: false,
+        }]);
         // ソート後のデータでテーブルを再表示する
         update();
 
