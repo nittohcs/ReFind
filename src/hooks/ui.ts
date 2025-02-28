@@ -59,40 +59,40 @@ export function useContentsSize(defaultWidth: number = 300, defaultHeight: numbe
     const [contentsHeight, setContentsHeight] = useState(defaultHeight);
     const [redo, setRedo] = useState(0);
     const open = useSideBarOpen();
+    const updateContentsSize = useCallback(() => {
+        if (typeof window === "undefined") return;
 
-    useEffect(() => {
-        function updateContentsHeight() {
-            if (typeof window === "undefined") return;
-
-            try {
-                const elem = elementRef.current;
-                if (!elem) throw new Error("element does not exist");
-                const width = window.innerWidth - elem.offsetLeft;
-                const height = window.innerHeight - (elem.offsetTop + elem.clientHeight);
-                if (Number.isNaN(width)) throw new Error("width is NaN");
-                if (Number.isNaN(height)) throw new Error("height is NaN");
-                setContentsWidth(_x => width);
-                setContentsHeight(_x => height);
-            } catch(_error) {
-                setContentsWidth(window.innerWidth);
-                setContentsHeight(window.innerHeight);
-                if (elementRef.current) {
-                    setRedo(x => x + 1);  // エラー発生時に値を変更して、もういちどeffectを実行する
-                }
+        try {
+            const elem = elementRef.current;
+            if (!elem) throw new Error("element does not exist");
+            const width = window.innerWidth - elem.offsetLeft;
+            const height = window.innerHeight - (elem.offsetTop + elem.clientHeight);
+            if (Number.isNaN(width)) throw new Error("width is NaN");
+            if (Number.isNaN(height)) throw new Error("height is NaN");
+            setContentsWidth(_x => width);
+            setContentsHeight(_x => height);
+        } catch (_error) {
+            setContentsWidth(window.innerWidth);
+            setContentsHeight(window.innerHeight);
+            if (elementRef.current) {
+                setRedo(x => x + 1);  // エラー発生時に値を変更して、もういちどeffectを実行する
             }
         }
+    }, []);
 
-        updateContentsHeight();
+    useEffect(() => {
+        updateContentsSize();
 
-        window.addEventListener("resize", updateContentsHeight);
+        window.addEventListener("resize", updateContentsSize);
 
-        return () => window.removeEventListener("resize", updateContentsHeight);
-    }, [redo, open, elementRef]);
+        return () => window.removeEventListener("resize", updateContentsSize);
+    }, [updateContentsSize, redo, open, elementRef]);
 
     return {
         elementRef,
         contentsWidth,
         contentsHeight,
+        updateContentsSize,
     };
 }
 

@@ -97,7 +97,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
         setFilterString(s);
     }, [searchParams, router, tenantId, params.floorId]);
 
-    const { elementRef, contentsWidth, contentsHeight } = useContentsSize();
+    const { elementRef, contentsWidth, contentsHeight, updateContentsSize } = useContentsSize();
 
     const queryClient = useQueryClient();
     const [popperComment, setPopperComment] = useState("");
@@ -202,6 +202,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
                             alt="座席表"
                             width={floor.imageWidth}
                             height={floor.imageHeight}
+                            onLoadingComplete={updateContentsSize}
                         />
                         {seats.map(seat => {
                             const occupancy = seatOccupancyMap.get(seat.id) ?? null;
