@@ -245,7 +245,7 @@ export async function deleteUser(username: string) {
     const operation = post({ apiName, path, options });
     const response = await operation.response;
     const json = await response.body.json();
-    return json;
+    return json as User;
 }
 
 /**

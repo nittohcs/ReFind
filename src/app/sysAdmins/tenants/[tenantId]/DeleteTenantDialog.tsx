@@ -67,9 +67,8 @@ export const DeleteTenantDialog: FC<DeleteTenantDialogProps> = ({
             setCurrentCount(0);
             for(const user of users) {
                 const filePath = `public/${user.tenantId}/users/${user.id}`;
-                await graphqlDeleteFile(filePath);
-                await deleteUser(user.id);
-                ret.users.push(user);
+                const _result = await graphqlDeleteFile(filePath);
+                ret.users.push(await deleteUser(user.id));
                 setCurrentCount(x => x + 1);
             }
 
@@ -82,6 +81,8 @@ export const DeleteTenantDialog: FC<DeleteTenantDialogProps> = ({
                 ret.seats.push(await graphqlDeleteSeat({ id: seat.id }));
                 setCurrentCount(x => x + 1);
             }
+
+            // TODO 座席確保情報を削除
 
             // フロアを削除
             const floors = await graphqlFloorsByTenantId(tenant.id);

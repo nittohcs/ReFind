@@ -20,10 +20,10 @@ export async function deleteReFindUser(user: ReFindUser) {
     }
 
     // cognitoのユーザーを削除
-    await deleteUser(user.id);
+    const deletedUser = await deleteUser(user.id);
 
     return {
-        user,
+        user: deletedUser,
         seatOccupancy,
     };
 }
