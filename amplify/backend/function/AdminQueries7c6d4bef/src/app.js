@@ -178,14 +178,16 @@ app.post('/updateUserAttributes', async (req, res, next) => {
         Value: "true",
       },
     ];
-    const response = await updateUserAttributes(req.body.username, attributes);
+    const _response = await updateUserAttributes(req.body.username, attributes);
 
     // DB更新
     const ret = await graphqlUpdateUser({
       id: req.body.username,
       email: req.body.email,
       name: req.body.name,
-      comment: req.body.comment,
+      ...(req.body.comment !== undefined && { comment: req.body.comment }),
+      ...(req.body.commentForegroundColor !== undefined && { commentForegroundColor: req.body.commentForegroundColor }),
+      ...(req.body.commentBackgroundColor !== undefined && { commentBackgroundColor: req.body.commentBackgroundColor }),
     });
 
     res.status(200).json(ret);
@@ -337,11 +339,11 @@ app.post('/addUserToGroup', async (req, res, next) => {
       }
     }
 
-    const response = await addUserToGroup(req.body.username, req.body.groupname);
+    let response = await addUserToGroup(req.body.username, req.body.groupname);
 
     // DB更新
     if (req.body.groupname === "admins") {
-      await graphqlUpdateUser({
+      response = await graphqlUpdateUser({
         id: req.body.username,
         isAdmin: true,
       });
@@ -376,11 +378,11 @@ app.post('/removeUserFromGroup', async (req, res, next) => {
       }
     }
 
-    const response = await removeUserFromGroup(req.body.username, req.body.groupname);
+    let response = await removeUserFromGroup(req.body.username, req.body.groupname);
 
     // DB更新
     if (req.body.groupname === "admins") {
-      await graphqlUpdateUser({
+      response = await graphqlUpdateUser({
         id: req.body.username,
         isAdmin: false,
       });
