@@ -1,22 +1,26 @@
-import { Box, Table, TableBody, TableCell, TableCellProps, TableFooter, TableHead, TableRow, TableSortLabel } from "@mui/material";
+import { RefObject } from "react";
+import { Box, Table, TableBody, TableCell, TableCellProps, TableFooter, TableHead, TableProps, TableRow, TableSortLabel } from "@mui/material";
 import { Table as RTTable, SortDirection, flexRender } from "@tanstack/react-table";
 import MiraCalTablePagination from "./MiraCalTablePagination";
 
-type MiraCalTableProps<TData> = {
+type MiraCalTableProps<TData> = TableProps & {
     table: RTTable<TData>,
     resource?: string,
     onRowClick?: (data: TData) => void,
+    tableRef?: RefObject<HTMLTableSectionElement>,
 };
 
 export const MiraCalTable = <TData,> ({
     table,
     resource,
     onRowClick,
+    tableRef,
+    ...props
 }: MiraCalTableProps<TData>) => {
     const rows = table.getRowModel().rows;
     const isRowClickable = table.getIsSomeRowsSelected() || !!onRowClick;
     return (
-        <Table size="small">
+        <Table {...props} size="small">
             <TableHead sx={{
                 position: "sticky",
                 insetBlockStart: 0,
@@ -67,7 +71,7 @@ export const MiraCalTable = <TData,> ({
                     </TableRow>
                 ))}
             </TableHead>
-            <TableBody>
+            <TableBody ref={tableRef}>
                 {rows.length > 0 ? (
                     rows.map(row => (
                         <TableRow
