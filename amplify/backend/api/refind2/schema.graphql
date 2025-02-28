@@ -258,6 +258,10 @@ input funcCreateSeatOccupancyInput {
   date: String!
 }
 
+input funcClearSeatOccupanciesByTenantIdInput {
+  id: ID!
+}
+
 input funcUpdateSeatInput {
   id: ID!
   tenantId: ID
@@ -335,6 +339,10 @@ type Mutation {
   # 座席確保情報登録
   funcCreateSeatOccupancy(input: funcCreateSeatOccupancyInput!): SeatOccupancy
   @function(name: "refind2CreateSeatOccupancy-${env}")
+
+  # テナント削除時の座席確保情報クリア
+  funcClearSeatOccupanciesByTenantId(input: funcClearSeatOccupanciesByTenantIdInput!): [SeatOccupancy!]
+  @function(name: "refind2ClearSeatOccupanciesByTenantId-${env}")
 
   # ユーザー情報更新
   funcUpdateUserAttributes(input: funcUpdateUserAttributesInput): funcUpdateUserAttributesResponse

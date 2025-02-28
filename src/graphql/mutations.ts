@@ -134,6 +134,25 @@ export const funcCreateSeatOccupancy = /* GraphQL */ `mutation FuncCreateSeatOcc
   APITypes.FuncCreateSeatOccupancyMutationVariables,
   APITypes.FuncCreateSeatOccupancyMutation
 >;
+export const funcClearSeatOccupanciesByTenantId = /* GraphQL */ `mutation FuncClearSeatOccupanciesByTenantId(
+  $input: funcClearSeatOccupanciesByTenantIdInput!
+) {
+  funcClearSeatOccupanciesByTenantId(input: $input) {
+    id
+    tenantId
+    seatId
+    userId
+    userName
+    date
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.FuncClearSeatOccupanciesByTenantIdMutationVariables,
+  APITypes.FuncClearSeatOccupanciesByTenantIdMutation
+>;
 export const funcUpdateUserAttributes = /* GraphQL */ `mutation FuncUpdateUserAttributes($input: funcUpdateUserAttributesInput) {
   funcUpdateUserAttributes(input: $input) {
     isUpdatedEmail
