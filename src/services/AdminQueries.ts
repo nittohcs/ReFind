@@ -270,7 +270,12 @@ export async function addUserToGroup(username: string, group: AdminQueriesGroup)
     const operation = post({ apiName, path, options });
     const response = await operation.response;
     const json = await response.body.json();
-    return json as User;
+    return json as {
+        response: {
+            message: string,
+        },
+        updateUser?: User,
+    };
 }
 
 /**
@@ -295,5 +300,10 @@ export async function removeUserFromGroup(username: string, group: AdminQueriesG
     const operation = post({ apiName, path, options });
     const response = await operation.response;
     const json = await response.body.json();
-    return json as User;
+    return json as {
+        response: {
+            message: string,
+        },
+        updateUser?: User,
+    };
 }

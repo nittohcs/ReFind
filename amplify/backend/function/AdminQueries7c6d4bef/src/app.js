@@ -339,17 +339,18 @@ app.post('/addUserToGroup', async (req, res, next) => {
       }
     }
 
-    let response = await addUserToGroup(req.body.username, req.body.groupname);
+    const ret = {};
+    ret.response = await addUserToGroup(req.body.username, req.body.groupname);
 
     // DB更新
     if (req.body.groupname === "admins") {
-      response = await graphqlUpdateUser({
+      ret.updateUser = await graphqlUpdateUser({
         id: req.body.username,
         isAdmin: true,
       });
     }
 
-    res.status(200).json(response);
+    res.status(200).json(ret);
   } catch (err) {
     next(err);
   }
@@ -378,17 +379,18 @@ app.post('/removeUserFromGroup', async (req, res, next) => {
       }
     }
 
-    let response = await removeUserFromGroup(req.body.username, req.body.groupname);
+    const ret = {};
+    ret.response = await removeUserFromGroup(req.body.username, req.body.groupname);
 
     // DB更新
     if (req.body.groupname === "admins") {
-      response = await graphqlUpdateUser({
+      ret.updateUser = await graphqlUpdateUser({
         id: req.body.username,
         isAdmin: false,
       });
     }
 
-    res.status(200).json(response);
+    res.status(200).json(ret);
   } catch (err) {
     next(err);
   }

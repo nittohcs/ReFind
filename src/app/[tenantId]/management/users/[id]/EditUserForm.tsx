@@ -86,12 +86,18 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
             };
 
             // cognitoユーザー編集
-            await adminUpdateUserAttributes(input);
+            let ret = await adminUpdateUserAttributes(input);
 
             // cognitoのグループに追加
             if (input.isAdmin !== initialValues.isAdmin) {
-                await removeUserFromGroup(input.id, initialValues.isAdmin ? "admins" : "users");
-                await addUserToGroup(input.id, input.isAdmin ? "admins" : "users");
+                const a = await removeUserFromGroup(input.id, initialValues.isAdmin ? "admins" : "users");
+                if (a.updateUser) {
+                    ret = a.updateUser;
+                }
+                const b = await addUserToGroup(input.id, input.isAdmin ? "admins" : "users");
+                if (b.updateUser) {
+                    ret = b.updateUser;
+                }
             }
 
             if (values.image === ImageUploadState.Upload) {
@@ -117,25 +123,18 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
                 // ファイルを削除
                 await deleteFile(imagePath);
             }
+
+            return ret;
         },
-        onSuccess(_data, variables, _context) {
+        onSuccess(data, variables, _context) {
             enqueueSnackbar("保存しました。", { variant: "success" });
 
             // クエリのキャッシュを更新する
-            const updated = {
-                ...user!,
-                name: variables.name,
-                email: variables.email,
-                comment: variables.comment,
-                commentForegroundColor: variables.commentForegroundColor,
-                commentBackgroundColor: variables.commentBackgroundColor,
-                isAdmin: variables.isAdmin,
-            };
             queryClient.setQueryData<User[]>(queryKeys.graphqlUsersByTenantId(tenantId), items => {
                 if (!items) {
                     return items;
                 }
-                return items.map(item => item.id === updated.id ? updated : item);
+                return items.map(item => item.id === data.id ? data : item);
             });
 
             // 画像URLのクエリを無効化して再取得されるようにする
