@@ -1,12 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Box, IconButton, Popper, Toolbar, Tooltip, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import PrintIcon from "@mui/icons-material/Print";
 import { useQueryClient } from "@tanstack/react-query";
+import { useReactToPrint } from "react-to-print";
 import { Seat, SeatOccupancy, User } from "@/API";
 import MiraCalBreadcrumbs from "@/components/MiraCalBreadcrumbs";
 import DebouncedTextField from "@/components/DebouncedTextField";
@@ -153,6 +155,9 @@ export default function Page({ params }: { params: { floorId: string } }) {
         checkImage();
     }, [popperImageUrl]);
 
+    const contentRef = useRef<HTMLDivElement>(null);
+    const handlePrint = useReactToPrint({ contentRef });
+
     return (
         <>
             <MiraCalBreadcrumbs>
@@ -174,17 +179,24 @@ export default function Page({ params }: { params: { floorId: string } }) {
                                 fullWidth
                             />
                             {authState.groups?.admins && floor && (
-                                <Link href={`/${tenantId}/floors/${floor.id}/edit`}>
-                                    <Tooltip title="座席編集">
-                                        <IconButton>
-                                            <EditIcon />
+                                <>
+                                    <Tooltip title="印刷">
+                                        <IconButton onClick={() => handlePrint()}>
+                                            <PrintIcon />
                                         </IconButton>
                                     </Tooltip>
-                                </Link>
+                                    <Link href={`/${tenantId}/floors/${floor.id}/edit`}>
+                                        <Tooltip title="座席編集">
+                                            <IconButton>
+                                                <EditIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Link>
+                                </>
                             )}
                         </Toolbar>
                     </Box>
-                    <Box sx={{ position: "relative", overflow: "auto", width: { xs: contentsWidth - 8, sm: contentsWidth - 16 }, height: contentsHeight }}>
+                    <Box ref={contentRef} sx={{ position: "relative", "@media screen": { overflow: "auto", width: { xs: contentsWidth - 8, sm: contentsWidth - 16 }, height: contentsHeight } }}>
                         <Image
                             src={imageQuery.data}
                             alt="座席表"
