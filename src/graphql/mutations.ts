@@ -23,6 +23,7 @@ export const funcCreateFloor = /* GraphQL */ `mutation FuncCreateFloor($input: f
     imagePath
     imageWidth
     imageHeight
+    sortId
     createdAt
     updatedAt
     __typename
@@ -40,6 +41,7 @@ export const funcUpdateFloor = /* GraphQL */ `mutation FuncUpdateFloor($input: f
     imagePath
     imageWidth
     imageHeight
+    sortId
     createdAt
     updatedAt
     __typename
@@ -57,6 +59,7 @@ export const funcDeleteFloor = /* GraphQL */ `mutation FuncDeleteFloor($input: f
     imagePath
     imageWidth
     imageHeight
+    sortId
     createdAt
     updatedAt
     __typename
@@ -326,6 +329,7 @@ export const createFloor = /* GraphQL */ `mutation CreateFloor(
     imagePath
     imageWidth
     imageHeight
+    sortId
     createdAt
     updatedAt
     __typename
@@ -346,6 +350,7 @@ export const updateFloor = /* GraphQL */ `mutation UpdateFloor(
     imagePath
     imageWidth
     imageHeight
+    sortId
     createdAt
     updatedAt
     __typename
@@ -366,6 +371,7 @@ export const deleteFloor = /* GraphQL */ `mutation DeleteFloor(
     imagePath
     imageWidth
     imageHeight
+    sortId
     createdAt
     updatedAt
     __typename

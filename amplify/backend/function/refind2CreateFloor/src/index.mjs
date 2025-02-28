@@ -26,6 +26,7 @@ const createFloor = /* GraphQL */ `mutation CreateFloor(
     imagePath
     imageWidth
     imageHeight
+    sortId
     createdAt
     updatedAt
     __typename

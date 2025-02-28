@@ -18,7 +18,7 @@ export default function Page() {
             </MiraCalBreadcrumbs>
             {isReady && (
                 <Box display="flex" flexDirection="row" flexWrap="wrap" gap={2} pt={2}>
-                    {allFloors.toSorted((a, b) => a.name.localeCompare(b.name)).map(floor => (
+                    {allFloors.toSorted((a, b) => a.sortId > b.sortId ? 1 : -1).map(floor => (
                         <Link key={floor.id} href={`/${tenantId}/floors/${floor.id}`}>
                             <Card>
                                 <CardContent>

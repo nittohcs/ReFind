@@ -25,6 +25,7 @@ type FormValues = {
     image: string,
     imageWidth: number,
     imageHeight: number,
+    sortId: number,
 };
 
 type CreateFloorFormProps = {
@@ -41,6 +42,7 @@ export const CreateFloorForm: FC<CreateFloorFormProps> = ({
         image: yup.string().required().oneOf([ImageUploadState.Upload], "ファイルを選択してください。"),
         imageWidth: yup.number().required().min(1),
         imageHeight: yup.number().required().min(1),
+        sortId: yup.number().required().min(1),
     }), []);
 
     const initialValues: FormValues = useMemo(() => validationSchema.cast({
@@ -48,6 +50,7 @@ export const CreateFloorForm: FC<CreateFloorFormProps> = ({
         image: ImageUploadState.Unchange,
         imageWidth: 0,
         imageHeight: 0,
+        sortId: 0,
     }), [validationSchema]);
 
     const imageFileRef = useRef<HTMLInputElement>(null);
@@ -86,6 +89,7 @@ export const CreateFloorForm: FC<CreateFloorFormProps> = ({
                 imagePath,
                 imageWidth: values.imageWidth,
                 imageHeight: values.imageHeight,
+                sortId: values.sortId,
             });
         },
         onSuccess(data, _variables, _context) {
@@ -153,6 +157,11 @@ export const CreateFloorForm: FC<CreateFloorFormProps> = ({
                         label="画像表示高さ"
                         type="number"
                     />
+                    <MiraCalTextField
+                        name="sortId"
+                        label="ソート順"
+                        type="number"
+                    />
                     <MiraCalFormAction>
                         <MiraCalButton
                             variant="contained"
@@ -161,7 +170,7 @@ export const CreateFloorForm: FC<CreateFloorFormProps> = ({
                         >
                             登録
                         </MiraCalButton>
-                    </MiraCalFormAction>
+                    </MiraCalFormAction>                    
                 </MiraCalForm>
             </Formik>
         </Box>

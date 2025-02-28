@@ -144,6 +144,7 @@ export const onCreateFloor = /* GraphQL */ `subscription OnCreateFloor($filter: 
     imagePath
     imageWidth
     imageHeight
+    sortId
     createdAt
     updatedAt
     __typename
@@ -161,6 +162,7 @@ export const onUpdateFloor = /* GraphQL */ `subscription OnUpdateFloor($filter: 
     imagePath
     imageWidth
     imageHeight
+    sortId
     createdAt
     updatedAt
     __typename
@@ -178,6 +180,7 @@ export const onDeleteFloor = /* GraphQL */ `subscription OnDeleteFloor($filter: 
     imagePath
     imageWidth
     imageHeight
+    sortId
     createdAt
     updatedAt
     __typename
