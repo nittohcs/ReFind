@@ -81,6 +81,10 @@
         "refind2VerifyUserAttribute": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
           "s3Key": "amplify-builds/refind2VerifyUserAttribute-36722b65505733495331-build.zip"
+        },
+        "refind2ClearSeatOccupanciesByTenantId": {
+          "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
+          "s3Key": "amplify-builds/refind2ClearSeatOccupanciesByTenantId-5757303556426b706779-build.zip"
         }
       },
       "api": {

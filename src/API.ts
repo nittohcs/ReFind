@@ -94,6 +94,10 @@ export type SeatOccupancy = {
   updatedAt: string,
 };
 
+export type funcClearSeatOccupanciesByTenantIdInput = {
+  id: string,
+};
+
 export type funcUpdateUserAttributesInput = {
   accessToken: string,
   email?: string | null,
@@ -772,6 +776,24 @@ export type FuncCreateSeatOccupancyMutation = {
     createdAt: string,
     updatedAt: string,
   } | null,
+};
+
+export type FuncClearSeatOccupanciesByTenantIdMutationVariables = {
+  input: funcClearSeatOccupanciesByTenantIdInput,
+};
+
+export type FuncClearSeatOccupanciesByTenantIdMutation = {
+  funcClearSeatOccupanciesByTenantId?:  Array< {
+    __typename: "SeatOccupancy",
+    id: string,
+    tenantId: string,
+    seatId: string,
+    userId?: string | null,
+    userName?: string | null,
+    date: string,
+    createdAt: string,
+    updatedAt: string,
+  } > | null,
 };
 
 export type FuncUpdateUserAttributesMutationVariables = {

@@ -12,6 +12,7 @@ import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalTextField from "@/components/MiraCalTextField";
 import MiraCalCheckbox from "@/components/MiraCalCheckbox";
 import { ImageUploadState, MiraCalImageUpload } from "@/components/MiraCalImageUpload";
+import MiraCalColorPicker from "@/components/MiraCalColorPicker";
 import MiraCalFormAction from "@/components/MiraCalFormAction";
 import MiraCalButton from "@/components/MiraCalButton";
 import { useAuthState } from "@/hooks/auth";
@@ -28,6 +29,8 @@ type FormValues = {
     email: string,
     image: string,
     comment: string,
+    commentForegroundColor: string,
+    commentBackgroundColor: string,
     isAdmin: boolean,
 };
 
@@ -52,6 +55,8 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
         email: yup.string().required().email().default(""),
         image: yup.string().required(),
         comment: yup.string().default(""),
+        commentForegroundColor: yup.string().default(""),
+        commentBackgroundColor: yup.string().default(""),
         isAdmin: yup.bool().required().default(false).test("isAdmin", "操作中のユーザーを管理者ではなくすることはできません", value => {
             if (authState.username === user?.id && user?.isAdmin && !value) {
                 return false;
@@ -66,6 +71,8 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
         email: user?.email,
         image: ImageUploadState.Unchange,
         comment: user?.comment,
+        commentForegroundColor: user?.commentForegroundColor ?? "#000000ff",
+        commentBackgroundColor: user?.commentBackgroundColor ?? "#ffffffff",
         isAdmin: user?.isAdmin,
     }), [validationSchema, user]);
 
@@ -73,18 +80,24 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
     const queryClient = useQueryClient();
     const mutation = useMutation({
         async mutationFn(values: FormValues) {
-            const updated = {
+            const input = {
                 ...values,
                 tenantId: tenantId,
             };
 
             // cognitoユーザー編集
-            await adminUpdateUserAttributes(updated);
+            let ret = await adminUpdateUserAttributes(input);
 
             // cognitoのグループに追加
-            if (updated.isAdmin !== initialValues.isAdmin) {
-                await removeUserFromGroup(updated.id, initialValues.isAdmin ? "admins" : "users");
-                await addUserToGroup(updated.id, updated.isAdmin ? "admins" : "users");
+            if (input.isAdmin !== initialValues.isAdmin) {
+                const a = await removeUserFromGroup(input.id, initialValues.isAdmin ? "admins" : "users");
+                if (a.updateUser) {
+                    ret = a.updateUser;
+                }
+                const b = await addUserToGroup(input.id, input.isAdmin ? "admins" : "users");
+                if (b.updateUser) {
+                    ret = b.updateUser;
+                }
             }
 
             if (values.image === ImageUploadState.Upload) {
@@ -110,23 +123,18 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
                 // ファイルを削除
                 await deleteFile(imagePath);
             }
+
+            return ret;
         },
-        onSuccess(_data, variables, _context) {
+        onSuccess(data, variables, _context) {
             enqueueSnackbar("保存しました。", { variant: "success" });
 
             // クエリのキャッシュを更新する
-            const updated = {
-                ...user!,
-                name: variables.name,
-                email: variables.email,
-                comment: variables.comment,
-                isAdmin: variables.isAdmin,
-            };
             queryClient.setQueryData<User[]>(queryKeys.graphqlUsersByTenantId(tenantId), items => {
                 if (!items) {
                     return items;
                 }
-                return items.map(item => item.id === updated.id ? updated : item);
+                return items.map(item => item.id === data.id ? data : item);
             });
 
             // 画像URLのクエリを無効化して再取得されるようにする
@@ -201,6 +209,14 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
                         name="comment"
                         label="コメント"
                         type="text"
+                    />
+                    <MiraCalColorPicker
+                        name="commentForegroundColor"
+                        label="コメント文字色"
+                    />
+                    <MiraCalColorPicker
+                        name="commentBackgroundColor"
+                        label="コメント背景色"
                     />
                     <MiraCalCheckbox
                         name="isAdmin"

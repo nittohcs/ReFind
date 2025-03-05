@@ -127,6 +127,21 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "refind2ClearSeatOccupanciesByTenantId": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind2"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "refind2CreateFloor": {
       "build": true,
       "dependsOn": [
@@ -353,6 +368,22 @@
         {
           "category": "function",
           "resourceName": "AdminQueries7c6d4bef"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2ClearSeatOccupanciesByTenantId_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2ClearSeatOccupanciesByTenantId"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2ClearSeatOccupanciesByTenantId_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2ClearSeatOccupanciesByTenantId"
         }
       ]
     },

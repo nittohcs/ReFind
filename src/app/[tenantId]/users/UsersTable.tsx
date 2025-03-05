@@ -45,6 +45,9 @@ export default function UsersTable() {
         columnHelper.accessor("seatName", {
             header: "座席",
         }),
+        columnHelper.accessor("comment", {
+            header: "コメント",
+        }),
     ], []);
 
     const options = useTableOption<TableRow>({

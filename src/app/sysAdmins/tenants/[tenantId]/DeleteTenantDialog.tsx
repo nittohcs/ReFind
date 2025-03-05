@@ -6,14 +6,14 @@ import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } 
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Floor, Seat, Tenant, User } from "@/API";
+import { Floor, Seat, SeatOccupancy, Tenant, User } from "@/API";
 import MiraCalForm from "@/components/MiraCalForm";
 import MiraCalTextField from "@/components/MiraCalTextField";
 import MiraCalButton from "@/components/MiraCalButton";
 import MiraCalLinearProgressWithLabel from "@/components/MiraCalLinearProgressWithLabel";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { deleteUser } from "@/services/AdminQueries";
-import { graphqlDeleteFile, graphqlDeleteFloor, graphqlDeleteSeat, graphqlFloorsByTenantId, graphqlSeatsByTenantId, graphqlUsersByTenantId } from "@/services/graphql";
+import { graphqlClearSeatOccupanciesByTenantId, graphqlDeleteFile, graphqlDeleteFloor, graphqlDeleteSeat, graphqlFloorsByTenantId, graphqlSeatsByTenantId, graphqlUsersByTenantId } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
 import { graphqlDeleteTenant } from "../operation";
 
@@ -56,6 +56,7 @@ export const DeleteTenantDialog: FC<DeleteTenantDialogProps> = ({
             const ret = {
                 users: [] as User[],
                 seats: [] as Seat[],
+                seatOccupancies: [] as SeatOccupancy[],
                 floors: [] as Floor[],
                 tenant: tenant,
             };
@@ -67,9 +68,8 @@ export const DeleteTenantDialog: FC<DeleteTenantDialogProps> = ({
             setCurrentCount(0);
             for(const user of users) {
                 const filePath = `public/${user.tenantId}/users/${user.id}`;
-                await graphqlDeleteFile(filePath);
-                await deleteUser(user.id);
-                ret.users.push(user);
+                const _result = await graphqlDeleteFile(filePath);
+                ret.users.push(await deleteUser(user.id));
                 setCurrentCount(x => x + 1);
             }
 
@@ -82,6 +82,12 @@ export const DeleteTenantDialog: FC<DeleteTenantDialogProps> = ({
                 ret.seats.push(await graphqlDeleteSeat({ id: seat.id }));
                 setCurrentCount(x => x + 1);
             }
+
+            // 座席確保情報を削除
+            setProgressMessage("座席確保情報を削除中");
+            setTotalCount(1);
+            setCurrentCount(0);
+            ret.seatOccupancies = (await graphqlClearSeatOccupanciesByTenantId(tenant.id)) ?? [];
 
             // フロアを削除
             const floors = await graphqlFloorsByTenantId(tenant.id);

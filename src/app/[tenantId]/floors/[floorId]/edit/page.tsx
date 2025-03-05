@@ -71,7 +71,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
 
     const state = useDialogState();
 
-    const { elementRef, contentsWidth, contentsHeight } = useContentsSize();
+    const { elementRef, contentsWidth, contentsHeight, updateContentsSize } = useContentsSize();
 
     return (
         <>
@@ -111,6 +111,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
                             height={floor.imageHeight}
                             ref={imageRef}
                             onClick={handleImageClick}
+                            onLoadingComplete={updateContentsSize}
                         />
                         {seats.map(seat => (
                             <SeatBox
