@@ -52,8 +52,8 @@ export default function FloorsTable() {
     ], []);
 
     const options = useTableOption<TableRow>({
-        sorting: [{
-            id: "tmpSortValue",
+        sorting: [{//id: "tmpSortValue",
+            id: "sortId",
             desc: false,
         }],
     });
@@ -77,7 +77,7 @@ export default function FloorsTable() {
             sorted[i].tmpSortValue = i;
         }
         setData(() => sorted);
-        table.setSorting(_x => [{
+        table.setSorting(x => [{
             id: "sortId",
             desc: false,
         }]);
