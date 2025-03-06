@@ -37,7 +37,7 @@ export default function FloorsTable() {
     const query = useFloorsByTenantId(tenantId);
     const [data, setData] = useState(() => ToTableData(query.data ?? []));
     useEffect(() => {
-        setData((query.data ?? []).map((floor, index) => ({ ...floor})));
+        setData((query.data ?? []).map((floor, _index) => ({ ...floor})));
         //setData((query.data ?? []).map((floor, index) => ({ ...floor, tmpSortValue: index })));
     }, [query.data]);
 
@@ -81,7 +81,7 @@ export default function FloorsTable() {
             sorted[i].sortId = i+1;
         }
         setData(() => sorted);
-        table.setSorting(x => [{
+        table.setSorting(_x => [{
             id: "sortId",
             desc: false,
         }]);
