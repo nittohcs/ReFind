@@ -14,19 +14,21 @@ import DebouncedTextField from "@/components/DebouncedTextField";
 import MiraCalTable from "@/components/MiraCalTable";
 import { useTable, useTableOption } from "@/hooks/table";
 import { useUpdatedAt } from "@/hooks/ui";
-import { useFloorsByTenantId } from "@/services/graphql";
+import { graphqlUpdateFloor, useFloorsByTenantId } from "@/services/graphql";
 import { useTenantId } from "../../hook";
+import { enqueueSnackbar } from "notistack";
 
-type TableRow = Floor & {
-    // Floorにソート用の項目が無いので、ここで追加
-    tmpSortValue: number,
-};
+// type TableRow = Floor & {
+//     // Floorにソート用の項目が無いので、ここで追加
+//     tmpSortValue: number,
+// };
 
 function ToTableData(floors: Floor[]) {
-    return floors.map((floor, index) => ({ ...floor, tmpSortValue: index }));
+    return floors.map((floor, index) => ({ ...floor, sortId: index }));
+    //return floors.map((floor, index) => ({ ...floor, tmpSortValue: index }));
 }
 
-const columnHelper = createColumnHelper<TableRow>();
+const columnHelper = createColumnHelper<Floor>();
 
 export default function FloorsTable() {
     const tenantId = useTenantId();
@@ -35,7 +37,8 @@ export default function FloorsTable() {
     const query = useFloorsByTenantId(tenantId);
     const [data, setData] = useState(() => ToTableData(query.data ?? []));
     useEffect(() => {
-        setData((query.data ?? []).map((floor, index) => ({ ...floor, tmpSortValue: index })));
+        setData((query.data ?? []).map((floor, _index) => ({ ...floor})));
+        //setData((query.data ?? []).map((floor, index) => ({ ...floor, tmpSortValue: index })));
     }, [query.data]);
 
     const columns = useMemo(() => [
@@ -51,8 +54,9 @@ export default function FloorsTable() {
         })
     ], []);
 
-    const options = useTableOption<TableRow>({
-        sorting: [{//id: "tmpSortValue",
+    // 画面の一覧の表示順
+    const options = useTableOption<Floor>({
+        sorting: [{
             id: "sortId",
             desc: false,
         }],
@@ -74,10 +78,10 @@ export default function FloorsTable() {
         // ソート用項目の値を更新
         const n = sorted.length;
         for(let i = 0; i < n; ++i) {
-            sorted[i].tmpSortValue = i;
+            sorted[i].sortId = i+1;
         }
         setData(() => sorted);
-        table.setSorting(x => [{
+        table.setSorting(_x => [{
             id: "sortId",
             desc: false,
         }]);
@@ -113,12 +117,14 @@ export default function FloorsTable() {
         const n = rows.length;
         for(let i = 0; i < n; ++i) {
             // TODO Floorを保存する
-            // const floor = rows[i].original;
-            // await graphqlUpdateFloor({
-            //     id: floor.id,
-            //     sortValue: i,
-            // });
+            const floor = rows[i].original;
+            await graphqlUpdateFloor({
+                //元の値を保持していればできそう？
+                id: floor.id,
+                sortId: i+1,
+            });            
         }
+        enqueueSnackbar("ソート順を更新しました。", { variant: "success" });
     }, [table]);
 
     return (
