@@ -22,6 +22,8 @@ export type UseTableOptions = {
     globalFilter?: string | (() => string),
     sorting?: SortingState | (() => SortingState),
     rowSelection?: RowSelectionState | (() => RowSelectionState),
+    pagination?: PaginationState | (() => PaginationState),
+    rowsPerPage?: number[] | (() => number[]),
 };
 
 export function useTableOption<TData,>(options?: UseTableOptions) {
@@ -30,17 +32,16 @@ export function useTableOption<TData,>(options?: UseTableOptions) {
         globalFilter: defaultGlobalFilter = "",
         sorting: defaultSorting = [],
         rowSelection: defaultRowSelection = {},
+        pagination: defaultPagination = {pageIndex: 0,pageSize: 25,},
+        rowsPerPage: defaultPerPageOptions = {rowsPerPageOptions: [25,50,100,200]},
     } = options || {};
 
-    const [pagination, setPagination] = useState<PaginationState>({
-        pageIndex: 0,
-        pageSize: 25,
-    });
-
+    const [pagination, setPaginations] = useState<PaginationState>(defaultPagination);
     const [columnFilters, setColumnFilters] = useState(defaultColumnFilters);
     const [globalFilter, setGlobalFilter] = useState(defaultGlobalFilter);
     const [sorting, setSorting] = useState(defaultSorting);
     const [rowSelection, setRowSelection] = useState(defaultRowSelection);
+    const [rowsPerPage, setRowsPerPageOptions] = useState(defaultPerPageOptions);
 
     return {
         state: {
@@ -49,12 +50,14 @@ export function useTableOption<TData,>(options?: UseTableOptions) {
             globalFilter,
             sorting,
             rowSelection,
+            rowsPerPage,
         },
+        onPaginationChange: setPaginations,
         onColumnFiltersChange: setColumnFilters,
         onGlobalFilterChange: setGlobalFilter,
         onSortingChange: setSorting,
         onRowSelectionChange: setRowSelection,
-        onPaginationChange: setPagination,
+        onRowsPerPageChange: setRowsPerPageOptions,
     } as Partial<TableOptions<TData>>;
 }
 
