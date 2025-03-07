@@ -134,7 +134,7 @@ export default function FloorsTable() {
     }, [table]);
 
     // 検索欄に文字が入力された場合、ソート順の保存が出来ないようにする。    
-    var [registSortFlg, changeDisable]  = useState(false);
+    const [registSortFlg, changeDisable]  = useState(false);
     const onChangeDisable = function(value: string) : void {    
         if (value.length === 0) {
             // 検索バーが空の場合、ソート順の保存処理が可能
