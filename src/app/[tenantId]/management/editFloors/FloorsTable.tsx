@@ -60,6 +60,12 @@ export default function FloorsTable() {
             id: "sortId",
             desc: false,
         }],
+        pagination: {
+            pageIndex: 0,
+            pageSize: 200,
+        },
+        // ページによって表示件数の一覧を変えたかったが未実装
+        rowsPerPage: [25,50,100,200],
     });
 
     const table = useTable({ data, columns, options });
@@ -127,6 +133,20 @@ export default function FloorsTable() {
         enqueueSnackbar("ソート順を更新しました。", { variant: "success" });
     }, [table]);
 
+    // 検索欄に文字が入力された場合、ソート順の保存が出来ないようにする。    
+    var [registSortFlg, changeDisable]  = useState(false);
+    const onChangeDisable = function(value: string) : void {    
+        if (value.length === 0) {
+            // 検索バーが空の場合、ソート順の保存処理が可能
+            changeDisable(false);
+        }
+        else{
+            // 検索バーが入力されている場合、ソート順の保存処理が不可能
+            changeDisable(true);
+        }
+        table.setGlobalFilter(value);
+    }
+
     return (
         <>
             {query.isFetched ? (
@@ -140,7 +160,7 @@ export default function FloorsTable() {
                                     size="small"
                                     // autoFocus
                                     value={table.getState().globalFilter}
-                                    onChange={table.setGlobalFilter}
+                                    onChange={e => onChangeDisable(e.toString())}
                                     fullWidth
                                 />
                                 <Tooltip title="更新">
@@ -152,7 +172,7 @@ export default function FloorsTable() {
                                 </Tooltip>
                                 <Tooltip title="ソート順保存">
                                     <span>
-                                        <IconButton onClick={saveSorting}>
+                                        <IconButton id = "btnRegistSort" onClick={saveSorting} disabled = {registSortFlg}>
                                             <AssignmentTurnedInIcon />
                                         </IconButton>
                                     </span>
@@ -179,7 +199,7 @@ export default function FloorsTable() {
                 </Box>
             ) : (
                 <></>
-            )}
+            )}            
         </>
     );
 }
