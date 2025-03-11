@@ -179,16 +179,17 @@ export const EditUserSettingsForm: FC<EditUserSettingsFormProps> = ({ /*confirmi
                         type="text"
                         disabled={true}
                     />
-                    <MiraCalTextField
+                    {/* <MiraCalTextField
                         name="email"
                         label="メールアドレス"
                         type="email"
-                        disabled={true}
-                    />
+                        disabled={true}                        
+                    /> */}
                     <MiraCalTextField
                         name="name"
                         label="氏名"
                         type="text"
+                        disabled={true}   
                     />
                     <MiraCalImageUpload
                         name="image"
