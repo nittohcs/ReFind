@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Box, Divider, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import AccountCircle from "@mui/icons-material/AccountCircle";
+import CheckCircle from "@mui/icons-material/CheckCircleTwoTone";
 import { signOut } from "aws-amplify/auth";
 import { Seat } from "@/API";
 import { useAuthState } from "@/hooks/auth";
@@ -37,9 +38,27 @@ export function UserMenu() {
 
     return (
         <Box>
-            <IconButton size="large" onClick={menu.openHandler} color="inherit">
+            <IconButton size="large" onClick={menu.openHandler} color="inherit" sx={{width: '50px', height: '50px'}}>
                 {isExistUserIcon ? (
-                    <Image src={qUserIcon.data!} alt="" width={24} height={24} />
+                    // 元ソース
+                    //<Image src={qUserIcon.data!} alt="" width={24} height={24} />
+                    // 案１：ログイン中の場合、画像に枠線を付ける。
+                    //<Image src={qUserIcon.data!} alt="" width={35} height={35} style={{ border: isReady && mySeat ? "3px solid rgb(25, 240, 61)" : "" }}/>
+                    // 案２：ログイン中の場合、Teamsみたいな画像を付ける。
+                    <div>
+                    <Image src={qUserIcon.data!} alt="" width={30} height={30} 
+                        style={{
+                            position: "relative",
+                            marginTop: "10px"
+                        }}/>
+                    <CheckCircle fontSize="small"
+                        style={{ 
+                            display: isReady && mySeat ? "" : "none",
+                            color: "rgba(0, 192, 0, 1)",
+                            position: "absolute",
+                            top: "60%", left: "60%",
+                        }}/>
+                    </div>
                 ) : (
                     <AccountCircle style={{ color: isReady && mySeat ? "rgba(0, 192, 0, 1)" : "gray" }}/>
                 )}
