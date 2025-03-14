@@ -36,31 +36,35 @@ export default function Page({ params }: { params: { floorId: string } }) {
 
     const enqueueSnackbar = useEnqueueSnackbar();
     const handleSeatClick = useCallback((seat: Seat, occupancy: SeatOccupancy | null) => {
+        // 管理者はダブルクリックで全座席解放
+
         // 既に座席が使用中
         if (occupancy && occupancy.userId) {
             if (occupancy === myOccupancy) {
                 // 自分が使用中
-                enqueueSnackbar("選択した座席を使用中です。", { variant: "info" });
+                //enqueueSnackbar("選択した座席を使用中です。", { variant: "info" });
                 return;
             } else {
                 // 他人が使用中
-                if (authState.groups?.admins) {
-                    confirmDialogState.open({
-                        title: "座席強制解放",
-                        message: `選択した座席は${occupancy.userName}が使用中です。座席を強制解放します。`,
-                        newSeat: null,
-                        oldSeat: seat,
-                        userId: authState.username ?? "",
-                        userName: authState.name ?? "",
-                    });
-                } else {
-                    enqueueSnackbar(`選択した座席は${occupancy.userName}が使用中です。`, { variant: "error" });
-                }
+                // if (authState.groups?.admins) {
+                //     confirmDialogState.open({
+                //         title: "座席強制解放",
+                //         message: `選択した座席は${occupancy.userName}が使用中です。座席を強制解放します。`,
+                //         newSeat: null,
+                //         oldSeat: seat,
+                //         userId: authState.username ?? "",
+                //         userName: authState.name ?? "",
+                //     });
+                // } else {
+                //     //enqueueSnackbar(`選択した座席は${occupancy.userName}が使用中です。`, { variant: "error" });
+                // }
                 return;
             }
         }
 
+        // 空席選択時
         if (mySeat) {
+            // 別の座席へ移動する場合
             confirmDialogState.open({
                 title: "座席変更",
                 message: `フロア「${myFloor?.name}」の座席「${mySeat.name}」を解放し、フロア「${floor?.name}」の座席「${seat.name}」を確保します。`,
@@ -70,6 +74,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
                 userName: authState.name ?? "",
             });
         } else {
+            // 自席がない状態で確保する場合
             confirmDialogState.open({
                 title: "座席確保",
                 message: `フロア「${floor?.name}」の座席「${seat.name}」を確保します。`,
@@ -80,6 +85,49 @@ export default function Page({ params }: { params: { floorId: string } }) {
             });
         }
     }, [myOccupancy, mySeat, enqueueSnackbar, confirmDialogState, authState.username, authState.name, authState.groups?.admins, myFloor, floor?.name]);
+
+    // ダブルクリック時のイベント実装する
+    const handleSeatDoubleClick = useCallback((seat: Seat, occupancy: SeatOccupancy | null) => {
+
+        // 既に座席が使用中
+        if (occupancy && occupancy.userId) {
+            if (occupancy === myOccupancy) {
+                // 自分が使用中
+                confirmDialogState.open({
+                    title: "座席解放",
+                    message: `現在の座席を解放します。`,
+                    newSeat: null,
+                    oldSeat: seat,
+                    userId: authState.username ?? "",
+                    userName: authState.name ?? "",
+                });
+                return;
+            } else {
+                // 他人が使用中
+                if (authState.groups?.admins) {
+                    // 管理者の場合
+                    // フロアの座席を開放
+                    if (authState.groups?.admins) {
+                        confirmDialogState.open({
+                            title: "座席強制解放",
+                            message: `選択した座席は${occupancy.userName}が使用中です。座席を強制解放します。`,
+                            newSeat: null,
+                            oldSeat: seat,
+                            userId: authState.username ?? "",
+                            userName: authState.name ?? "",
+                        });
+                    } else {
+                        // 一般ユーザーは何もしない
+                    }
+                } else {
+                    // 一般ユーザーの場合
+                    //enqueueSnackbar(`選択した座席は${occupancy.userName}が使用中です。`, { variant: "error" });
+                }
+                return;
+            }
+        }
+    }, [myOccupancy, enqueueSnackbar, confirmDialogState, authState.username, authState.name, authState.groups?.admins]);
+
 
     const imageQuery = useStorageFileURL(floor?.imagePath ?? "");
 
@@ -219,6 +267,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
                                     seat={seat}
                                     isChangeColor={!!name}
                                     onClick={() => handleSeatClick(seat, occupancy)}
+                                    onDoubleClick={() => handleSeatDoubleClick(seat, occupancy)} // 実装中
                                     onMouseEnter={(e) => user && handleMouseEnter(e, user)}
                                     onMouseLeave={(e) => handleMouseLeave(e)}
                                 >
