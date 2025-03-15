@@ -46,18 +46,18 @@ export default function Page({ params }: { params: { floorId: string } }) {
                 return;
             } else {
                 // 他人が使用中
-                // if (authState.groups?.admins) {
-                //     confirmDialogState.open({
-                //         title: "座席強制解放",
-                //         message: `選択した座席は${occupancy.userName}が使用中です。座席を強制解放します。`,
-                //         newSeat: null,
-                //         oldSeat: seat,
-                //         userId: authState.username ?? "",
-                //         userName: authState.name ?? "",
-                //     });
-                // } else {
-                //     //enqueueSnackbar(`選択した座席は${occupancy.userName}が使用中です。`, { variant: "error" });
-                // }
+                if (authState.groups?.admins) {
+                    // confirmDialogState.open({
+                    //     title: "座席強制解放",
+                    //     message: `選択した座席は${occupancy.userName}が使用中です。座席を強制解放します。`,
+                    //     newSeat: null,
+                    //     oldSeat: seat,
+                    //     userId: authState.username ?? "",
+                    //     userName: authState.name ?? "",
+                    // });
+                } else {
+                    enqueueSnackbar(`選択した座席は${occupancy.userName}が使用中です。`, { variant: "error" });
+                }
                 return;
             }
         }

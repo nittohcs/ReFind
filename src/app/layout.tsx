@@ -12,7 +12,7 @@ import MiraCalFavicon from "@/components/MiraCalFavicon";
 
 export const metadata: Metadata = {
   title: "ReFind",
-  description: "座席管理システム",
+  description: "座席確認システム",
 };
 
 export default function RootLayout({
