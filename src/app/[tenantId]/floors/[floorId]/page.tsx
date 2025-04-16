@@ -21,6 +21,8 @@ import { graphqlGetFileDownloadUrl, useUsersByTenantId } from "@/services/graphq
 import { queryKeys } from "@/services/queryKeys";
 import { useTenantId } from "../../hook";
 import { ConfirmDialog, ConfirmDialogData } from "./ConfirmDialog";
+import { UserQRCodeDialog, UserQRCodeDialogData } from "./UserQRCodeDialog";
+
 
 export default function Page({ params }: { params: { floorId: string } }) {
     const tenantId = useTenantId();
@@ -33,10 +35,12 @@ export default function Page({ params }: { params: { floorId: string } }) {
     const seats = useMemo(() => allSeats.filter(x => x.floorId === floorId), [allSeats, floorId]);
 
     const confirmDialogState = useDialogStateWithData<ConfirmDialogData>();
+    
+    //QRコード読み取りダイアログを宣言する。
+    const userQRCodeDialogState = useDialogStateWithData<UserQRCodeDialogData>();
 
     const enqueueSnackbar = useEnqueueSnackbar();
     const handleSeatClick = useCallback((seat: Seat, occupancy: SeatOccupancy | null) => {
-        // 管理者はダブルクリックで全座席解放
 
         // 既に座席が使用中
         if (occupancy && occupancy.userId) {
@@ -62,6 +66,25 @@ export default function Page({ params }: { params: { floorId: string } }) {
             }
         }
 
+        // 管理者はダブルクリックで全座席解放
+        // 管理者で座席を選択した場合はQRコードを読み取る
+
+        // 管理者ではなく共通ユーザーを作成する場合
+
+        if (authState.groups?.admins) {
+            enqueueSnackbar(`QRCode起動します`, { variant: "success" });
+            userQRCodeDialogState.open({
+                title: "ユーザーIDスキャン",
+                message: "選択した座席を確保します。",
+                newSeat: seat,
+                oldSeat: null,
+                userId: "",
+                userName: "",
+            });
+
+            return;
+        }
+
         // 空席選択時
         if (mySeat) {
             // 別の座席へ移動する場合
@@ -84,7 +107,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
                 userName: authState.name ?? "",
             });
         }
-    }, [myOccupancy, mySeat, enqueueSnackbar, confirmDialogState, authState.username, authState.name, authState.groups?.admins, myFloor, floor?.name]);
+    }, [myOccupancy, mySeat, enqueueSnackbar, confirmDialogState , userQRCodeDialogState, authState.username, authState.name, authState.groups?.admins, myFloor, floor?.name]);
 
     // ダブルクリック時のイベント実装する
     const handleSeatDoubleClick = useCallback((seat: Seat, occupancy: SeatOccupancy | null) => {
@@ -189,12 +212,14 @@ export default function Page({ params }: { params: { floorId: string } }) {
         }
         setPopperImageUrl(imageUrl);
     }, [queryClient, tenantId]);
+
     const handleMouseLeave = useCallback((_e: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(null);
         setPopperComment("");
         setPopperImageUrl("");
         setIsExitPopperImage(false);
     }, []);
+
     useEffect(() => {
         const checkImage = async () => {
             const isExist = await checkImageExists(popperImageUrl);
@@ -275,7 +300,9 @@ export default function Page({ params }: { params: { floorId: string } }) {
                                 </SeatBox>
                             );
                         })}
+
                         <ConfirmDialog {...confirmDialogState} />
+                        <UserQRCodeDialog {...userQRCodeDialogState} />
                         <Popper open={!!anchorEl} anchorEl={anchorEl}>
                             <Box sx={{
                                 display: "flex",
