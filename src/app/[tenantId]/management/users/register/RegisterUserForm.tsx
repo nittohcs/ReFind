@@ -79,6 +79,9 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
                 throw new Error("ユーザーが最大数まで作成されています。");
             }
 
+            // IDを全て小文字に変換する
+            values.id = values.id.toLowerCase();
+
             const ret = await createReFindUser({
                 ...values,
                 tenantId: tenantId,
@@ -161,6 +164,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
                         label="ID"
                         type="text"
                         debounceTime={300}
+                        
                     />
                     <MiraCalTextField
                         name="email"
