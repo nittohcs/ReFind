@@ -77,7 +77,7 @@ export default function Page() {
         <>
             <MiraCalBreadcrumbs>
                 <Link href={`/${tenantId}`}>ホーム</Link>
-                <Typography>QRコード読込</Typography>
+                <Typography>座席QR読込</Typography>
             </MiraCalBreadcrumbs>
             <Box pt={2}>
                 {isReady && (

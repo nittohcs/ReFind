@@ -170,11 +170,11 @@ export const TenantMainUI: FC<PropsWithChildren> = ({
                         text="座席"
                         icon={<ChairIcon />}
                     />
-                    <LinkItem
+                    {/* <LinkItem
                         href={`/${tenantId}/occupySeatQRCode`}
-                        text="QRコード読込"
+                        text="座席QR読込"                        
                         icon={<QrCodeScannerIcon />}
-                    />
+                    /> */}
                     <LinkItem
                         href={`/${tenantId}/users`}
                         text="ユーザー"
