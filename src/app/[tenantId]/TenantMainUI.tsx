@@ -13,7 +13,7 @@ import HomeIcon from "@mui/icons-material/Home"
 import ChairIcon from "@mui/icons-material/Chair";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
+//import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
 import { useAuthState } from "@/hooks/auth";
 import { SideBarOpenContext } from "@/hooks/sideBar";
 import { useEnvName } from "@/hooks/ui";
