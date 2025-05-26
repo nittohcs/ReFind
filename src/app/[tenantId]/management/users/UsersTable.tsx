@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Box, Button, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Toolbar, Tooltip } from "@mui/material";
+import { Box, Button, Card, CardContent, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Toolbar, Tooltip, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -26,6 +26,8 @@ import DeleteUserDialog from "./DeleteUserDialog";
 import ReleaseSeatDialog from "./ReleaseSeatDialog";
 import BulkEditUserDialog from "./BulkEditUserDialog";
 import ResetPasswordDialog from "./ResetPasswordDialog";
+import { QRCodeSVG } from "qrcode.react";
+import { useReactToPrint } from "react-to-print";
 
 type TableRow = ReFindUser & {
     isAdminString: string,
@@ -98,6 +100,9 @@ export default function UsersTable() {
 
     const enqueueSnackbar = useEnqueueSnackbar();
 
+    const contentRef = useRef<HTMLDivElement>(null);
+    const handlePrint = useReactToPrint({ contentRef });
+
     const checkUserCount = useCallback((e: React.MouseEvent) => {
         const maxUserCount = qTenant.data?.maxUserCount ?? 0;
         const currentUserCount = qUsers.data.length;
@@ -121,6 +126,7 @@ export default function UsersTable() {
                                 <Box>{`${table.getSelectedRowModel().rows.length}件選択中`}</Box>
                                 <Button variant="outlined" onClick={() => table.resetRowSelection()}>選択解除</Button>
                             </Box>
+                            <Button variant="outlined" onClick={() => handlePrint()}>印刷</Button>
                             <Button variant="outlined" onClick={openHandler}>操作</Button>
                             <Menu {...menuProps}>
                                 <MenuItem onClick={
@@ -205,6 +211,16 @@ export default function UsersTable() {
                         table={table}
                         onRowClick={user => { router.push(`/${tenantId}/management/users/${user.id}`); }}
                     />
+                </Box>                
+                <Box ref={contentRef} sx={{ "@media print": { display: "flex" }, display: "none" }} flexDirection="row" flexWrap="wrap" gap={2} pt={2}>
+                    {selectedUsers.map(user => (
+                        <Card key={user.id} sx={{ pageBreakInside: "avoid" }}>
+                            <CardContent>
+                                <Typography>{user.name}</Typography>
+                                <QRCodeSVG value={user.id} size={128} />
+                            </CardContent>
+                        </Card>
+                    ))}
                 </Box>
             </Box>
             <DeleteUserDialog {...deleteDialogState} resetRowSelection={() => table.resetRowSelection()} />

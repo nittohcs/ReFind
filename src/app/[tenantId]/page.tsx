@@ -27,10 +27,10 @@ export default function Page() {
                         </CardActions>
                     </Card>
                 </Link>
-                <Link href={`/${tenantId}/occupySeatQRCode`}>
+                <Link href={`/${tenantId}/occupySeatQRCode`} hidden>
                     <Card>
                         <CardContent>
-                            <Typography variant="h6">QRコード読込</Typography>
+                            <Typography variant="h6">座席QR読込</Typography>
                             <Typography variant="caption">座席QRコードを読込して座席確保を行う</Typography>
                         </CardContent>
                         <CardActions>

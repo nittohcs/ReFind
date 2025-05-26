@@ -36,7 +36,7 @@ export default function Page() {
                         </CardActions>
                     </Card>
                 </Link>
-                <Link href={`/${tenantId}/management/seatQRCode`}>
+                <Link href={`/${tenantId}/management/seatQRCode`} hidden>
                     <Card>
                         <CardContent>
                             <Typography variant="h6">座席のQRコード一覧</Typography>
