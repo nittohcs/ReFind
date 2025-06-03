@@ -1,7 +1,7 @@
 "use client";
 
 import { FC, useEffect, useRef, useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import jsQR from "jsqr";
 
 type QRCodeReaderProps = {
@@ -20,6 +20,10 @@ export const QRCodeReader: FC<QRCodeReaderProps> = ({
     const onReadRef = useRef(onRead);
     const lastProcessedQRCode = useRef<string>("");
     const initializedRef = useRef(false);
+
+    
+    const [facingMode, setFacingMode] = useState<"user" | "environment">("environment");
+
 
     // refにonReadの最新の値を格納し続ける
     useEffect(() => {
@@ -48,7 +52,7 @@ export const QRCodeReader: FC<QRCodeReaderProps> = ({
 
         const startCamera = async () => {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode} });
                 streamRef.current = stream;
                 if (videoRef.current) {
                     videoRef.current.onloadedmetadata = () => {
@@ -164,6 +168,16 @@ export const QRCodeReader: FC<QRCodeReaderProps> = ({
 
     return (
         <>
+            <Button
+              variant="contained"
+              onClick={async () => {
+                //stopCamera();
+                setFacingMode(prev => prev === "user" ? "environment" : "user");
+              }}
+            >
+              カメラ切り替え
+            </Button>
+
             {hasCamera === null ? (
                 <></>
             ) : hasCamera ? (
@@ -183,7 +197,7 @@ export const QRCodeReader: FC<QRCodeReaderProps> = ({
                         width={window.innerWidth}
                         height={window.innerHeight}
                         style={{ display: "none"}}
-                    />
+                    />                    
                 </Box>
             ) : (
                 <Typography>{errorMessage}</Typography>
