@@ -52,7 +52,7 @@ export const QRCodeReader: FC<QRCodeReaderProps> = ({
 
         const startCamera = async () => {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode} });
+                const stream = await navigator.mediaDevices.getUserMedia({ video: {facingMode} });
                 streamRef.current = stream;
                 if (videoRef.current) {
                     videoRef.current.onloadedmetadata = () => {
@@ -164,18 +164,18 @@ export const QRCodeReader: FC<QRCodeReaderProps> = ({
             // コンポーネントのアンマウント時にカメラを無効化
             stopCamera();
         };
-    }, []);
+    }, [facingMode]);
 
     return (
         <>
             <Button
-              variant="contained"
-              onClick={async () => {
+                variant="contained"
+                onClick={async () => {
                 //stopCamera();
-                setFacingMode(prev => prev === "user" ? "environment" : "user");
-              }}
+                setFacingMode(prev => prev === "user" ? "environment" : "user");
+            }}
             >
-              カメラ切り替え
+            カメラ切り替え
             </Button>
 
             {hasCamera === null ? (
