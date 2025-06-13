@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Seat, SeatOccupancy } from "@/API";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { useTodayYYYYMMDD } from "@/hooks/util";
-import { occupySeat, releaseSeat } from "@/services/occupancyUtil";
+import { occupySeat, releaseSeat, updateSeat } from "@/services/occupancyUtil";
 import { queryKeys } from "@/services/queryKeys";
 import { useTenantId } from "../../hook";
 
@@ -41,11 +41,14 @@ export const ConfirmDialog: FC<ConfirmDialogProps> = ({
                 throw new Error("ダイアログのデータが設定されていません。");
             }
 
+            // 座席解放処理
             const ret: SeatOccupancy[] = [];
             if (dialogData.oldSeat) {
                 ret.push(await releaseSeat(dialogData.oldSeat));
+                //ret.push(await updateSeat(dialogData.oldSeat));
             }
 
+            // 座席取得処理
             if (dialogData.newSeat) {
                 ret.push(await occupySeat(dialogData.newSeat, dialogData.userId, dialogData.userName));
             }

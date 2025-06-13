@@ -30,6 +30,10 @@ export function UserMenu() {
                 )}
                 <MenuItem onClick={menu.withClose(async () => await download(sysAdminManualPath))}>マニュアル</MenuItem>
                 <MenuItem onClick={() => signOut()}>ログアウト</MenuItem>
+                <Divider sx={{ mb: 1 }} />
+                <Box px={2} py={1}>
+                    <Typography variant="body1">ver 1.0.0</Typography>
+                </Box>
             </Menu>
         </Box>
     );

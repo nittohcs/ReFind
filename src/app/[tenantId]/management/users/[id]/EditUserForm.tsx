@@ -53,7 +53,7 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
         id: yup.string().required().default(""),
         name: yup.string().required().default(""),
         email: yup.string().required().email().default(""),
-        image: yup.string().required(),
+        image: yup.string().required(), // 容量制限
         comment: yup.string().default(""),
         commentForegroundColor: yup.string().default(""),
         commentBackgroundColor: yup.string().default(""),
@@ -101,14 +101,29 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
             }
 
             if (values.image === ImageUploadState.Upload) {
+
                 // 画像をアップロード
                 function getFile(ref: RefObject<HTMLInputElement>) {
                     return ref.current?.files && ref.current?.files.length > 0 ? ref.current.files[0] : undefined;
                 }
                 let file = getFile(imageFileRef);
+
+                // ファイル容量チェック                
+                const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+                if (file && file?.size > MAX_FILE_SIZE) {                    
+                    throw new Error("1MB以下のファイルを選択してください。");
+                }    
+                
+                const allowedImageTypes = ["image/png", "image/webp", "image/jpeg", "image/bmp", "image/gif"];
+
                 if (file) {
+                    // 拡張子チェック
+                    const fileType = await fileTypeFromBlob(file);                
+                    if (fileType?.mime && !allowedImageTypes.includes(fileType.mime)) {                    
+                        throw new Error("画像ファイルを選択してください。");
+                    }
+                
                     // BMPの場合、PNGに変換
-                    const fileType = await fileTypeFromBlob(file);
                     if (fileType?.mime === "image/bmp") {
                         const blob = await convertBMPtoPNG(file);
                         file = new File([blob], `${file.name}.png`, { type: "image/png" });
@@ -143,6 +158,7 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
             }
 
             // コンポーネントを再生成
+            // 更新日時を更新している？
             update();
         },
         onError(error, _variables, _context) {
@@ -183,23 +199,27 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
                         name="id"
                         label="ID"
                         type="text"
-                        disabled={true}
+                        disabled={true} // 非活性
+                        inputProps={{ maxLength: 100 }}  
                     />
-                    <MiraCalTextField
+                    {/* メールアドレスは未使用のため非表示 */}
+                    {/* <MiraCalTextField
                         name="email"
                         label="メールアドレス"
                         type="email"
-                    />
+                    /> */}
                     <MiraCalTextField
                         name="name"
                         label="氏名"
                         type="text"
+                        inputProps={{ maxLength: 100 }}  
                     />
                     <MiraCalImageUpload
                         name="image"
                         label="画像"
                         currentFilePath={imagePath}
-                        accept="image/png, image/webp, image/jpeg, image/bmp"
+                        // 拡張子の制限
+                        accept="image/png, image/webp, image/jpeg, image/bmp, image/gif"
                         fileRef={imageFileRef}
                         canDelete={true}
                         previewImageWidth={48}
@@ -209,6 +229,7 @@ export const EditUserForm: FC<EditUserFormProps> = ({ id, update }) => {
                         name="comment"
                         label="コメント"
                         type="text"
+                        inputProps={{ maxLength: 100 }}
                     />
                     <MiraCalColorPicker
                         name="commentForegroundColor"

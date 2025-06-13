@@ -1,9 +1,9 @@
 "use client";
 
 import { graphqlOperation, GraphQLResult } from "@aws-amplify/api-graphql";
-import { funcCreateSeatOccupancyInput, FuncCreateSeatOccupancyMutation, FuncCreateSeatOccupancyMutationVariables, Seat, SeatOccupancy } from "@/API";
+import { funcCreateSeatOccupancyInput, FuncCreateSeatOccupancyMutation, FuncCreateSeatOccupancyMutationVariables, funcUpdateSeatOccupancyInput, FuncUpdateSeatOccupancyMutation, FuncUpdateSeatOccupancyMutationVariables, Seat, SeatOccupancy } from "@/API";
 import { client } from "@/components/APIClientProvider";
-import { funcCreateSeatOccupancy } from "@/graphql/mutations";
+import { funcCreateSeatOccupancy, funcUpdateSeatOccupancy } from "@/graphql/mutations";
 import { getTodayYYYYMMDD } from "./util";
 
 // 座席ごとの最新の座席確保状況のマップ(userIdが設定されているもののみを抽出)を返す
@@ -34,6 +34,7 @@ export async function occupySeatBySeatId(tenantId: string, seatId: string, userI
         userId: userId,
         userName: userName,
         date: getTodayYYYYMMDD(),
+        seatAvailability: true, // 座席取得
     });
 }
 
@@ -41,13 +42,16 @@ export async function releaseSeat(seat: Seat) {
     return await releaseSeatBySeatId(seat.tenantId, seat.id);
 }
 
-export async function releaseSeatBySeatId(tenantId: string, seatId: string) {
+// 登録ではなく更新したい。
+export async function releaseSeatBySeatId(tenantId: string, seatId:
+     string) {
     return await graphqlCreateSeatOccupancy({
         tenantId: tenantId,
         seatId: seatId,
         userId: null,
         userName: null,
         date: getTodayYYYYMMDD(),
+        seatAvailability: false,// 座席解放
     });
 }
 
@@ -67,4 +71,35 @@ async function graphqlCreateSeatOccupancy(input: funcCreateSeatOccupancyInput) {
     if (result.errors) { throw new Error(JSON.stringify(result.errors)); }
     if (!result.data.funcCreateSeatOccupancy) { throw new Error("createSeatOccupancyが失敗しました。"); }
     return result.data.funcCreateSeatOccupancy;
+}
+
+// 登録ではなく更新したい。
+export async function updateSeat(seat: Seat) {
+    return await releaseSeatBySeatIdUpdate(seat.tenantId, seat.id);
+}
+
+export async function releaseSeatBySeatIdUpdate(tenantId: string, seatId: string) {
+   return await graphqlUpdateSeatOccupancy({
+    id: "",
+    userId:"",
+    userName:"",
+       tenantId: tenantId,
+       seatId: seatId,
+       date: getTodayYYYYMMDD(),
+       seatAvailability: false,// 座席解放
+   });
+}
+
+async function graphqlUpdateSeatOccupancy(input: funcUpdateSeatOccupancyInput) {
+   const result = await client.graphql(
+       graphqlOperation(
+           funcUpdateSeatOccupancy,
+           {
+               input,
+           } as FuncUpdateSeatOccupancyMutationVariables
+       )
+   ) as GraphQLResult<FuncUpdateSeatOccupancyMutation>;
+   if (result.errors) { throw new Error(JSON.stringify(result.errors)); }
+   if (!result.data.funcUpdateSeatOccupancy) { throw new Error("updateSeatOccupancyが失敗しました。"); }
+   return result.data.funcUpdateSeatOccupancy;
 }

@@ -13,6 +13,7 @@ import ChangePasswordForm from "./ChangePasswordForm";
 export default function Page() {
     const tenantId = useTenantId();
     const [confirmingEmail, setConfirmingEmail] = useState("");
+    // [変数, 関数] = 初期値
     const [updatedAt_user, update_user] = useUpdatedAt("user");
     const [updatedAt_password, update_password] = useUpdatedAt("password");
 
@@ -32,13 +33,13 @@ export default function Page() {
                 ) : (
                     <>
                         <EditUserSettingsForm
-                            key={updatedAt_user}
+                            key={updatedAt_user} // 型定義？
                             update={update_user}
                             // confirmingEmail={confirmingEmail}
                             setConfirmingEmail={setConfirmingEmail}
                         />
                         <ChangePasswordForm
-                            key={updatedAt_password}
+                            key={updatedAt_password} // 型定義？
                             update={update_password}
                         />
                     </>

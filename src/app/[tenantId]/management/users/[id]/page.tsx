@@ -10,6 +10,8 @@ import EditUserForm from "./EditUserForm";
 export default function Page({ params }: { params: { id: string } }) {
     const tenantId = useTenantId();
     const id = decodeURIComponent(params.id);
+    // keyに設定しているが、keyはReact内部でリストを監視するためのもの。
+    // 取得しようとすると、undifinedとなる。
     const [updatedAt, update] = useUpdatedAt("editUser");
 
     return (

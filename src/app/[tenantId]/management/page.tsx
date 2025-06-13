@@ -4,9 +4,11 @@ import Link from "next/link";
 import { Box, Button, Card, CardActions, CardContent, Typography } from "@mui/material";
 import MiraCalBreadcrumbs from "@/components/MiraCalBreadcrumbs";
 import { useTenantId } from "../hook";
+import { useAuthState } from "@/hooks/auth";
 
 export default function Page() {
-    const tenantId = useTenantId();
+    const tenantId = useTenantId();    
+    const authState = useAuthState();
     return (
         <>
             <MiraCalBreadcrumbs>
@@ -47,6 +49,7 @@ export default function Page() {
                         </CardActions>
                     </Card>
                 </Link>
+                {authState.groups?.sysAdmins && (
                 <Link href={`/${tenantId}/management/seatOccupancies`}>
                     <Card>
                         <CardContent>
@@ -58,6 +61,7 @@ export default function Page() {
                         </CardActions>
                     </Card>
                 </Link>
+                )}
             </Box>
         </>
     )

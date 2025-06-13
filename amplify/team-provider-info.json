@@ -85,6 +85,10 @@
         "refind2ClearSeatOccupanciesByTenantId": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
           "s3Key": "amplify-builds/refind2ClearSeatOccupanciesByTenantId-5757303556426b706779-build.zip"
+        },
+        "refind2UpdateSeatOccupancy": {
+          "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
+          "s3Key": "amplify-builds/refind2UpdateSeatOccupancy-31516d4558436c696839-build.zip"
         }
       },
       "api": {

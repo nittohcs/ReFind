@@ -304,6 +304,21 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "refind2UpdateSeatOccupancy": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind2"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "refind2UpdateUserAttributes": {
       "build": true,
       "dependsOn": [
@@ -544,6 +559,22 @@
         {
           "category": "function",
           "resourceName": "refind2UpdateFloor"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2UpdateSeatOccupancy_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2UpdateSeatOccupancy"
+        }
+      ]
+    },
+    "AMPLIFY_function_refind2UpdateSeatOccupancy_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refind2UpdateSeatOccupancy"
         }
       ]
     },

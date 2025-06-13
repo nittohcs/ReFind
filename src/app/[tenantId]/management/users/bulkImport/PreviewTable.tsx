@@ -29,9 +29,10 @@ export const PreviewTable: FC<PreviewTableProps> = ({ name }) => {
         columnHelper.accessor("name", {
             header: "氏名",
         }),
-        columnHelper.accessor("email", {
-            header: "メールアドレス",
-        }),
+        // メールアドレスは未使用のため非表示
+        // columnHelper.accessor("email", {
+        //     header: "メールアドレス",
+        // }),
         columnHelper.accessor("comment", {
             header: "コメント",
         }),

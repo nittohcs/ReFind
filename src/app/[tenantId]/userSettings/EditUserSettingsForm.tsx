@@ -86,9 +86,23 @@ export const EditUserSettingsForm: FC<EditUserSettingsFormProps> = ({ /*confirmi
                     return ref.current?.files && ref.current?.files.length > 0 ? ref.current.files[0] : undefined;
                 }
                 let file = getFile(imageFileRef);
-                if (file) {
+
+                // ファイル容量チェック                
+                const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+                if (file && file?.size > MAX_FILE_SIZE) {                    
+                    throw new Error("1MB以下のファイルを選択してください。");
+                }    
+
+                const allowedImageTypes = ["image/png", "image/webp", "image/jpeg", "image/bmp", "image/gif"];
+
+                if (file) {                    
+                    // 拡張子チェック
+                    const fileType = await fileTypeFromBlob(file);                
+                    if (fileType?.mime && !allowedImageTypes.includes(fileType.mime)) {                    
+                        throw new Error("画像ファイルを選択してください。");
+                    }
+
                     // BMPの場合、PNGに変換
-                    const fileType = await fileTypeFromBlob(file);
                     if (fileType?.mime === "image/bmp") {
                         const blob = await convertBMPtoPNG(file);
                         file = new File([blob], `${file.name}.png`, { type: "image/png" });
@@ -126,6 +140,7 @@ export const EditUserSettingsForm: FC<EditUserSettingsFormProps> = ({ /*confirmi
 
             if (data.updatedUser || data.imageChanged) {
                 enqueueSnackbar("変更を保存しました。", { variant: "success" });
+                // ここで更新日時を更新している？
                 update();
             }
             if (confirmRequired) {
@@ -178,6 +193,7 @@ export const EditUserSettingsForm: FC<EditUserSettingsFormProps> = ({ /*confirmi
                         label="ユーザーID"
                         type="text"
                         disabled={true}
+                        inputProps={{ maxLength: 100 }}
                     />
                     {/* <MiraCalTextField
                         name="email"
@@ -189,13 +205,15 @@ export const EditUserSettingsForm: FC<EditUserSettingsFormProps> = ({ /*confirmi
                         name="name"
                         label="氏名"
                         type="text"
-                        disabled={true}   
+                        disabled={true}  
+                        inputProps={{ maxLength: 100 }}
                     />
                     <MiraCalImageUpload
                         name="image"
                         label="画像"
                         currentFilePath={imagePath}
-                        accept="image/png, image/webp, image/jpeg, image/bmp"
+                        // 拡張子の制限
+                        accept="image/png, image/webp, image/jpeg, image/bmp, image/gif"
                         fileRef={imageFileRef}
                         canDelete={true}
                         previewImageWidth={48}
@@ -205,6 +223,7 @@ export const EditUserSettingsForm: FC<EditUserSettingsFormProps> = ({ /*confirmi
                         name="comment"
                         label="コメント"
                         type="text"
+                        inputProps={{ maxLength: 100 }}
                     />
                     <MiraCalColorPicker
                         name="commentForegroundColor"

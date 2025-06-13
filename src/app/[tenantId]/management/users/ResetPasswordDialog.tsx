@@ -4,7 +4,7 @@ import { FC, useState } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import MiraCalLinearProgressWithLabel from "@/components/MiraCalLinearProgressWithLabel";
-import { useEnqueueSnackbar } from "@/hooks/ui";
+import { useEnqueueSnackbar, useUpdatedAt } from "@/hooks/ui";
 import { ReFindUser } from "@/types/user";
 import { adminSetUserPassword } from "@/services/AdminQueries";
 import { useGetTenant } from "@/services/graphql";
@@ -15,6 +15,12 @@ type ResetPasswordDialogProps = {
     close: () => void,
     data: ReFindUser[] | null,
     resetRowSelection: () => void,
+};
+
+type ResetPasswordProps = {
+    dialogProps: ResetPasswordDialogProps,
+    id: string,
+    update: () => void,
 };
 
 export const ResetPasswordDialog: FC<ResetPasswordDialogProps> = ({
@@ -31,6 +37,8 @@ export const ResetPasswordDialog: FC<ResetPasswordDialogProps> = ({
     const progressValue = 100.0 * currentCount / totalCount;
     const progressLabel = `${currentCount}/${totalCount}`;
 
+    const [updatedAt, update] = useUpdatedAt("passwordReset");
+
     const enqueueSnackbar = useEnqueueSnackbar();
     const mutation = useMutation({
         async mutationFn() {
@@ -38,7 +46,20 @@ export const ResetPasswordDialog: FC<ResetPasswordDialogProps> = ({
             setTotalCount(users.length);
             setCurrentCount(0);
             for(const user of users) {
+                // パスワードリセット
                 await adminSetUserPassword(user.id, qTenant.data!.initialPassword);
+                
+                // 更新日時を更新する
+                // １ 新たに更新日時、更新ユーザーのみを更新するAPIを作成
+                //     ⇒ 一番楽？更新時に2つ呼び出さないといけないため、後の事を考えるとやめたい。
+                // ２ 既存の更新日時を更新している処理を呼び出す。
+                //     ⇒ 1件のデータを更新する時しか動いてなさそう
+                // ３ 既存のデータを編集している処理に更新日時を追加する
+                //     ⇒ 出来そう、影響が大きそう？？？
+                // ４ パスワードリセットと同時に更新をする
+                //     ⇒ パスワードリセットはamplifyのコマンドを起動しているため、同時には出来なさそう。
+                //        CongnitとRefindの２ユーザーに分かれているイメージ
+
                 setCurrentCount(x => x + 1);
             }
         },

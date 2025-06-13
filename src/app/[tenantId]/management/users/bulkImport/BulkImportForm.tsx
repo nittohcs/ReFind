@@ -97,12 +97,17 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
                     }
                 }
 
+                // idにプレフィックスを追加
+                user.id = user.id + "@" + tenantId;                
+                user.id = user.id.toLowerCase();
+
                 // 氏名チェック
                 if (!user.name) {
                     errors.push(`${index}件目: 氏名が入力されていません。`);
                 }
 
                 // メールアドレスチェック
+                user.email = "ReFind@email";                
                 if (!user.email) {
                     errors.push(`${index}件目: メールアドレスが入力されていません。`);
                 } else {
