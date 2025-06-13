@@ -6,7 +6,7 @@ import ConfirmDialog from "@/components/ConfirmDialog";
 import { ConfirmDialogState } from "@/hooks/confirmDialogState";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { useTodayYYYYMMDD } from "@/hooks/util";
-import { releaseSeat } from "@/services/occupancyUtil";
+import { releaseSeat, updateSeat } from "@/services/occupancyUtil";
 import { queryKeys } from "@/services/queryKeys";
 import { useTenantId } from "./hook";
 
@@ -21,6 +21,7 @@ export default function ReleaseSeatDialog(state: ConfirmDialogState<Seat>) {
                 throw new Error("解放する座席が設定されていません。");
             }
             return await releaseSeat(state.data);
+            //return await updateSeat(state.data);
         },
         onSuccess(data, _variables, _context) {
             enqueueSnackbar("座席を解放しました。", { variant: "success" });

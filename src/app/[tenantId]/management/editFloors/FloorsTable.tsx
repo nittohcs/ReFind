@@ -7,6 +7,7 @@ import { Box, IconButton, Toolbar, Tooltip } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import AddIcon from "@mui/icons-material/Add";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
+import DownloadIcon from "@mui/icons-material/Download";
 import { createColumnHelper } from "@tanstack/react-table";
 import Sortable from "sortablejs";
 import { Floor } from "@/API";
@@ -17,6 +18,7 @@ import { useUpdatedAt } from "@/hooks/ui";
 import { graphqlUpdateFloor, useFloorsByTenantId } from "@/services/graphql";
 import { useTenantId } from "../../hook";
 import { enqueueSnackbar } from "notistack";
+import { downloadCSV } from "@/services/util";
 
 // type TableRow = Floor & {
 //     // Floorにソート用の項目が無いので、ここで追加
@@ -69,6 +71,13 @@ export default function FloorsTable() {
     });
 
     const table = useTable({ data, columns, options });
+
+    const handleDownload = useCallback(() => {
+        if (data.length === 0) {
+            return;
+        }
+        downloadCSV(data, "フロア一覧.csv");
+    }, [data]);
 
     const [updatedAt, update] = useUpdatedAt("table");
     const tableRef = useRef<HTMLTableSectionElement>(null);
@@ -184,6 +193,11 @@ export default function FloorsTable() {
                                         </IconButton>
                                     </Tooltip>
                                 </Link>
+                                <Tooltip title="CSVダウンロード">
+                                    <IconButton onClick={handleDownload}>
+                                        <DownloadIcon />
+                                    </IconButton>
+                                </Tooltip>
                             </Toolbar>
                         </Box>
                         <Box>

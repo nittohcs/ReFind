@@ -168,7 +168,7 @@ export const QRCodeReader: FC<QRCodeReaderProps> = ({
 
     return (
         <>
-            <Button
+            {/* <Button
                 variant="contained"
                 onClick={async () => {
                 //stopCamera();
@@ -176,7 +176,7 @@ export const QRCodeReader: FC<QRCodeReaderProps> = ({
             }}
             >
             カメラ切り替え
-            </Button>
+            </Button> */}
 
             {hasCamera === null ? (
                 <></>

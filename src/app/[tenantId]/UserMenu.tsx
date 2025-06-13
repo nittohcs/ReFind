@@ -16,6 +16,7 @@ import { useMenu } from "@/hooks/ui";
 import { adminManualPath, userManualPath } from "@/services/manual";
 import { useTenantId } from "./hook";
 import ReleaseSeatDialog from "./ReleaseSeatDialog";
+import MiraCalTextField from "@/components/MiraCalTextField";
 
 export function UserMenu() {
     const tenantId = useTenantId();
@@ -95,7 +96,11 @@ export function UserMenu() {
                 {authState.groups?.admins && (
                     <MenuItem onClick={menu.withClose(async () => await download(adminManualPath))}>管理者マニュアル</MenuItem>
                 )}
-                <MenuItem onClick={() => signOut()}>ログアウト</MenuItem>
+                <MenuItem onClick={() => signOut()}>ログアウト</MenuItem>                
+                <Divider sx={{ mb: 1 }} />
+                <Box px={2} py={1}>
+                    <Typography variant="body1">ver 1.0.0</Typography>
+                </Box>
             </Menu>
             <ReleaseSeatDialog {...confirmDialogState} />
         </Box>

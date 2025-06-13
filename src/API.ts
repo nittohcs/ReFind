@@ -80,6 +80,7 @@ export type funcCreateSeatOccupancyInput = {
   userId?: string | null,
   userName?: string | null,
   date: string,
+  seatAvailability?: boolean | null,
 };
 
 export type SeatOccupancy = {
@@ -90,8 +91,19 @@ export type SeatOccupancy = {
   userId?: string | null,
   userName?: string | null,
   date: string,
+  seatAvailability?: boolean | null,
   createdAt: string,
   updatedAt: string,
+};
+
+export type funcUpdateSeatOccupancyInput = {
+  id?: string | null,
+  tenantId?: string | null,
+  seatId?: string | null,
+  userId?: string | null,
+  userName?: string | null,
+  date?: string | null,
+  seatAvailability?: boolean | null,
 };
 
 export type funcClearSeatOccupanciesByTenantIdInput = {
@@ -382,6 +394,7 @@ export type CreateSeatOccupancyInput = {
   userId?: string | null,
   userName?: string | null,
   date: string,
+  seatAvailability?: boolean | null,
 };
 
 export type ModelSeatOccupancyConditionInput = {
@@ -390,6 +403,7 @@ export type ModelSeatOccupancyConditionInput = {
   userId?: ModelIDInput | null,
   userName?: ModelStringInput | null,
   date?: ModelStringInput | null,
+  seatAvailability?: ModelBooleanInput | null,
   and?: Array< ModelSeatOccupancyConditionInput | null > | null,
   or?: Array< ModelSeatOccupancyConditionInput | null > | null,
   not?: ModelSeatOccupancyConditionInput | null,
@@ -404,6 +418,7 @@ export type UpdateSeatOccupancyInput = {
   userId?: string | null,
   userName?: string | null,
   date?: string | null,
+  seatAvailability?: boolean | null,
 };
 
 export type DeleteSeatOccupancyInput = {
@@ -507,6 +522,7 @@ export type ModelSeatOccupancyFilterInput = {
   userId?: ModelIDInput | null,
   userName?: ModelStringInput | null,
   date?: ModelStringInput | null,
+  seatAvailability?: ModelBooleanInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
   and?: Array< ModelSeatOccupancyFilterInput | null > | null,
@@ -635,6 +651,7 @@ export type ModelSubscriptionSeatOccupancyFilterInput = {
   userId?: ModelSubscriptionIDInput | null,
   userName?: ModelSubscriptionStringInput | null,
   date?: ModelSubscriptionStringInput | null,
+  seatAvailability?: ModelSubscriptionBooleanInput | null,
   createdAt?: ModelSubscriptionStringInput | null,
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionSeatOccupancyFilterInput | null > | null,
@@ -773,6 +790,26 @@ export type FuncCreateSeatOccupancyMutation = {
     userId?: string | null,
     userName?: string | null,
     date: string,
+    seatAvailability?: boolean | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type FuncUpdateSeatOccupancyMutationVariables = {
+  input: funcUpdateSeatOccupancyInput,
+};
+
+export type FuncUpdateSeatOccupancyMutation = {
+  funcUpdateSeatOccupancy?:  {
+    __typename: "SeatOccupancy",
+    id: string,
+    tenantId: string,
+    seatId: string,
+    userId?: string | null,
+    userName?: string | null,
+    date: string,
+    seatAvailability?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -791,6 +828,7 @@ export type FuncClearSeatOccupanciesByTenantIdMutation = {
     userId?: string | null,
     userName?: string | null,
     date: string,
+    seatAvailability?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } > | null,
@@ -1085,6 +1123,7 @@ export type CreateSeatOccupancyMutation = {
     userId?: string | null,
     userName?: string | null,
     date: string,
+    seatAvailability?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1104,6 +1143,7 @@ export type UpdateSeatOccupancyMutation = {
     userId?: string | null,
     userName?: string | null,
     date: string,
+    seatAvailability?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1123,6 +1163,7 @@ export type DeleteSeatOccupancyMutation = {
     userId?: string | null,
     userName?: string | null,
     date: string,
+    seatAvailability?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1416,6 +1457,7 @@ export type GetSeatOccupancyQuery = {
     userId?: string | null,
     userName?: string | null,
     date: string,
+    seatAvailability?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1438,6 +1480,7 @@ export type ListSeatOccupanciesQuery = {
       userId?: string | null,
       userName?: string | null,
       date: string,
+      seatAvailability?: boolean | null,
       createdAt: string,
       updatedAt: string,
     } | null >,
@@ -1464,6 +1507,7 @@ export type SeatOccupanciesByTenantIdQuery = {
       userId?: string | null,
       userName?: string | null,
       date: string,
+      seatAvailability?: boolean | null,
       createdAt: string,
       updatedAt: string,
     } | null >,
@@ -1491,6 +1535,7 @@ export type SeatOccupanciesByDateAndTenantIdQuery = {
       userId?: string | null,
       userName?: string | null,
       date: string,
+      seatAvailability?: boolean | null,
       createdAt: string,
       updatedAt: string,
     } | null >,
@@ -1511,6 +1556,7 @@ export type OnCreateSeatOccupancyByTenantIdSubscription = {
     userId?: string | null,
     userName?: string | null,
     date: string,
+    seatAvailability?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1757,6 +1803,7 @@ export type OnCreateSeatOccupancySubscription = {
     userId?: string | null,
     userName?: string | null,
     date: string,
+    seatAvailability?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1775,6 +1822,7 @@ export type OnUpdateSeatOccupancySubscription = {
     userId?: string | null,
     userName?: string | null,
     date: string,
+    seatAvailability?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1793,6 +1841,7 @@ export type OnDeleteSeatOccupancySubscription = {
     userId?: string | null,
     userName?: string | null,
     date: string,
+    seatAvailability?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,

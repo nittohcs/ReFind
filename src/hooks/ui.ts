@@ -6,7 +6,9 @@ import { OptionsObject, useSnackbar } from "notistack";
 import { useSideBarOpen } from "./sideBar";
 
 export function useUpdatedAt(name: string) {
+    // [状態を入れる変数, 状態を変更する関数] = useState(初期値)
     const [updatedAt, setUpdatedAt] = useState(name);
+    // useCallback(() => {第二引数が変わったタイミングで実行する処理}, [監視する値]);
     const update = useCallback(() => {
         setUpdatedAt(name + (new Date()).getTime().toString())
     }, [name]);

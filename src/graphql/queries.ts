@@ -291,6 +291,7 @@ export const getSeatOccupancy = /* GraphQL */ `query GetSeatOccupancy($id: ID!) 
     userId
     userName
     date
+    seatAvailability
     createdAt
     updatedAt
     __typename
@@ -313,6 +314,7 @@ export const listSeatOccupancies = /* GraphQL */ `query ListSeatOccupancies(
       userId
       userName
       date
+      seatAvailability
       createdAt
       updatedAt
       __typename
@@ -346,6 +348,7 @@ export const seatOccupanciesByTenantId = /* GraphQL */ `query SeatOccupanciesByT
       userId
       userName
       date
+      seatAvailability
       createdAt
       updatedAt
       __typename
@@ -381,6 +384,7 @@ export const seatOccupanciesByDateAndTenantId = /* GraphQL */ `query SeatOccupan
       userId
       userName
       date
+      seatAvailability
       createdAt
       updatedAt
       __typename

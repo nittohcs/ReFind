@@ -128,6 +128,7 @@ export const funcCreateSeatOccupancy = /* GraphQL */ `mutation FuncCreateSeatOcc
     userId
     userName
     date
+    seatAvailability
     createdAt
     updatedAt
     __typename
@@ -136,6 +137,24 @@ export const funcCreateSeatOccupancy = /* GraphQL */ `mutation FuncCreateSeatOcc
 ` as GeneratedMutation<
   APITypes.FuncCreateSeatOccupancyMutationVariables,
   APITypes.FuncCreateSeatOccupancyMutation
+>;
+export const funcUpdateSeatOccupancy = /* GraphQL */ `mutation FuncUpdateSeatOccupancy($input: funcUpdateSeatOccupancyInput!) {
+  funcUpdateSeatOccupancy(input: $input) {
+    id
+    tenantId
+    seatId
+    userId
+    userName
+    date
+    seatAvailability
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.FuncUpdateSeatOccupancyMutationVariables,
+  APITypes.FuncUpdateSeatOccupancyMutation
 >;
 export const funcClearSeatOccupanciesByTenantId = /* GraphQL */ `mutation FuncClearSeatOccupanciesByTenantId(
   $input: funcClearSeatOccupanciesByTenantIdInput!
@@ -147,6 +166,7 @@ export const funcClearSeatOccupanciesByTenantId = /* GraphQL */ `mutation FuncCl
     userId
     userName
     date
+    seatAvailability
     createdAt
     updatedAt
     __typename
@@ -452,6 +472,7 @@ export const createSeatOccupancy = /* GraphQL */ `mutation CreateSeatOccupancy(
     userId
     userName
     date
+    seatAvailability
     createdAt
     updatedAt
     __typename
@@ -472,6 +493,7 @@ export const updateSeatOccupancy = /* GraphQL */ `mutation UpdateSeatOccupancy(
     userId
     userName
     date
+    seatAvailability
     createdAt
     updatedAt
     __typename
@@ -492,6 +514,7 @@ export const deleteSeatOccupancy = /* GraphQL */ `mutation DeleteSeatOccupancy(
     userId
     userName
     date
+    seatAvailability
     createdAt
     updatedAt
     __typename

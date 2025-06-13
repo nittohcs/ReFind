@@ -219,6 +219,10 @@ type SeatOccupancy @model @auth (
 
   # 日付(YYYYMMDD)
   date: String! @index(name: "byDateAndTenantId", sortKeyFields: ["tenantId"])
+  
+  # 座席が取得されているか解放されているか
+  # true：取得中  false：解放中  	
+  seatAvailability: Boolean
 }
 
 input funcCreateFloorInput {
@@ -261,6 +265,17 @@ input funcCreateSeatOccupancyInput {
   userId: ID
   userName: String
   date: String!
+  seatAvailability: Boolean
+}
+
+input funcUpdateSeatOccupancyInput {
+  id: ID
+  tenantId: ID
+  seatId: ID
+  userId: ID
+  userName: String
+  date: String
+  seatAvailability: Boolean
 }
 
 input funcClearSeatOccupanciesByTenantIdInput {
@@ -344,6 +359,10 @@ type Mutation {
   # 座席確保情報登録
   funcCreateSeatOccupancy(input: funcCreateSeatOccupancyInput!): SeatOccupancy
   @function(name: "refind2CreateSeatOccupancy-${env}")
+
+  # 座席解放情報更新
+  funcUpdateSeatOccupancy(input: funcUpdateSeatOccupancyInput!): SeatOccupancy
+  @function(name: "refind2UpdateSeatOccupancy-${env}")
 
   # テナント削除時の座席確保情報クリア
   funcClearSeatOccupanciesByTenantId(input: funcClearSeatOccupanciesByTenantIdInput!): [SeatOccupancy!]

@@ -6,7 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Seat, SeatOccupancy } from "@/API";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { useTodayYYYYMMDD } from "@/hooks/util";
-import { getLatestOccupancyMap, occupySeat, releaseSeat } from "@/services/occupancyUtil";
+import { getLatestOccupancyMap, occupySeat, releaseSeat, updateSeat } from "@/services/occupancyUtil";
 import { queryKeys } from "@/services/queryKeys";
 import { useTenantId } from "../../hook";
 import QRCodeReader from "@/components/QRCodeReader";
@@ -93,7 +93,7 @@ export const UserQRCodeDialog: FC<UserQRCodeDialogProps> = ({
         const userOccupancyMap = new Map(Array.from(seatOccupancyMap.values()).filter(x => x.userId).map(x => [x.userId as string, x]));
         // 読み取ったユーザーIDで絞り込む
         const readUserOccupancy = userOccupancyMap.get(userId) ?? null;        
-        //myseatはuserIDを用いて取得する必要があるかも
+        // myseatはuserIDを用いて取得する必要があるかも
         const oldSeat = allSeats.find(x => x.id === readUserOccupancy?.seatId) ?? null;
         const oldFloor = allFloors.find(x => x.id === oldSeat?.floorId) ?? null;
 
@@ -103,6 +103,7 @@ export const UserQRCodeDialog: FC<UserQRCodeDialogProps> = ({
         if (oldSeat) {
             // 座席を移動する場合
             occupancies.push(await releaseSeat(oldSeat));
+            //occupancies.push(await updateSeat(oldSeat));
             occupancies.push(await occupySeat(seat, user.id ?? "", user.name ?? ""));
             enqueueSnackbar(`フロア「${oldFloor?.name}」の座席「${oldSeat?.name}」を解放し、フロア「${floor.name}」の座席「${seat.name}」を確保しました。`, { variant: "success" });
         } else {
@@ -143,7 +144,7 @@ export const UserQRCodeDialog: FC<UserQRCodeDialogProps> = ({
                     variant="contained"
                     onClick={close}
                 >
-                    キャンセル
+                    ×
                 </Button>
             </DialogActions>
         </Dialog>

@@ -16,6 +16,7 @@ export const onCreateSeatOccupancyByTenantId = /* GraphQL */ `subscription OnCre
     userId
     userName
     date
+    seatAvailability
     createdAt
     updatedAt
     __typename
@@ -251,6 +252,7 @@ export const onCreateSeatOccupancy = /* GraphQL */ `subscription OnCreateSeatOcc
     userId
     userName
     date
+    seatAvailability
     createdAt
     updatedAt
     __typename
@@ -270,6 +272,7 @@ export const onUpdateSeatOccupancy = /* GraphQL */ `subscription OnUpdateSeatOcc
     userId
     userName
     date
+    seatAvailability
     createdAt
     updatedAt
     __typename
@@ -289,6 +292,7 @@ export const onDeleteSeatOccupancy = /* GraphQL */ `subscription OnDeleteSeatOcc
     userId
     userName
     date
+    seatAvailability
     createdAt
     updatedAt
     __typename

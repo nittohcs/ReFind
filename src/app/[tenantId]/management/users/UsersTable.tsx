@@ -10,6 +10,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import AddIcon from "@mui/icons-material/Add";
 import LockResetIcon from "@mui/icons-material/LockReset";
+import DownloadIcon from "@mui/icons-material/Download";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { createColumnHelper } from "@tanstack/react-table";
 import DebouncedTextField from "@/components/DebouncedTextField";
@@ -18,7 +19,7 @@ import MiraCalSelectCheckboxCell from "@/components/MiraCalSelectCheckboxCell";
 import MiraCalTable from "@/components/MiraCalTable";
 import { useReFindUsers } from "@/hooks/ReFindUser";
 import { useTable, useTableOption } from "@/hooks/table";
-import { useDialogStateWithData, useEnqueueSnackbar, useMenu } from "@/hooks/ui";
+import { useDialogStateWithData, useEnqueueSnackbar, useMenu, useUpdatedAt } from "@/hooks/ui";
 import { useGetTenant } from "@/services/graphql";
 import { ReFindUser } from "@/types/user";
 import { useTenantId } from "../../hook";
@@ -28,6 +29,7 @@ import BulkEditUserDialog from "./BulkEditUserDialog";
 import ResetPasswordDialog from "./ResetPasswordDialog";
 import { QRCodeSVG } from "qrcode.react";
 import { useReactToPrint } from "react-to-print";
+import { downloadCSV } from "@/services/util";
 
 type TableRow = ReFindUser & {
     isAdminString: string,
@@ -48,7 +50,7 @@ export default function UsersTable() {
     const qTenant = useGetTenant(tenantId);
     const qUsers = useReFindUsers();
     const data = useMemo(() => (qUsers.data ?? []).map(x => ToTableRow(x)), [qUsers.data]);
-
+    
     const columns = useMemo(() => [
         columnHelper.display({
             id: "select",
@@ -63,9 +65,10 @@ export default function UsersTable() {
         columnHelper.accessor("name", {
             header: "氏名",
         }),
-        columnHelper.accessor("email", {
-            header: "メールアドレス",
-        }),
+        // メールアドレスを使用していないため非表示
+        // columnHelper.accessor("email", {
+        //     header: "メールアドレス",
+        // }),
         columnHelper.accessor("isAdminString", {
             header: "管理者",
         }),
@@ -88,6 +91,12 @@ export default function UsersTable() {
     });
 
     const table = useTable({ data, columns, options });
+    const handleDownload = useCallback(() => {
+        if (data.length === 0) {
+            return;
+        }
+        downloadCSV(data, "ユーザ一覧.csv");
+    }, [data]);
 
     const isSelected = table.getIsSomeRowsSelected() || table.getIsAllRowsSelected();
     const { menuProps, openHandler, withClose } = useMenu();
@@ -126,8 +135,11 @@ export default function UsersTable() {
                                 <Box>{`${table.getSelectedRowModel().rows.length}件選択中`}</Box>
                                 <Button variant="outlined" onClick={() => table.resetRowSelection()}>選択解除</Button>
                             </Box>
-                            <Button variant="outlined" onClick={() => handlePrint()}>印刷</Button>
-                            <Button variant="outlined" onClick={openHandler}>操作</Button>
+                            <Button variant="outlined" onClick={() => handlePrint()} 
+                                sx={{ whiteSpace: 'nowrap', width: '65px', height: '36px', fontSize: '14px'}}>
+                                    QR印刷
+                            </Button>
+                            <Button variant="outlined" onClick={openHandler} >操作</Button>
                             <Menu {...menuProps}>
                                 <MenuItem onClick={
                                     withClose(() => {
@@ -159,7 +171,7 @@ export default function UsersTable() {
                                     </ListItemIcon>
                                     <ListItemText>
                                         パスワードリセット
-                                    </ListItemText>
+                                    </ListItemText>                                    
                                 </MenuItem>
                                 <MenuItem onClick={withClose(() => deleteDialogState.open(selectedUsers))}>
                                     <ListItemIcon>
@@ -203,6 +215,11 @@ export default function UsersTable() {
                                     </IconButton>
                                 </Tooltip>
                             </Link>
+                            <Tooltip title="CSVダウンロード">
+                                    <IconButton onClick={handleDownload}>
+                                        <DownloadIcon />
+                                    </IconButton>
+                                </Tooltip>
                         </Toolbar>
                     )}
                 </Box>

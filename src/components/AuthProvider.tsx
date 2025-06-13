@@ -12,6 +12,7 @@ const SetUIVocabularies = (lang: string) => {
     I18n.setLanguage(lang);
 
     I18n.putVocabulariesForLanguage("ja", {
+
         // タブ名
         "Sign In": "ログイン",
         "Create Account": "アカウント作成",

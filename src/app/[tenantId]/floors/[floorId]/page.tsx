@@ -78,8 +78,8 @@ export default function Page({ params }: { params: { floorId: string } }) {
                 message: "選択した座席を確保します。",
                 newSeat: seat,
                 oldSeat: null,
-                userId: "",
-                userName: "",
+                userId: "",     //座席取得者
+                userName: "",   //座席取得者
             });
 
             return;
@@ -253,7 +253,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
                             />
                             {authState.groups?.admins && floor && (
                                 <>
-                                    <Tooltip title="印刷">
+                                    <Tooltip title="画面印刷">
                                         <IconButton onClick={() => handlePrint()}>
                                             <PrintIcon />
                                         </IconButton>

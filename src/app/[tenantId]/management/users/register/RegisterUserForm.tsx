@@ -1,7 +1,7 @@
 "use client";
 
 import { FC, RefObject, useCallback, useMemo, useRef } from "react";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useMutation, useQueryClient  } from "@tanstack/react-query";
@@ -22,6 +22,7 @@ import { useGetTenant } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
 import { convertBMPtoPNG } from "@/services/util";
 import { createReFindUser } from "../user";
+import { Flex, Label } from "@aws-amplify/ui-react";
 
 type FormValues = {
     id: string,
@@ -59,7 +60,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
             return isAvailable;
         }),
         name: yup.string().required().default(""),
-        email: yup.string().required().email().default(""),
+        email: yup.string().required().email().default("ReFind@email"),     //Cognitoへの登録のため、固定で登録
         image: yup.string().required().default(ImageUploadState.Unchange),
         comment: yup.string().default(""),
         isAdmin: yup.bool().required().default(false),
@@ -80,8 +81,10 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
             }
 
             // IDを全て小文字に変換する
+            values.id = values.id + "@" + tenantId;
             values.id = values.id.toLowerCase();
 
+            // ユーザー登録処理
             const ret = await createReFindUser({
                 ...values,
                 tenantId: tenantId,
@@ -92,11 +95,25 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
                 return ref.current?.files && ref.current?.files.length > 0 ? ref.current.files[0] : undefined;
             }
             let file = getFile(imageFileRef);
+
+            // ファイル容量チェック                
+            const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+            if (file && file?.size > MAX_FILE_SIZE) {
+                throw new Error("1MB以下のファイルを選択してください。");
+            }
+            
+            const allowedImageTypes = ["image/png", "image/webp", "image/jpeg", "image/bmp", "image/gif"];
+    
             if (values.image === ImageUploadState.Upload && file) {
                 const imagePath = `public/${tenantId}/users/${values.id}`;
 
+                // 拡張子チェック
+                const fileType = await fileTypeFromBlob(file);                
+                if (fileType?.mime && !allowedImageTypes.includes(fileType.mime)) {                    
+                    throw new Error("画像ファイルを選択してください。");
+                }
+                
                 // BMPの場合、PNGに変換
-                const fileType = await fileTypeFromBlob(file);
                 if (fileType?.mime === "image/bmp") {
                     const blob = await convertBMPtoPNG(file);
                     file = new File([blob], `${file.name}.png`, { type: "image/png" });
@@ -159,28 +176,36 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
                 onSubmit={onSubmit}
             >
                 <MiraCalForm>
-                    <MiraCalTextField
-                        name="id"
-                        label="ID"
-                        type="text"
-                        debounceTime={300}
-                        
-                    />
-                    <MiraCalTextField
+                    {/* <Box display="flex" alignItems="center"> */}
+                        <MiraCalTextField
+                            name="id"
+                            label="ID"
+                            type="text"
+                            debounceTime={300}
+                            inputProps={{ maxLength: 100 ,placeholder: `末尾に@${tenantId}が付与されます。`}}
+                            // sx={{ width: '450px', height: '56px' }}
+                        />
+                        {/* <Typography color="rgb(121, 121, 121)">ユーザー</Typography> */}
+                    {/* </Box> */}
+                    {/* システムで未使用 */}
+                    {/* <MiraCalTextField
                         name="email"
                         label="メールアドレス"
                         type="email"
-                    />
+                    /> */}
                     <MiraCalTextField
                         name="name"
                         label="氏名"
                         type="text"
+                        inputProps={{ maxLength: 100 }}                        
+                        // sx={{ width: '450px', height: '56px' }}
                     />
                     <MiraCalImageUpload
                         name="image"
                         label="画像"
                         currentFilePath={null}
-                        accept="image/png, image/webp, image/jpeg, image/bmp"
+                        // 拡張子の制限
+                        accept="image/png, image/webp, image/jpeg, image/bmp, image/gif"
                         fileRef={imageFileRef}
                         previewImageWidth={48}
                         previewImageHeight={48}
@@ -189,6 +214,8 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
                         name="comment"
                         label="コメント"
                         type="text"
+                        inputProps={{ maxLength: 100 }}
+                        sx={{ width: '450px', height: '56px' }}
                     />
                     <MiraCalCheckbox
                         name="isAdmin"
