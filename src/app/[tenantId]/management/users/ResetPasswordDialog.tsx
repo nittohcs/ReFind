@@ -4,7 +4,7 @@ import { FC, useState } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import MiraCalLinearProgressWithLabel from "@/components/MiraCalLinearProgressWithLabel";
-import { useEnqueueSnackbar, useUpdatedAt } from "@/hooks/ui";
+import { useEnqueueSnackbar } from "@/hooks/ui";
 import { ReFindUser } from "@/types/user";
 import { adminSetUserPassword } from "@/services/AdminQueries";
 import { useGetTenant } from "@/services/graphql";
@@ -15,12 +15,6 @@ type ResetPasswordDialogProps = {
     close: () => void,
     data: ReFindUser[] | null,
     resetRowSelection: () => void,
-};
-
-type ResetPasswordProps = {
-    dialogProps: ResetPasswordDialogProps,
-    id: string,
-    update: () => void,
 };
 
 export const ResetPasswordDialog: FC<ResetPasswordDialogProps> = ({
@@ -36,8 +30,6 @@ export const ResetPasswordDialog: FC<ResetPasswordDialogProps> = ({
     const [currentCount, setCurrentCount] = useState(0);
     const progressValue = 100.0 * currentCount / totalCount;
     const progressLabel = `${currentCount}/${totalCount}`;
-
-    const [updatedAt, update] = useUpdatedAt("passwordReset");
 
     const enqueueSnackbar = useEnqueueSnackbar();
     const mutation = useMutation({

@@ -1,7 +1,7 @@
 "use client";
 
 import { FC, RefObject, useCallback, useMemo, useRef } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useMutation, useQueryClient  } from "@tanstack/react-query";
@@ -22,7 +22,6 @@ import { useGetTenant } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
 import { convertBMPtoPNG } from "@/services/util";
 import { createReFindUser } from "../user";
-import { Flex, Label } from "@aws-amplify/ui-react";
 
 type FormValues = {
     id: string,

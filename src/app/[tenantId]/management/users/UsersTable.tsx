@@ -19,7 +19,7 @@ import MiraCalSelectCheckboxCell from "@/components/MiraCalSelectCheckboxCell";
 import MiraCalTable from "@/components/MiraCalTable";
 import { useReFindUsers } from "@/hooks/ReFindUser";
 import { useTable, useTableOption } from "@/hooks/table";
-import { useDialogStateWithData, useEnqueueSnackbar, useMenu, useUpdatedAt } from "@/hooks/ui";
+import { useDialogStateWithData, useEnqueueSnackbar, useMenu } from "@/hooks/ui";
 import { useGetTenant } from "@/services/graphql";
 import { ReFindUser } from "@/types/user";
 import { useTenantId } from "../../hook";
