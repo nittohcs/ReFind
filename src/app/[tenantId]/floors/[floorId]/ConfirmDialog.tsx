@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Seat, SeatOccupancy } from "@/API";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { useTodayYYYYMMDD } from "@/hooks/util";
-import { occupySeat, releaseSeat, updateSeat } from "@/services/occupancyUtil";
+import { occupySeat, releaseSeat } from "@/services/occupancyUtil";
 import { queryKeys } from "@/services/queryKeys";
 import { useTenantId } from "../../hook";
 

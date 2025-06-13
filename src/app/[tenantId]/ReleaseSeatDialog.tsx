@@ -6,7 +6,7 @@ import ConfirmDialog from "@/components/ConfirmDialog";
 import { ConfirmDialogState } from "@/hooks/confirmDialogState";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { useTodayYYYYMMDD } from "@/hooks/util";
-import { releaseSeat, updateSeat } from "@/services/occupancyUtil";
+import { releaseSeat } from "@/services/occupancyUtil";
 import { queryKeys } from "@/services/queryKeys";
 import { useTenantId } from "./hook";
 
