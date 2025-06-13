@@ -6,7 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Seat, SeatOccupancy } from "@/API";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { useTodayYYYYMMDD } from "@/hooks/util";
-import { getLatestOccupancyMap, occupySeat, releaseSeat, updateSeat } from "@/services/occupancyUtil";
+import { getLatestOccupancyMap, occupySeat, releaseSeat } from "@/services/occupancyUtil";
 import { queryKeys } from "@/services/queryKeys";
 import { useTenantId } from "../../hook";
 import QRCodeReader from "@/components/QRCodeReader";

@@ -1,7 +1,7 @@
 "use client";
 
 import { FC, useEffect, useRef, useState } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import jsQR from "jsqr";
 
 type QRCodeReaderProps = {
@@ -22,7 +22,7 @@ export const QRCodeReader: FC<QRCodeReaderProps> = ({
     const initializedRef = useRef(false);
 
     
-    const [facingMode, setFacingMode] = useState<"user" | "environment">("environment");
+    const [facingMode] = useState<"user" | "environment">("environment");
 
 
     // refにonReadの最新の値を格納し続ける

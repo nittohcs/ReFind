@@ -16,7 +16,6 @@ import { useMenu } from "@/hooks/ui";
 import { adminManualPath, userManualPath } from "@/services/manual";
 import { useTenantId } from "./hook";
 import ReleaseSeatDialog from "./ReleaseSeatDialog";
-import MiraCalTextField from "@/components/MiraCalTextField";
 
 export function UserMenu() {
     const tenantId = useTenantId();
