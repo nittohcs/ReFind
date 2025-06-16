@@ -28,9 +28,13 @@ export function UserMenu() {
                         <Divider sx={{ mb: 1 }} />
                     </Box>
                 )}
-                <MenuItem onClick={menu.withClose(async () => await download(sysAdminManualPath))}>マニュアル</MenuItem>
+                <MenuItem onClick={menu.withClose(async () => await download(sysAdminManualPath))}>ヘルプ</MenuItem>
                 <MenuItem onClick={() => signOut()}>ログアウト</MenuItem>
                 <Divider sx={{ mb: 1 }} />
+                {/* 管理者用マニュアル */}
+                {authState.groups?.admins && (
+                    <MenuItem onClick={menu.withClose(async () => await download(sysAdminManualPath))}>利用規約</MenuItem>
+                )}
                 <Box px={2} py={1}>
                     <Typography variant="body1">ver 1.0.0</Typography>
                 </Box>

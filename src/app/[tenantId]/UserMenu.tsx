@@ -40,11 +40,6 @@ export function UserMenu() {
         <Box>
             <IconButton size="large" onClick={menu.openHandler} color="inherit" sx={{width: '50px', height: '50px'}}>
                 {isExistUserIcon ? (
-                    // 元ソース
-                    //<Image src={qUserIcon.data!} alt="" width={24} height={24} />
-                    // 案１：ログイン中の場合、画像に枠線を付ける。
-                    //<Image src={qUserIcon.data!} alt="" width={35} height={35} style={{ border: isReady && mySeat ? "3px solid rgb(25, 240, 61)" : "" }}/>
-                    // 案２：ログイン中の場合、Teamsみたいな画像を付ける。
                     <div>
                     <Image src={qUserIcon.data!} alt="" width={30} height={30} 
                         style={{
@@ -70,14 +65,15 @@ export function UserMenu() {
                             <Typography variant="caption">ユーザー</Typography>
                             <Typography variant="body1">{authState.name}</Typography>
                         </Box>
-                        {isReady && mySeat && myFloor && (
+                        {/* 販売に向けて削除 */}
+                        {/* {isReady && mySeat && myFloor && (
                             <Box px={2} py={1}>
                                 <Typography variant="caption">フロア</Typography>
                                 <Typography variant="body1">{myFloor.name}</Typography>
                                 <Typography variant="caption">座席</Typography>
                                 <Typography variant="body1">{mySeat?.name}</Typography>
                             </Box>
-                        )}
+                        )} */}
                         <Divider sx={{ mb: 1 }} />
                     </Box>
                 )}
@@ -91,12 +87,23 @@ export function UserMenu() {
                 <Link href={`/${tenantId}/userSettings`}>
                     <MenuItem onClick={menu.closeHandler}>設定</MenuItem>
                 </Link>
-                <MenuItem onClick={menu.withClose(async () => await download(userManualPath))}>ユーザーマニュアル</MenuItem>
-                {authState.groups?.admins && (
-                    <MenuItem onClick={menu.withClose(async () => await download(adminManualPath))}>管理者マニュアル</MenuItem>
+
+                {/* 一般ユーザー様マニュアル */}
+                {authState.groups?.users && (
+                    <MenuItem onClick={menu.withClose(async () => await download(userManualPath))}>ヘルプ</MenuItem>
                 )}
-                <MenuItem onClick={() => signOut()}>ログアウト</MenuItem>                
+                {/* 管理者用マニュアル */}
+                {authState.groups?.admins && (
+                    <MenuItem onClick={menu.withClose(async () => await download(adminManualPath))}>ヘルプ</MenuItem>
+                )}
+                <MenuItem onClick={() => signOut()}>ログアウト</MenuItem>   
+
                 <Divider sx={{ mb: 1 }} />
+                
+                {/* 管理者用マニュアル */}
+                {authState.groups?.admins && (
+                    <MenuItem onClick={menu.withClose(async () => await download(adminManualPath))}>利用規約</MenuItem>
+                )}
                 <Box px={2} py={1}>
                     <Typography variant="body1">ver 1.0.0</Typography>
                 </Box>
