@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
 import { Seat } from "@/API";
 import { useTenantId } from "@/app/[tenantId]/hook";
 import MiraCalBreadcrumbs from "@/components/MiraCalBreadcrumbs";
@@ -15,6 +15,9 @@ import { downloadCSV } from "@/services/util";
 import CreateSeatDialog from "./CreateSeatDialog";
 import EditSeatDialog from "./EditSeatDialog";
 import ImportCSVDialog from "./ImportCSVDialog";
+import DownloadIcon from "@mui/icons-material/Download";
+import UploadIcon from "@mui/icons-material/Upload";
+import ClearIcon from '@mui/icons-material/Clear';
 
 export default function Page({ params }: { params: { floorId: string } }) {
     const tenantId = useTenantId();
@@ -71,6 +74,12 @@ export default function Page({ params }: { params: { floorId: string } }) {
 
     const state = useDialogState();
 
+    
+    const handleGoBack = () => {
+        window.history.back();
+    };
+    
+
     const { elementRef, contentsWidth, contentsHeight, updateContentsSize } = useContentsSize();
 
     return (
@@ -82,24 +91,39 @@ export default function Page({ params }: { params: { floorId: string } }) {
                 <Typography>座席編集</Typography>
             </MiraCalBreadcrumbs>
             <Box display="flex" flexDirection="row" flexWrap="wrap" gap={1} pt={2} ref={elementRef}>
-                <Button
+                {/* <Button
                     variant="contained"
                     onClick={handleCSVExport}
                     disabled={!isReady}
                 >
                     CSVエクスポート
-                </Button>
+                </Button> */}
+                <Tooltip title="CSVダウンロード">
+                    <IconButton onClick={handleCSVExport}>
+                        <DownloadIcon />
+                    </IconButton>
+                </Tooltip>
                 {isReady && floor && (
                     <>
-                        <Button
+                        {/* <Button
                             variant="contained"
                             onClick={() => state.open()}
                         >
                             CSVインポート
-                        </Button>
+                        </Button> */}
                         <ImportCSVDialog {...state} floor={floor} seats={seats} />
+                        <Tooltip title="CSVアップロード">
+                            <IconButton onClick={() => state.open()}>
+                                <UploadIcon />
+                            </IconButton>
+                        </Tooltip>
                     </>
                 )}
+                <Tooltip title="閉じる">
+                    <IconButton onClick={handleGoBack}>
+                        <ClearIcon />
+                    </IconButton>
+                </Tooltip>
             </Box>
             {isReady && floor && imageQuery.isFetched && imageQuery.data && (
                 <>

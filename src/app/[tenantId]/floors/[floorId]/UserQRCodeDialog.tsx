@@ -1,7 +1,7 @@
 "use client";
 
 import { FC, useCallback } from "react";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, styled } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import { Seat, SeatOccupancy } from "@/API";
 import { useEnqueueSnackbar } from "@/hooks/ui";
@@ -128,24 +128,25 @@ export const UserQRCodeDialog: FC<UserQRCodeDialogProps> = ({
     // onReadの後に連続でmutationを呼び出す
     return (
         <Dialog fullWidth maxWidth="sm" open={isOpened} onClose={() => close()}>
-            <DialogTitle>{dialogData?.title}</DialogTitle>
+            <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ minWidth: '40px', paddingRight: 3 }} >
+                <DialogTitle>{dialogData?.title}</DialogTitle>
+                <Button
+                    variant="contained"
+                    onClick={close}
+                    sx={{ minWidth: '40px'}}
+                >
+                    ×
+                </Button>
+            </Box>
             <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 <DialogContentText>{dialogData?.message}</DialogContentText>
             </DialogContent>
             <DialogActions sx={{ p: 3, pt: 0 }}>
-
                 <Box pt={2}>
                     {isReady && (
                         <QRCodeReader onRead={onRead}/>
                     )}                    
                 </Box>
-
-                <Button
-                    variant="contained"
-                    onClick={close}
-                >
-                    ×
-                </Button>
             </DialogActions>
         </Dialog>
     );
