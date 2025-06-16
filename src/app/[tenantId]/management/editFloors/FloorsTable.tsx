@@ -19,6 +19,8 @@ import { graphqlUpdateFloor, useFloorsByTenantId } from "@/services/graphql";
 import { useTenantId } from "../../hook";
 import { enqueueSnackbar } from "notistack";
 import { downloadCSV } from "@/services/util";
+import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@/services/queryKeys";
 
 // type TableRow = Floor & {
 //     // Floorにソート用の項目が無いので、ここで追加
@@ -126,22 +128,32 @@ export default function FloorsTable() {
             }
         };
     }, [handleSortEnd]);
+    
+    const queryClient = useQueryClient();
     const saveSorting = useCallback(async () => {
-        // 見えている順序でソート値を更新
         const rows = table.getSortedRowModel().rows;
-        const n = rows.length;
-        for(let i = 0; i < n; ++i) {
-            // TODO Floorを保存する
-            const floor = rows[i].original;
+        const updatedRows = rows.map((row, i) => ({
+            ...row.original,
+            sortId: i + 1,
+        }));
+        
+        for (const floor of updatedRows) {
             await graphqlUpdateFloor({
-                //元の値を保持していればできそう？
                 id: floor.id,
-                sortId: i+1,
-            });            
+                sortId: floor.sortId,
+            });
         }
+        
+        // 一時的にキャッシュを更新（表示の即時反映）
+        queryClient.setQueryData<Floor[]>(queryKeys.graphqlFloorsByTenantId(tenantId), () => updatedRows);
+        setData(updatedRows);
+        
+        // サーバーから最新データを取得してキャッシュを正しく更新
+        query.refetch();
+        
         enqueueSnackbar("ソート順を更新しました。", { variant: "success" });
-    }, [table]);
-
+    }, [table, queryClient, tenantId, query]);
+        
     // 検索欄に文字が入力された場合、ソート順の保存が出来ないようにする。    
     const [registSortFlg, changeDisable]  = useState(false);
     const onChangeDisable = function(value: string) : void {    
