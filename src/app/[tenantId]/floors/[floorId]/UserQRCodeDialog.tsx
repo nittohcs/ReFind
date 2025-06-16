@@ -1,7 +1,7 @@
 "use client";
 
 import { FC, useCallback } from "react";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, styled } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import { Seat, SeatOccupancy } from "@/API";
 import { useEnqueueSnackbar } from "@/hooks/ui";
