@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
+import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import { Seat } from "@/API";
 import { useTenantId } from "@/app/[tenantId]/hook";
 import MiraCalBreadcrumbs from "@/components/MiraCalBreadcrumbs";
