@@ -1,7 +1,7 @@
 "use client";
 
 import { FC, useEffect, useRef, useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import jsQR from "jsqr";
 
 type QRCodeReaderProps = {
@@ -20,16 +20,28 @@ export const QRCodeReader: FC<QRCodeReaderProps> = ({
     const onReadRef = useRef(onRead);
     const lastProcessedQRCode = useRef<string>("");
     const initializedRef = useRef(false);
-
-    
-    const [facingMode] = useState<"user" | "environment">("environment");
-
+    const [facingMode, setFacingMode] = useState<"user" | "environment">("environment");
 
     // refにonReadの最新の値を格納し続ける
     useEffect(() => {
         onReadRef.current = onRead;
     }, [onRead]);
 
+    
+    const stopCamera = () => {
+        try {
+            if (streamRef.current) {
+                streamRef.current.getTracks().forEach(track => track.stop());
+            }
+            if (videoRef.current) {
+                videoRef.current.srcObject = null;
+            }
+            streamRef.current = null;
+        } catch(error) {
+            console.error("stopCamera", error);
+        }
+    };
+    
     useEffect(() => {
         // useEffectの依存配列にhasCameraを入れるとuseEffectの処理が何度も動いてしまう
         // 1回だけ動いてほしいのでローカル変数にする
@@ -134,20 +146,6 @@ export const QRCodeReader: FC<QRCodeReaderProps> = ({
             requestAnimationFrame(scanQRCode);
         };
 
-        const stopCamera = () => {
-            try {
-                if (streamRef.current) {
-                    streamRef.current.getTracks().forEach(track => track.stop());
-                }
-                if (videoRef.current) {
-                    videoRef.current.srcObject = null;
-                }
-                streamRef.current = null;
-            } catch(error) {
-                console.error("stopCamera", error);
-            }
-        };
-
         // 開発サーバでuseEffectを1回だけ実行する
         if (!initializedRef.current) {
             initializedRef.current = true;
@@ -168,15 +166,16 @@ export const QRCodeReader: FC<QRCodeReaderProps> = ({
 
     return (
         <>
-            {/* <Button
+            <Button
                 variant="contained"
-                onClick={async () => {
-                //stopCamera();
-                setFacingMode(prev => prev === "user" ? "environment" : "user");
-            }}
+                onClick={() => {
+                    stopCamera(); // 現在のカメラを停止
+                    setFacingMode(prev => prev === "user" ? "environment" : "user"); // 向きを切り替え
+                    initializedRef.current = false; // useEffect を再実行させる
+                }}
             >
-            カメラ切り替え
-            </Button> */}
+                カメラ切り替え
+            </Button>
 
             {hasCamera === null ? (
                 <></>
