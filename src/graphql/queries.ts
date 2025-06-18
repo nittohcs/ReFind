@@ -30,6 +30,8 @@ export const getTenant = /* GraphQL */ `query GetTenant($id: ID!) {
     initialPassword
     retentionPeriodDays
     isSuspended
+    prefix
+    email
     createdAt
     updatedAt
     __typename
@@ -49,6 +51,8 @@ export const listTenants = /* GraphQL */ `query ListTenants(
       initialPassword
       retentionPeriodDays
       isSuspended
+      prefix
+      email
       createdAt
       updatedAt
       __typename

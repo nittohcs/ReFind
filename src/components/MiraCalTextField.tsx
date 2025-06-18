@@ -39,7 +39,9 @@ export const MiraCalTextField: FC<MiraCalTextFieldProps> = ({
                 inputLabel: {
                     shrink: true,
                 },
+                
             }}
+            sx={{ width: '450px'}}
             error={!!(meta.touched && meta.error)}
             helperText={meta.touched && meta.error}
             {...props}

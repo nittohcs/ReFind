@@ -2,10 +2,10 @@
 
 import { GraphQLResult, graphqlOperation } from "@aws-amplify/api-graphql";
 import { useQuery } from "@tanstack/react-query";
-import { DeleteFileMutation, DeleteFileMutationVariables, Floor, FloorsByTenantIdQuery, FloorsByTenantIdQueryVariables, FuncClearSeatOccupanciesByTenantIdMutation, FuncClearSeatOccupanciesByTenantIdMutationVariables, funcCreateFloorInput, FuncCreateFloorMutation, FuncCreateFloorMutationVariables, funcCreateSeatInput, FuncCreateSeatMutation, FuncCreateSeatMutationVariables, funcDeleteFloorInput, FuncDeleteFloorMutation, FuncDeleteFloorMutationVariables, funcDeleteSeatInput, FuncDeleteSeatMutation, FuncDeleteSeatMutationVariables, funcUpdateFloorInput, FuncUpdateFloorMutation, FuncUpdateFloorMutationVariables, funcUpdateSeatInput, FuncUpdateSeatMutation, FuncUpdateSeatMutationVariables, GetFileDownloadUrlQuery, GetFileDownloadUrlQueryVariables, GetFileUploadUrlQuery, GetFileUploadUrlQueryVariables, GetTenantQuery, GetTenantQueryVariables, GetUserQuery, GetUserQueryVariables, ListTenantsQuery, ListTenantsQueryVariables, Seat, SeatOccupanciesByDateAndTenantIdQuery, SeatOccupanciesByDateAndTenantIdQueryVariables, SeatOccupanciesByTenantIdQuery, SeatOccupancy, SeatsByTenantIdQuery, SeatsByTenantIdQueryVariables, Tenant, User, UsersByTenantIdQuery, UsersByTenantIdQueryVariables } from "@/API";
+import { DeleteFileMutation, DeleteFileMutationVariables, Floor, FloorsByTenantIdQuery, FloorsByTenantIdQueryVariables, FuncClearSeatOccupanciesByTenantIdMutation, FuncClearSeatOccupanciesByTenantIdMutationVariables, funcCreateFloorInput, FuncCreateFloorMutation, FuncCreateFloorMutationVariables, funcCreateSeatInput, FuncCreateSeatMutation, FuncCreateSeatMutationVariables, funcDeleteFloorInput, FuncDeleteFloorMutation, FuncDeleteFloorMutationVariables, funcDeleteSeatInput, FuncDeleteSeatMutation, FuncDeleteSeatMutationVariables, funcUpdateFloorInput, FuncUpdateFloorMutation, FuncUpdateFloorMutationVariables, funcUpdateSeatInput, FuncUpdateSeatMutation, FuncUpdateSeatMutationVariables, GetFileDownloadUrlQuery, GetFileDownloadUrlQueryVariables, GetFileUploadUrlQuery, GetFileUploadUrlQueryVariables, GetTenantQuery, GetTenantQueryVariables, GetUserQuery, GetUserQueryVariables, ListTenantsQuery, ListTenantsQueryVariables, ListUsersQuery, ListUsersQueryVariables, Seat, SeatOccupanciesByDateAndTenantIdQuery, SeatOccupanciesByDateAndTenantIdQueryVariables, SeatOccupanciesByTenantIdQuery, SeatOccupancy, SeatsByTenantIdQuery, SeatsByTenantIdQueryVariables, Tenant, User, UsersByTenantIdQuery, UsersByTenantIdQueryVariables } from "@/API";
 import { client } from "@/components/APIClientProvider";
 import { deleteFile, funcClearSeatOccupanciesByTenantId, funcCreateFloor, funcCreateSeat, funcDeleteFloor, funcDeleteSeat, funcUpdateFloor, funcUpdateSeat } from "@/graphql/mutations";
-import { floorsByTenantId, getFileDownloadUrl, getFileUploadUrl, getTenant, getUser, listTenants, seatOccupanciesByDateAndTenantId, seatOccupanciesByTenantId, seatsByTenantId, usersByTenantId } from "@/graphql/queries";
+import { floorsByTenantId, getFileDownloadUrl, getFileUploadUrl, getTenant, getUser, listTenants, listUsers, seatOccupanciesByDateAndTenantId, seatOccupanciesByTenantId, seatsByTenantId, usersByTenantId } from "@/graphql/queries";
 import { NextToken } from "@/types/graphql";
 import { queryKeys } from "./queryKeys";
 
@@ -234,6 +234,39 @@ export function useUsersByTenantId(tenantId: string, staleTime?: number) {
         async queryFn() { return await graphqlUsersByTenantId(tenantId); },
         ...(!!staleTime && {staleTime }),
     });
+}
+
+export function useListAllUsers(staleTime?: number) {
+    return useQuery({
+        queryKey: queryKeys.graphqlListAllUserUsers,
+        queryFn: graphqlListAllUsers,
+        ...(!!staleTime && {staleTime }),
+    });
+}
+
+export async function graphqlListAllUsers() {
+    const users: User[] = [];
+
+    let nextToken: NextToken = undefined;
+    do {
+        const result = await client.graphql(
+            graphqlOperation(
+                listUsers,
+                {
+                    nextToken,
+                } as ListUsersQueryVariables
+            )
+        ) as GraphQLResult<ListUsersQuery>;
+        if (result.errors || !result.data) { throw new Error(JSON.stringify(result.errors)); }
+        for(const item of result.data.listUsers?.items ?? []) {
+            if (item) {
+                users.push(item);
+            }
+        }
+        nextToken = result.data.listUsers?.nextToken;
+    } while(nextToken);
+
+    return users;
 }
 
 export async function graphqlUsersByTenantId(tenantId: string) {

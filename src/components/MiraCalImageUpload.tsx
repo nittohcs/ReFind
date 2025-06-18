@@ -110,6 +110,7 @@ export const MiraCalImageUpload: FC<MiraCalImageUploadProps> = ({ ...props }) =>
                     fullWidth
                     error={!!(meta.touched && meta.error)}
                     helperText={meta.touched && meta.error}
+                    sx={{ width: '450px', height: '56px' }}
                 />
             </Box>
             <Box>

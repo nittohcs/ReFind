@@ -15,16 +15,19 @@ import { createUser } from "@/services/AdminQueries";
 import { queryKeys } from "@/services/queryKeys";
 import { graphqlCreateTenant, graphqlDeleteTenant } from "../operation";
 import { Tenant } from "@/API";
+import { useListAllTenants, useListAllUsers } from "@/services/graphql";
 
 type FormValues = {
     id: string,
     name: string,
     maxUserCount: number,
     initialPassword: string,
+    email: string,
+    prefix: string,
     retentionPeriodDays: number,
     isSuspended: boolean,
     adminUserId: string,
-    adminEmail: string,
+    //adminEmail: string,
     adminName: string,
 };
 
@@ -45,12 +48,20 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
         name: yup.string().required().default(""),
         maxUserCount: yup.number().required().default(0).min(1),
         initialPassword: yup.string().required().default("").min(8),
+        email: yup.string().required().default("").max(100),
+        prefix: yup.string().required().default("").max(10),
         retentionPeriodDays: yup.number().required().default(0).min(1),
         isSuspended: yup.bool().required().default(false),
         adminUserId: yup.string().required().default(""),
-        adminEmail: yup.string().required().default("").email(),
+        //adminEmail: yup.string().required().default("").email(),
         adminName: yup.string().required().default(""),
     }), []);
+
+    
+    const qTenant = useListAllTenants();
+    const tenants = useMemo(() => (qTenant.data ?? null), [qTenant.data]);
+    const qUser = useListAllUsers();
+    const users = useMemo(() => (qUser.data ?? null), [qUser.data]);
 
     const initialValues: FormValues = useMemo(() => validationSchema.cast({
 
@@ -60,6 +71,25 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
     const queryClient = useQueryClient();
     const mutation = useMutation({
         async mutationFn(values: FormValues) {
+            
+            // テナントIDが既に登録されている場合はエラー
+            let isExist = tenants?.some(t => t.id === values.id)
+            if (isExist) {
+                throw new Error("入力されたIDは既に使用されています。");
+            }
+
+            // テナント識別子が既に登録されている場合はエラー
+            isExist = tenants?.some(t => t.prefix === values.prefix)
+            if (isExist) {
+                throw new Error("入力されたテナント識別子は既に使用されています。");
+            }
+
+            // 管理者IDが既に登録されている場合はエラー
+            isExist = users?.some(u => u.id === values.adminUserId)
+            if (isExist) {
+                throw new Error("入力された管理者IDは既に使用されています。");
+            }
+
             // テーブルに登録
             const tenant = await graphqlCreateTenant({
                 ...(values.id && { id: values.id }),
@@ -68,13 +98,15 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
                 initialPassword: values.initialPassword,
                 retentionPeriodDays: values.retentionPeriodDays,
                 isSuspended: values.isSuspended,
+                email: values.email,
+                prefix: values.prefix,
             });
 
             try {
                 const adminUser = {
                     id: values.adminUserId,
                     tenantId: tenant.id,
-                    email: values.adminEmail,
+                    email: values.email,
                     name: values.adminName,
                     comment: "",
                     isAdmin: true,
@@ -146,6 +178,16 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
                         type="number"
                     />
                     <MiraCalTextField
+                        name="email"
+                        label="メールアドレス"
+                        type="text"
+                    />
+                    <MiraCalTextField
+                        name="prefix"
+                        label="テナント識別子"
+                        type="text"
+                    />
+                    <MiraCalTextField
                         name="initialPassword"
                         label="初期パスワード"
                         type="text"
@@ -164,11 +206,12 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
                         label="管理者ID"
                         type="text"
                     />
-                    <MiraCalTextField
+                    {/* これは非表示にして、メールアドレス登録時に管理者にも同じものを割り当てる */}
+                    {/* <MiraCalTextField
                         name="adminEmail"
                         label="管理者メールアドレス"
                         type="email"
-                    />
+                    /> */}
                     <MiraCalTextField
                         name="adminName"
                         label="管理者名"
