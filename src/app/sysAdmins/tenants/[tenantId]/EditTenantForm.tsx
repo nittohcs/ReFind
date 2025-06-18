@@ -23,6 +23,8 @@ type FormValues = {
     name: string,
     maxUserCount: number,
     initialPassword: string,
+    email: string,
+    prefix: string,
     retentionPeriodDays: number,
     isSuspended: boolean,
 };
@@ -44,6 +46,8 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
         name: yup.string().required(),
         maxUserCount: yup.number().required().min(1),
         initialPassword: yup.string().required().default("").min(8),
+        email: yup.string().required().default("").max(100),
+        prefix: yup.string().required().default("").max(10),
         retentionPeriodDays: yup.number().required().default(0).min(1),
         isSuspended: yup.bool().required(),
     }), []);
@@ -53,6 +57,8 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
         name: tenant?.name ?? "",
         maxUserCount: tenant?.maxUserCount ?? 0,
         initialPassword: tenant?.initialPassword ?? "",
+        email: tenant?.email ?? "",
+        prefix: tenant?.prefix ?? "",
         retentionPeriodDays: tenant?.retentionPeriodDays ?? 0,
         isSuspended: tenant?.isSuspended ?? false,
     }), [validationSchema, tenant]);
@@ -67,6 +73,8 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
                 name: values.name,
                 maxUserCount: values.maxUserCount,
                 initialPassword: values.initialPassword,
+                email: values.email,
+                prefix: values.prefix,
                 retentionPeriodDays: values.retentionPeriodDays,
                 isSuspended: values.isSuspended,
             });
@@ -141,6 +149,16 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
                     <MiraCalTextField
                         name="initialPassword"
                         label="初期パスワード"
+                        type="text"
+                    />
+                    <MiraCalTextField
+                        name="email"
+                        label="メールアドレス"
+                        type="text"
+                    />
+                    <MiraCalTextField
+                        name="prefix"
+                        label="テナント識別子"
                         type="text"
                     />
                     <MiraCalTextField

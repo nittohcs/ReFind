@@ -43,6 +43,12 @@ export default function TenantsTable() {
         columnHelper.accessor("maxUserCount", {
             header: "最大ユーザー数",
         }),
+        columnHelper.accessor("email", {
+            header: "メールアドレス",
+        }),
+        columnHelper.accessor("prefix", {
+            header: "テナント識別子",
+        }),
         columnHelper.accessor("retentionPeriodDays", {
             header: "座席確保履歴保管日数",
         }),

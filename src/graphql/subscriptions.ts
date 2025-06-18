@@ -34,6 +34,8 @@ export const onCreateTenant = /* GraphQL */ `subscription OnCreateTenant($filter
     initialPassword
     retentionPeriodDays
     isSuspended
+    prefix
+    email
     createdAt
     updatedAt
     __typename
@@ -51,6 +53,8 @@ export const onUpdateTenant = /* GraphQL */ `subscription OnUpdateTenant($filter
     initialPassword
     retentionPeriodDays
     isSuspended
+    prefix
+    email
     createdAt
     updatedAt
     __typename
@@ -68,6 +72,8 @@ export const onDeleteTenant = /* GraphQL */ `subscription OnDeleteTenant($filter
     initialPassword
     retentionPeriodDays
     isSuspended
+    prefix
+    email
     createdAt
     updatedAt
     __typename

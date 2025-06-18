@@ -1,7 +1,7 @@
 "use client";
 
 import { FC, RefObject, useCallback, useMemo, useRef } from "react";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useMutation, useQueryClient  } from "@tanstack/react-query";
@@ -59,7 +59,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
             return isAvailable;
         }),
         name: yup.string().required().default(""),
-        email: yup.string().required().email().default("ReFind@email"),     //Cognitoへの登録のため、固定で登録
+        email: yup.string().required().email().default(qTenant.data?.email),
         image: yup.string().required().default(ImageUploadState.Unchange),
         comment: yup.string().default(""),
         isAdmin: yup.bool().required().default(false),
@@ -80,8 +80,8 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
             }
 
             // IDを全て小文字に変換する
-            values.id = values.id + "@" + tenantId;
-            values.id = values.id.toLowerCase();
+            values.id = values.id + "@" + qTenant.data?.prefix;
+            //values.id = values.id.toLowerCase();
 
             // ユーザー登録処理
             const ret = await createReFindUser({
@@ -175,17 +175,17 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
                 onSubmit={onSubmit}
             >
                 <MiraCalForm>
-                    {/* <Box display="flex" alignItems="center"> */}
+                    <Box display="flex" alignItems="baseline">
                         <MiraCalTextField
                             name="id"
                             label="ID"
                             type="text"
                             debounceTime={300}
-                            inputProps={{ maxLength: 100 ,placeholder: `末尾に@${tenantId}が付与されます。`}}
-                            // sx={{ width: '450px', height: '56px' }}
+                            inputProps={{ maxLength: 100 ,placeholder: `末尾に@${qTenant.data?.prefix}が付与されます。`}}
+                            // sx={{ width: '450px', height: '56px'}}
                         />
-                        {/* <Typography color="rgb(121, 121, 121)">ユーザー</Typography> */}
-                    {/* </Box> */}
+                        <Typography color="rgb(121, 121, 121)" margin={1}>@{qTenant.data?.prefix}</Typography>
+                    </Box>
                     {/* システムで未使用 */}
                     {/* <MiraCalTextField
                         name="email"
@@ -197,7 +197,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
                         label="氏名"
                         type="text"
                         inputProps={{ maxLength: 100 }}                        
-                        // sx={{ width: '450px', height: '56px' }}
+                        // sx={{ width: '450px', height: '56px'}}
                     />
                     <MiraCalImageUpload
                         name="image"
@@ -208,13 +208,14 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
                         fileRef={imageFileRef}
                         previewImageWidth={48}
                         previewImageHeight={48}
+                        
                     />
                     <MiraCalTextField
                         name="comment"
                         label="コメント"
                         type="text"
                         inputProps={{ maxLength: 100 }}
-                        sx={{ width: '450px', height: '56px' }}
+                        // sx={{ width: '450px', height: '56px', marginTop: 2, marginBottom: 1 }}
                     />
                     <MiraCalCheckbox
                         name="isAdmin"

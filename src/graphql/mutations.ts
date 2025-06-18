@@ -220,6 +220,8 @@ export const createTenant = /* GraphQL */ `mutation CreateTenant(
     initialPassword
     retentionPeriodDays
     isSuspended
+    prefix
+    email
     createdAt
     updatedAt
     __typename
@@ -240,6 +242,8 @@ export const updateTenant = /* GraphQL */ `mutation UpdateTenant(
     initialPassword
     retentionPeriodDays
     isSuspended
+    prefix
+    email
     createdAt
     updatedAt
     __typename
@@ -260,6 +264,8 @@ export const deleteTenant = /* GraphQL */ `mutation DeleteTenant(
     initialPassword
     retentionPeriodDays
     isSuspended
+    prefix
+    email
     createdAt
     updatedAt
     __typename
