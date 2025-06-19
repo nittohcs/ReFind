@@ -32,10 +32,10 @@ export const onCreateTenant = /* GraphQL */ `subscription OnCreateTenant($filter
     name
     maxUserCount
     initialPassword
+    email
+    prefix
     retentionPeriodDays
     isSuspended
-    prefix
-    email
     createdAt
     updatedAt
     __typename
@@ -51,10 +51,10 @@ export const onUpdateTenant = /* GraphQL */ `subscription OnUpdateTenant($filter
     name
     maxUserCount
     initialPassword
+    email
+    prefix
     retentionPeriodDays
     isSuspended
-    prefix
-    email
     createdAt
     updatedAt
     __typename
@@ -70,10 +70,10 @@ export const onDeleteTenant = /* GraphQL */ `subscription OnDeleteTenant($filter
     name
     maxUserCount
     initialPassword
+    email
+    prefix
     retentionPeriodDays
     isSuspended
-    prefix
-    email
     createdAt
     updatedAt
     __typename

@@ -7,11 +7,12 @@ import { useTenantId } from "./hook";
 
 export default function Page() {
     const tenantId = useTenantId();
-
+    
     const authState = useAuthState();
     if (!authState.username) {
         return <></>;
-    }
+    }    
+        
     return (
         <>
             <Typography variant="h5">{`ようこそ、${authState.name}さん！`}</Typography>

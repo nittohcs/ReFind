@@ -28,10 +28,10 @@ export const getTenant = /* GraphQL */ `query GetTenant($id: ID!) {
     name
     maxUserCount
     initialPassword
+    email
+    prefix
     retentionPeriodDays
     isSuspended
-    prefix
-    email
     createdAt
     updatedAt
     __typename
@@ -49,10 +49,10 @@ export const listTenants = /* GraphQL */ `query ListTenants(
       name
       maxUserCount
       initialPassword
+      email
+      prefix
       retentionPeriodDays
       isSuspended
-      prefix
-      email
       createdAt
       updatedAt
       __typename
