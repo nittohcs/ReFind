@@ -59,7 +59,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
             return isAvailable;
         }),
         name: yup.string().required().default(""),
-        email: yup.string().required().email().default(qTenant.data?.email),
+        email: yup.string().required().email().default(qTenant.data?.email ?? ""),
         image: yup.string().required().default(ImageUploadState.Unchange),
         comment: yup.string().default(""),
         isAdmin: yup.bool().required().default(false),
@@ -80,7 +80,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
             }
 
             // IDを全て小文字に変換する
-            values.id = values.id + "@" + qTenant.data?.prefix;
+            values.id = values.id + "@" + (qTenant.data?.prefix ?? "");
             //values.id = values.id.toLowerCase();
 
             // ユーザー登録処理
@@ -181,10 +181,10 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
                             label="ID"
                             type="text"
                             debounceTime={300}
-                            inputProps={{ maxLength: 100 ,placeholder: `末尾に@${qTenant.data?.prefix}が付与されます。`}}
+                            inputProps={{ maxLength: 100 ,placeholder: `末尾に@${qTenant.data?.prefix ?? ""}が付与されます。`}}
                             // sx={{ width: '450px', height: '56px'}}
                         />
-                        <Typography color="rgb(121, 121, 121)" margin={1}>@{qTenant.data?.prefix}</Typography>
+                        <Typography color="rgb(121, 121, 121)" margin={1}>@{qTenant.data?.prefix ?? ""}</Typography>
                     </Box>
                     {/* システムで未使用 */}
                     {/* <MiraCalTextField

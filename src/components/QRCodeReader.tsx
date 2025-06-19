@@ -1,8 +1,9 @@
 "use client";
 
 import { FC, useEffect, useRef, useState } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import jsQR from "jsqr";
+import CameraswitchIcon from '@mui/icons-material/Cameraswitch';
 
 type QRCodeReaderProps = {
     onRead: (data: string) => Promise<boolean>,
@@ -166,7 +167,7 @@ export const QRCodeReader: FC<QRCodeReaderProps> = ({
 
     return (
         <>
-            <Button
+            {/* <Button
                 variant="contained"
                 onClick={() => {
                     stopCamera(); // 現在のカメラを停止
@@ -175,7 +176,16 @@ export const QRCodeReader: FC<QRCodeReaderProps> = ({
                 }}
             >
                 カメラ切り替え
-            </Button>
+            </Button> */}
+            <Tooltip title="カメラ切替">
+                <IconButton onClick={() => {
+                    stopCamera(); // 現在のカメラを停止
+                    setFacingMode(prev => prev === "user" ? "environment" : "user"); // 向きを切り替え
+                    initializedRef.current = false; // useEffect を再実行させる
+                }}>
+                    <CameraswitchIcon />
+                </IconButton>
+            </Tooltip>
 
             {hasCamera === null ? (
                 <></>

@@ -29,6 +29,12 @@ type Tenant @model @auth (
 
   # 初期パスワード
   initialPassword: String!
+  
+  # メールアドレス
+  email: String!
+
+  # テナント識別子
+  prefix: String!
 
   # 座席確保情報の履歴保管日数
   retentionPeriodDays: Int!

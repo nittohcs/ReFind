@@ -88,7 +88,7 @@
         },
         "refind2UpdateSeatOccupancy": {
           "deploymentBucketName": "amplify-refind2-staging-78a18-deployment",
-          "s3Key": "amplify-builds/refind2UpdateSeatOccupancy-31516d4558436c696839-build.zip"
+          "s3Key": "amplify-builds/refind2UpdateSeatOccupancy-54664f725746442f7437-build.zip"
         }
       },
       "api": {

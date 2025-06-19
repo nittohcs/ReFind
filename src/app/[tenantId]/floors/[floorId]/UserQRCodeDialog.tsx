@@ -123,7 +123,7 @@ export const UserQRCodeDialog: FC<UserQRCodeDialogProps> = ({
         close();
 
         return true;
-    }, [allSeats, authState.name, authState.username, enqueueSnackbar, myOccupancy, mySeat, router, seatOccupancyMap, queryClient, today, allFloors, myFloor, tenantId, dialogData]);
+    }, [allSeats, authState.name, authState.username, myOccupancy, mySeat, router, seatOccupancyMap, queryClient, today, allFloors, myFloor, tenantId, dialogData]);
     
     // onReadの後に連続でmutationを呼び出す
     return (

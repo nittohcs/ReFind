@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Box, IconButton, Popper, Toolbar, Tooltip, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import PrintIcon from "@mui/icons-material/Print";
+import DownloadIcon from "@mui/icons-material/Download";
 import { useQueryClient } from "@tanstack/react-query";
 import { useReactToPrint } from "react-to-print";
 import { Seat, SeatOccupancy, User } from "@/API";
@@ -22,7 +23,7 @@ import { queryKeys } from "@/services/queryKeys";
 import { useTenantId } from "../../hook";
 import { ConfirmDialog, ConfirmDialogData } from "./ConfirmDialog";
 import { UserQRCodeDialog, UserQRCodeDialogData } from "./UserQRCodeDialog";
-
+import { downloadCSV } from "@/services/util";
 
 export default function Page({ params }: { params: { floorId: string } }) {
     const tenantId = useTenantId();
@@ -33,11 +34,18 @@ export default function Page({ params }: { params: { floorId: string } }) {
     const {isReady, myOccupancy, mySeat, myFloor, seatOccupancyMap, allFloors, allSeats} = useSeatOccupancy();
     const floor = useMemo(() => allFloors.find(x => x.id === floorId) ?? null, [allFloors, floorId]);
     const seats = useMemo(() => allSeats.filter(x => x.floorId === floorId), [allSeats, floorId]);
+    const tenantSeats = useMemo(() => allSeats.filter(x => x.tenantId === tenantId), [allSeats, tenantId]);
 
     const confirmDialogState = useDialogStateWithData<ConfirmDialogData>();
     
     //QRコード読み取りダイアログを宣言する。
     const userQRCodeDialogState = useDialogStateWithData<UserQRCodeDialogData>();
+
+    // CSV出力項目
+    function ToTableData(Seats: Seat[]) {
+        return Seats.map((seat, index) => ({ ...seat, sortId: index }));
+    }    
+    const [data, _setData] = useState(() => ToTableData(tenantSeats ?? []));
 
     const enqueueSnackbar = useEnqueueSnackbar();
     const handleSeatClick = useCallback((seat: Seat, occupancy: SeatOccupancy | null) => {
@@ -149,7 +157,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
                 return;
             }
         }
-    }, [myOccupancy, enqueueSnackbar, confirmDialogState, authState.username, authState.name, authState.groups?.admins]);
+    }, [myOccupancy, confirmDialogState, authState.username, authState.name, authState.groups?.admins]);
 
 
     const imageQuery = useStorageFileURL(floor?.imagePath ?? "");
@@ -220,6 +228,19 @@ export default function Page({ params }: { params: { floorId: string } }) {
         setIsExitPopperImage(false);
     }, []);
 
+    // CSV出力
+    // useMemoでメモ化(キャッシュ)
+    // useMemo(() => (処理内容), [依存する値]);
+    // 重い処理の結果をキャッシュで保持する。
+    // 依存する値が変更するたびに中の処理が実行されて、キャッシュを更新する。
+    // 依存する値が変わらない限り、キャッシュの値を返し続ける。
+    const handleDownload = useCallback(() => {
+        if (data.length === 0) {
+            return;
+        }
+        downloadCSV(data, "座席一覧.csv");
+    }, [data]);
+
     useEffect(() => {
         const checkImage = async () => {
             const isExist = await checkImageExists(popperImageUrl);
@@ -265,6 +286,11 @@ export default function Page({ params }: { params: { floorId: string } }) {
                                             </IconButton>
                                         </Tooltip>
                                     </Link>
+                                    <Tooltip title="CSVダウンロード">
+                                        <IconButton onClick={() => handleDownload()}>
+                                            <DownloadIcon />
+                                        </IconButton>
+                                    </Tooltip>
                                 </>
                             )}
                         </Toolbar>

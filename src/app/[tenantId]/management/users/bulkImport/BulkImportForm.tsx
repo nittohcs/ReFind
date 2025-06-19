@@ -98,8 +98,11 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
                 }
 
                 // idにプレフィックスを追加
-                user.id = user.id + "@" + tenantId;                
-                user.id = user.id.toLowerCase();
+                if(user.id?.endsWith("@" + qTenant.data?.prefix))
+                {
+                    user.id = user.id + "@" + qTenant.data?.prefix;   
+                }             
+                //user.id = user.id.toLowerCase();
 
                 // 氏名チェック
                 if (!user.name) {
@@ -107,7 +110,7 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
                 }
 
                 // メールアドレスチェック
-                user.email = "ReFind@email";                
+                user.email = qTenant.data?.email ? qTenant.data?.email : "";                
                 if (!user.email) {
                     errors.push(`${index}件目: メールアドレスが入力されていません。`);
                 } else {

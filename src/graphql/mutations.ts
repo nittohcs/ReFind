@@ -218,10 +218,10 @@ export const createTenant = /* GraphQL */ `mutation CreateTenant(
     name
     maxUserCount
     initialPassword
+    email
+    prefix
     retentionPeriodDays
     isSuspended
-    prefix
-    email
     createdAt
     updatedAt
     __typename
@@ -240,10 +240,10 @@ export const updateTenant = /* GraphQL */ `mutation UpdateTenant(
     name
     maxUserCount
     initialPassword
+    email
+    prefix
     retentionPeriodDays
     isSuspended
-    prefix
-    email
     createdAt
     updatedAt
     __typename
@@ -262,10 +262,10 @@ export const deleteTenant = /* GraphQL */ `mutation DeleteTenant(
     name
     maxUserCount
     initialPassword
+    email
+    prefix
     retentionPeriodDays
     isSuspended
-    prefix
-    email
     createdAt
     updatedAt
     __typename
