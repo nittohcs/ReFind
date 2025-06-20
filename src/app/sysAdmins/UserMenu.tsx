@@ -31,7 +31,7 @@ export function UserMenu() {
                 <MenuItem onClick={menu.withClose(async () => await download(sysAdminManualPath))}>ヘルプ</MenuItem>
                 <MenuItem onClick={() => signOut()}>ログアウト</MenuItem>
                 <Divider sx={{ mb: 1 }} />
-                {/* 管理者用マニュアル */}
+                {/* 利用規約 */}
                 {authState.groups?.admins && (
                     <MenuItem onClick={menu.withClose(async () => await download(sysAdminManualPath))}>利用規約</MenuItem>
                 )}

@@ -168,7 +168,7 @@ export const SysAdminsMainUI: FC<PropsWithChildren> = ({
                     />
                     <LinkItem
                         href="/sysAdmins/uploadManual"
-                        text="マニュアル編集"
+                        text="ドキュメント設定"
                         icon={<UploadFileIcon />}
                     />
                 </List>

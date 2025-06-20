@@ -141,7 +141,7 @@ export const ImportCSVDialog: FC<ImportCSVDialogProps> = ({
             return ret;
         },
         onSuccess(data, _variables, _context) {
-            enqueueSnackbar("インポートが完了しました。", { variant: "success" });
+            enqueueSnackbar("アップロードが完了しました。", { variant: "success" });
 
             // クエリのキャッシュから削除されたSeatを削除する
             const deletedSet = new Set(data.deleted.map(x => x.id));
@@ -181,7 +181,7 @@ export const ImportCSVDialog: FC<ImportCSVDialogProps> = ({
 
     return (
         <Dialog fullWidth maxWidth="sm" open={isOpened} onClose={() => !mutation.isPending && close()}>
-            <DialogTitle>CSVインポート</DialogTitle>
+            <DialogTitle>CSVアップロード</DialogTitle>
             <Formik<FormValues>
                 validationSchema={validationSchema}
                 initialValues={initialValues}
@@ -189,7 +189,9 @@ export const ImportCSVDialog: FC<ImportCSVDialogProps> = ({
             >
                 <MiraCalForm disablePadding disableGap>
                     <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                        <DialogContentText>既存の座席をすべて削除し、CSVエクスポートで保存したファイルを読み込んで座席を新規登録します。</DialogContentText>
+                    {/* 既存の座席をすべて削除し、CSVダウンロードで出力したCSVファイルを
+                    読み込んで座席を新規登録します。 */}
+                        <DialogContentText>既存の座席をすべて削除し、CSVダウンロードで出力したCSVファイルを<br />読み込んで座席を新規登録します。</DialogContentText>
                         <MiraCalFileUpload
                             name="csv"
                             label="CSVファイル"
@@ -209,7 +211,7 @@ export const ImportCSVDialog: FC<ImportCSVDialogProps> = ({
                             type="submit"
                             disabled={mutation.isPending}
                         >
-                            インポート
+                            アップロード
                         </MiraCalButton>
                         <MiraCalButton
                             variant="contained"
