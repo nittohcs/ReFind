@@ -11,7 +11,7 @@ import MiraCalFormAction from "@/components/MiraCalFormAction";
 import MiraCalButton from "@/components/MiraCalButton";
 import { uploadFile } from "@/hooks/storage";
 import { useEnqueueSnackbar } from "@/hooks/ui";
-import { adminManualPath, sysAdminManualPath, userManualPath } from "@/services/manual";
+import { adminManualPath, sysAdminManualPath, termsOfUsePath, userManualPath } from "@/services/manual";
 import { queryKeys } from "@/services/queryKeys";
 
 type FormValues = {
@@ -42,6 +42,7 @@ export const EditManualForm: FC<EditManualFormProps> = ({
     const userManualFileRef = useRef<HTMLInputElement>(null);
     const adminManualFileRef = useRef<HTMLInputElement>(null);
     const sysAdminManualFileRef = useRef<HTMLInputElement>(null);
+    const termsOfUseFileRef = useRef<HTMLInputElement>(null);
 
     const enqueueSnackbar = useEnqueueSnackbar();
     const queryClient = useQueryClient();
@@ -115,24 +116,31 @@ export const EditManualForm: FC<EditManualFormProps> = ({
                 <MiraCalForm>
                     <MiraCalFileUpload
                         name="userManual"
-                        label="ユーザーマニュアル"
+                        label="ユーザーヘルプ"
                         currentFilePath={userManualPath}
                         accept="application/pdf"
                         fileRef={userManualFileRef}
                     />
                     <MiraCalFileUpload
                         name="adminManual"
-                        label="管理者マニュアル"
+                        label="管理者ヘルプ"
                         currentFilePath={adminManualPath}
                         accept="application/pdf"
                         fileRef={adminManualFileRef}
                     />
                     <MiraCalFileUpload
                         name="sysAdminManual"
-                        label="システム管理者マニュアル"
+                        label="システム管理者ヘルプ"
                         currentFilePath={sysAdminManualPath}
                         accept="application/pdf"
                         fileRef={sysAdminManualFileRef}
+                    />
+                    <MiraCalFileUpload
+                        name="termsOfUse"
+                        label="利用規約"
+                        currentFilePath={termsOfUsePath}
+                        accept="application/pdf"
+                        fileRef={termsOfUseFileRef}
                     />
                     <MiraCalFormAction>
                         <MiraCalButton

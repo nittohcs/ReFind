@@ -22,8 +22,8 @@ export default function Page() {
                 <Link href="/sysAdmins/uploadManual">
                     <Card>
                         <CardContent>
-                            <Typography variant="h6">マニュアル編集</Typography>
-                            <Typography variant="caption">マニュアルを編集する</Typography>
+                            <Typography variant="h6">ドキュメント設定</Typography>
+                            <Typography variant="caption">ヘルプを編集する</Typography>
                         </CardContent>
                         <CardActions>
                             <Button size="small">表示する</Button>

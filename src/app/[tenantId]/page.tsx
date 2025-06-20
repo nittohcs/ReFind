@@ -24,7 +24,12 @@ export default function Page() {
                             <Typography variant="caption">座席確認、座席確保を行う</Typography>
                         </CardContent>
                         <CardActions>
-                            <Button size="small">座席確認、座席確保する</Button>
+                            {authState.groups?.admins && (
+                                <Button size="small">座席確認、座席確保する</Button>
+                            )}
+                            {authState.groups?.users && (
+                                <Button size="small">　</Button>
+                            )}
                         </CardActions>
                     </Card>
                 </Link>
@@ -35,7 +40,12 @@ export default function Page() {
                             <Typography variant="caption">座席QRコードを読込して座席確保を行う</Typography>
                         </CardContent>
                         <CardActions>
-                            <Button size="small">QRコードを読込する</Button>
+                            {authState.groups?.admins && (
+                                <Button size="small">QRコードを読込する</Button>
+                            )}
+                            {authState.groups?.users && (
+                                <Button size="small">　</Button>
+                            )}
                         </CardActions>
                     </Card>
                 </Link>
@@ -46,7 +56,12 @@ export default function Page() {
                             <Typography variant="caption">ユーザーの所在確認を行う</Typography>
                         </CardContent>
                         <CardActions>
-                            <Button size="small">所在確認する</Button>
+                            {authState.groups?.admins && (
+                                <Button size="small">所在確認する</Button>
+                            )}
+                            {authState.groups?.users && (
+                                <Button size="small">　</Button>
+                            )}
                         </CardActions>
                     </Card>
                 </Link>
@@ -58,7 +73,12 @@ export default function Page() {
                                 <Typography variant="caption">システムの設定を行う</Typography>
                             </CardContent>
                             <CardActions>
-                                <Button size="small">設定を行う（管理者専用）</Button>
+                                {authState.groups?.admins && (
+                                    <Button size="small">設定を行う（管理者専用）</Button>
+                                )}
+                                {authState.groups?.users && (
+                                    <Button size="small">　</Button>
+                                )}
                             </CardActions>
                         </Card>
                     </Link>

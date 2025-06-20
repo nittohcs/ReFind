@@ -84,23 +84,24 @@ export function UserMenu() {
                     <Divider sx={{ mb: 1 }} />
                 )}
                 
+                {/* 設定 */}
                 <Link href={`/${tenantId}/userSettings`}>
-                    <MenuItem onClick={menu.closeHandler}>設定</MenuItem>
-                </Link>
+                    <MenuItem onClick={menu.closeHandler} sx={{ mb: 1 }}>設定</MenuItem>
+                </Link>               
+                <Divider sx={{ mb: 1 }} />
+                
+                {/* ログアウト */}
+                <MenuItem onClick={() => signOut()}>ログアウト</MenuItem>   
 
-                {/* 一般ユーザー様マニュアル */}
+                {/* 一般ユーザー様ヘルプ */}
                 {authState.groups?.users && (
                     <MenuItem onClick={menu.withClose(async () => await download(userManualPath))}>ヘルプ</MenuItem>
                 )}
-                {/* 管理者用マニュアル */}
+                {/* 管理者用ヘルプ */}
                 {authState.groups?.admins && (
                     <MenuItem onClick={menu.withClose(async () => await download(adminManualPath))}>ヘルプ</MenuItem>
                 )}
-                <MenuItem onClick={() => signOut()}>ログアウト</MenuItem>   
-
-                <Divider sx={{ mb: 1 }} />
-                
-                {/* 管理者用マニュアル */}
+                {/* 管理者用ヘルプ */}
                 {authState.groups?.admins && (
                     <MenuItem onClick={menu.withClose(async () => await download(adminManualPath))}>利用規約</MenuItem>
                 )}

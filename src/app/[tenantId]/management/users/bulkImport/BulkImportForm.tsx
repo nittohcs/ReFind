@@ -69,15 +69,19 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
             if (users.length === 0) {
                 errors.push("有効なデータが入力されていません。");
             }
-
-            const newUserIds = users.map(x => x.id!.toLowerCase());
+            // const newUserIds = users.map(x => x.id!.toLowerCase());
+            const newUserIds = users.map(x => x.id!.endsWith("@" + qTenant.data?.prefix) ? x.id! : x.id! + ("@" + qTenant.data?.prefix));
+            
             for(const [i, user] of users.entries()) {
                 const index = i + 1;
                 // idチェック
                 if (!user.id) {
                     errors.push(`${index}件目: IDが入力されていません。`);
                 } else {
-                    const userId = user.id.toLowerCase();
+                    let userId = user.id;
+                    if(!userId.endsWith("@" + qTenant.data?.prefix)){
+                        userId = user.id + "@" + qTenant.data?.prefix;
+                    }
                     if (currentUserIds.has(userId)) {
                         errors.push(`${index}件目: 入力されたIDは既に使用されています。`);
                     } else if (newUserIds.slice(0, i).some(x => x === userId)) {
@@ -98,7 +102,7 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
                 }
 
                 // idにプレフィックスを追加
-                if(user.id?.endsWith("@" + qTenant.data?.prefix))
+                if(!user.id?.endsWith("@" + qTenant.data?.prefix))
                 {
                     user.id = user.id + "@" + qTenant.data?.prefix;   
                 }             

@@ -51,6 +51,11 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
                 return false;
             }
 
+            if(!value.endsWith("@" + qTenant.data?.prefix))
+            {
+                value = value + "@" + qTenant.data?.prefix;   
+            }
+
             if (cacheRef.current.has(value)) {
                 return cacheRef.current.get(value)!;
             }
@@ -80,7 +85,10 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
             }
 
             // IDを全て小文字に変換する
-            values.id = values.id + "@" + (qTenant.data?.prefix ?? "");
+            if(!values.id?.endsWith("@" + qTenant.data?.prefix))
+            {
+                values.id = values.id + "@" + qTenant.data?.prefix;   
+            }           
             //values.id = values.id.toLowerCase();
 
             // ユーザー登録処理
