@@ -25,7 +25,7 @@ export default function Page() {
                         </CardContent>
                         <CardActions>
                             {authState.groups?.admins && (
-                                <Button size="small">座席確認、座席確保する</Button>
+                                <Button size="small">座席確認、座席確保を行う</Button>
                             )}
                             {authState.groups?.users && (
                                 <Button size="small">　</Button>
@@ -41,7 +41,7 @@ export default function Page() {
                         </CardContent>
                         <CardActions>
                             {authState.groups?.admins && (
-                                <Button size="small">QRコードを読込する</Button>
+                                <Button size="small">QRコードの読込を行う</Button>
                             )}
                             {authState.groups?.users && (
                                 <Button size="small">　</Button>
@@ -57,7 +57,7 @@ export default function Page() {
                         </CardContent>
                         <CardActions>
                             {authState.groups?.admins && (
-                                <Button size="small">所在確認する</Button>
+                                <Button size="small">所在確認を行う</Button>
                             )}
                             {authState.groups?.users && (
                                 <Button size="small">　</Button>

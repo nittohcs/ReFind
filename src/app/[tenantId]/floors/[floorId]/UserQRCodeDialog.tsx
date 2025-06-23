@@ -79,7 +79,7 @@ export const UserQRCodeDialog: FC<UserQRCodeDialogProps> = ({
         // フロアの存在チェック
         const floor = allFloors.find(x => x.id === seat.floorId) ?? null;
         if (!floor) {
-            enqueueSnackbar(`座席「${seat.name}」に対応するフロアが存在しません。`, { variant: "error" });
+            enqueueSnackbar(`座席「${seat.name}」に対応しているフロアが存在しません。`, { variant: "error" });
             router.push(`/${tenantId}`);
             // ダイアログを閉じる
             close();
