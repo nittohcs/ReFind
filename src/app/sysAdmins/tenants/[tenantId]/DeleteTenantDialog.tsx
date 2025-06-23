@@ -36,7 +36,7 @@ export const DeleteTenantDialog: FC<DeleteTenantDialogProps> = ({
     const router = useRouter();
 
     const validationSchema = useMemo(() => yup.object().shape({
-        key: yup.string().required().default("").oneOf<string>([`${tenant?.name}を削除する`], `「${tenant?.name}を削除する」と入力してください。`),
+        key: yup.string().required().default("").oneOf<string>([`${tenant?.name}の削除を行う`], `「${tenant?.name}の削除を行う」と入力してください。`),
     }), [tenant]);
 
     const initialValues: FormValues = useMemo(() => validationSchema.cast({
@@ -153,7 +153,7 @@ export const DeleteTenantDialog: FC<DeleteTenantDialogProps> = ({
                 <MiraCalForm disablePadding disableGap>
                     <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                         <DialogContentText>
-                            {`テナントを削除するには、「${tenant?.name}を削除する」と入力してから削除ボタンを押してください。`}
+                            {`テナントの削除を行うには、「${tenant?.name}の削除を行う」と入力してから削除ボタンを押してください。`}
                         </DialogContentText>
                         <MiraCalTextField
                             name="key"

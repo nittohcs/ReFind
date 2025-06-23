@@ -54,7 +54,7 @@ export default function Page() {
                     <Card>
                         <CardContent>
                             <Typography variant="h6">座席確保履歴一覧</Typography>
-                            <Typography variant="caption">座席確保履歴の一覧を表示する</Typography>
+                            <Typography variant="caption">座席確保履歴の一覧を表示を行う</Typography>
                         </CardContent>
                         <CardActions>
                             <Button size="small">設定を行う</Button>

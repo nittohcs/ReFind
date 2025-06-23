@@ -179,7 +179,7 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
                         >
                             保存
                         </MiraCalButton>
-                        <Tooltip title={!initialValues.isSuspended ? "削除するには利用停止中である必要があります。" : ""}>
+                        <Tooltip title={!initialValues.isSuspended ? "削除を行うには利用停止中である必要があります。" : ""}>
                             <span>
                                 <Button
                                     variant="contained"

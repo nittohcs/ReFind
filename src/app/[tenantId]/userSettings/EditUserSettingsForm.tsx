@@ -144,7 +144,7 @@ export const EditUserSettingsForm: FC<EditUserSettingsFormProps> = ({ /*confirmi
                 update();
             }
             if (confirmRequired) {
-                enqueueSnackbar("メールアドレスを変更するには確認コードを入力してください。", { variant: "info" })
+                enqueueSnackbar("メールアドレスの変更を行うには確認コードを入力してください。", { variant: "info" })
             }
 
             // クエリのキャッシュを更新

@@ -128,9 +128,9 @@ export const DeleteUserDialog: FC<DeleteUserDialogProps> = ({ isOpened, close, d
                     <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                         <DialogContentText>
                             {includeOperatingUser ? (
-                                "操作中のユーザーを削除することはできません。"
+                                "操作中のユーザーの削除を行うことはできません。"
                             ) : (
-                                `選択中の${data?.length}件のユーザーを削除するには「delete」を入力してから削除ボタンを押してください。`
+                                `選択中の${data?.length}件のユーザーの削除を行うには「delete」を入力してから削除ボタンを押してください。`
                             )}
                         </DialogContentText>
                         <MiraCalTextField

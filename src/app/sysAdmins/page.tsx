@@ -12,10 +12,10 @@ export default function Page() {
                     <Card>
                         <CardContent>
                             <Typography variant="h6">テナント</Typography>
-                            <Typography variant="caption">テナントの一覧を表示する</Typography>
+                            <Typography variant="caption">テナントの一覧を表示を行う</Typography>
                         </CardContent>
                         <CardActions>
-                            <Button size="small">表示する</Button>
+                            <Button size="small">表示を行う</Button>
                         </CardActions>
                     </Card>
                 </Link>
@@ -23,10 +23,10 @@ export default function Page() {
                     <Card>
                         <CardContent>
                             <Typography variant="h6">ドキュメント設定</Typography>
-                            <Typography variant="caption">ヘルプを編集する</Typography>
+                            <Typography variant="caption">ヘルプの設定を行う</Typography>
                         </CardContent>
                         <CardActions>
-                            <Button size="small">表示する</Button>
+                            <Button size="small">表示を行う</Button>
                         </CardActions>
                     </Card>
                 </Link>

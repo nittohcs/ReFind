@@ -36,7 +36,7 @@ export const BulkEditUserDialog: FC<BulkEditUserDialogProps> = ({
     const tenantId = useTenantId();
     const authState = useAuthState();
     const validationSchema = useMemo(() => yup.object().shape({
-        isAdmin: yup.bool().required().default(false).test("isAdmin", "操作中のユーザーを管理者ではなくすることはできません", value => {
+        isAdmin: yup.bool().required().default(false).test("isAdmin", "操作中のユーザーを管理者から外すことはできません", value => {
             if (!value) {
                 return !(data ?? []).some(x => x.id === authState.username);
             }
