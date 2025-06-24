@@ -101,12 +101,27 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
                     }
                 }
 
-                // idにプレフィックスを追加
-                if(!user.id?.endsWith("@" + qTenant.data?.prefix))
-                {
-                    user.id = user.id + "@" + qTenant.data?.prefix;   
-                }             
+                // プレフィックスの自動追加
+                // if(!user.id?.endsWith("@" + qTenant.data?.prefix))
+                // {
+                //     user.id = user.id + "@" + qTenant.data?.prefix;   
+                // }             
                 //user.id = user.id.toLowerCase();
+                
+                // プレフィックスの入力チェック
+                if(user.id?.includes("@" + qTenant.data?.prefix))
+                {
+                    const prefixCount = user.id.split("@" + qTenant.data?.prefix).length - 1;
+                    if(prefixCount > 1)
+                    {
+                        errors.push(("@" + qTenant.data?.prefix) + "が複数入力されています。");
+                    }
+                }           
+                else
+                {
+                    // 入力値に含まれていない場合
+                    errors.push("末尾に" + ("@" + qTenant.data?.prefix) + "を入力してください。");
+                }
 
                 // 氏名チェック
                 if (!user.name) {

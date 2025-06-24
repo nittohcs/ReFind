@@ -14,7 +14,9 @@ type UseSeatOccupancyValue = {
     myFloor: Floor | null,
     allSeats: Seat[],
     allFloors: Floor[],
-    seatOccupancyMap: Map<string, SeatOccupancy>,
+    seatOccupancyMap: Map<string, SeatOccupancy>,    
+    refetchOccupancies: () => Promise<any>, // 座席情報最新化
+
 };
 const defaultValue: UseSeatOccupancyValue = {
     isReady: false,
@@ -24,6 +26,7 @@ const defaultValue: UseSeatOccupancyValue = {
     allSeats: [],
     allFloors: [],
     seatOccupancyMap: new Map<string, SeatOccupancy>(),
+    refetchOccupancies: async () => {},
 };
 export const SeatOccupancyContext = createContext<UseSeatOccupancyValue>(defaultValue);
 export const useSeatOccupancy = () => useContext(SeatOccupancyContext);
@@ -84,5 +87,6 @@ export const useSeatOccupancyValue = (tenantId: string): UseSeatOccupancyValue =
         allSeats,
         allFloors,
         seatOccupancyMap,
+        refetchOccupancies: qOccupancies.refetch, // ← 追加
     };
 };

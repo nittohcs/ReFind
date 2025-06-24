@@ -54,12 +54,9 @@ export const UserQRCodeDialog: FC<UserQRCodeDialogProps> = ({
         const user = qUsers.data?.find(x => x.id === userId) ?? null;
         if(!user){
             enqueueSnackbar(`無効なQRコード(ユーザー)が読み込まれました。`, { variant: "error" });
-            //router.push(`/${tenantId}`);
             // ダイアログを閉じる
             close();
             return true;
-        }else{
-            enqueueSnackbar(`ユーザー読み取りました。`, { variant: "success" });
         }
 
         if (!dialogData) {
@@ -71,7 +68,6 @@ export const UserQRCodeDialog: FC<UserQRCodeDialogProps> = ({
         const seat = allSeats.find(x => x.id === dialogData?.newSeat?.id) ?? null;
         if (!seat) {
             enqueueSnackbar(`無効なQRコードが読み込まれました。`, { variant: "error" });
-            //router.push(`/${tenantId}`);
             // ダイアログを閉じる
             close();
             return true;

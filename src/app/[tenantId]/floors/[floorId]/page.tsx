@@ -31,7 +31,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
     const authState = useAuthState();
     const qUsers = useUsersByTenantId(tenantId);
     const users = useMemo(() => qUsers.data ?? [], [qUsers.data]);
-    const {isReady, myOccupancy, mySeat, myFloor, seatOccupancyMap, allFloors, allSeats} = useSeatOccupancy();
+    const {isReady, myOccupancy, mySeat, myFloor, seatOccupancyMap, allFloors, allSeats, refetchOccupancies} = useSeatOccupancy();
     const floor = useMemo(() => allFloors.find(x => x.id === floorId) ?? null, [allFloors, floorId]);
     const seats = useMemo(() => allSeats.filter(x => x.floorId === floorId), [allSeats, floorId]);
     const tenantSeats = useMemo(() => allSeats.filter(x => x.tenantId === tenantId), [allSeats, tenantId]);
@@ -48,39 +48,48 @@ export default function Page({ params }: { params: { floorId: string } }) {
     const [data, _setData] = useState(() => ToTableData(tenantSeats ?? []));
 
     const enqueueSnackbar = useEnqueueSnackbar();
+
+    // 座席クリック時
     const handleSeatClick = useCallback((seat: Seat, occupancy: SeatOccupancy | null) => {
+
+        // 同期が失敗している場合の対処法
+        // ①DB検索
+
+        // ②キャッシュの最新化
+        refetchOccupancies();
+        const seatOccupancy = seatOccupancyMap.get(seat.id);
+        // 座席が取得中の場合、メッセージ？を表示する。
+        if(seatOccupancy?.seatAvailability)
+        {
+            enqueueSnackbar(`座席は取得されています(動作確認)`, { variant: "error" });
+        }
+        else if(!seatOccupancy?.seatAvailability){
+            enqueueSnackbar(`空席です(動作確認)`, { variant: "success" });
+        }
+        else{
+            enqueueSnackbar(`まだ座席が取られてない`, { variant: "success" });
+        }
 
         // 既に座席が使用中
         if (occupancy && occupancy.userId) {
             if (occupancy === myOccupancy) {
                 // 自分が使用中
                 //enqueueSnackbar("選択した座席を使用中です。", { variant: "info" });
-                return;
             } else {
                 // 他人が使用中
                 if (authState.groups?.admins) {
-                    // confirmDialogState.open({
-                    //     title: "座席強制解放",
-                    //     message: `選択した座席は${occupancy.userName}が使用中です。座席を強制解放します。`,
-                    //     newSeat: null,
-                    //     oldSeat: seat,
-                    //     userId: authState.username ?? "",
-                    //     userName: authState.name ?? "",
-                    // });
+                    // 管理者が他人の座席をクリックした場合、何もしない。
+                    // タブレット使用時にクリックした時にコメントを表示させるため。
                 } else {
+                    // 一般ユーザーが他人の座席をクリックした場合、メッセージを表示する。
                     enqueueSnackbar(`選択した座席は${occupancy.userName}が使用中です。`, { variant: "error" });
                 }
-                return;
-            }
+            }            
+            return;
         }
 
-        // 管理者はダブルクリックで全座席解放
-        // 管理者で座席を選択した場合はQRコードを読み取る
-
-        // 管理者ではなく共通ユーザーを作成する場合
-
+        // 管理者が空席を選択した場合、ユーザーQRコード読取画面を表示する。
         if (authState.groups?.admins) {
-            enqueueSnackbar(`QRCode起動します`, { variant: "success" });
             userQRCodeDialogState.open({
                 title: "ユーザーIDスキャン",
                 message: "選択した座席を確保します。",
@@ -89,11 +98,10 @@ export default function Page({ params }: { params: { floorId: string } }) {
                 userId: "",     //座席取得者
                 userName: "",   //座席取得者
             });
-
             return;
         }
 
-        // 空席選択時
+        // 一般ユーザーが空席選択時
         if (mySeat) {
             // 別の座席へ移動する場合
             confirmDialogState.open({
@@ -115,7 +123,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
                 userName: authState.name ?? "",
             });
         }
-    }, [myOccupancy, mySeat, enqueueSnackbar, confirmDialogState , userQRCodeDialogState, authState.username, authState.name, authState.groups?.admins, myFloor, floor?.name]);
+    }, [myOccupancy, mySeat, confirmDialogState , userQRCodeDialogState, authState.username, authState.name, authState.groups?.admins, myFloor, floor?.name]);
 
     // ダブルクリック時のイベント実装する
     const handleSeatDoubleClick = useCallback((seat: Seat, occupancy: SeatOccupancy | null) => {
@@ -136,23 +144,15 @@ export default function Page({ params }: { params: { floorId: string } }) {
             } else {
                 // 他人が使用中
                 if (authState.groups?.admins) {
-                    // 管理者の場合
-                    // フロアの座席を開放
-                    if (authState.groups?.admins) {
-                        confirmDialogState.open({
-                            title: "座席強制解放",
-                            message: `選択した座席は${occupancy.userName}が使用中です。座席を強制解放します。`,
-                            newSeat: null,
-                            oldSeat: seat,
-                            userId: authState.username ?? "",
-                            userName: authState.name ?? "",
-                        });
-                    } else {
-                        // 一般ユーザーは何もしない
-                    }
-                } else {
-                    // 一般ユーザーの場合
-                    //enqueueSnackbar(`選択した座席は${occupancy.userName}が使用中です。`, { variant: "error" });
+                    // 管理者の場合、強制解放確認画面を表示する。
+                    confirmDialogState.open({
+                        title: "座席強制解放",
+                        message: `選択した座席は${occupancy.userName}が使用中です。座席を強制解放します。`,
+                        newSeat: null,
+                        oldSeat: seat,
+                        userId: authState.username ?? "",
+                        userName: authState.name ?? "",
+                    });
                 }
                 return;
             }
@@ -165,6 +165,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [filterString, setFilterString] = useState(() => searchParams.get("filter") || "");
+    // 検索欄入力時
     const handleChange = useCallback((s: string) => {
         const urlSearchParams = new URLSearchParams(searchParams);
         if (s) {
@@ -187,6 +188,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
     const [commentBackgroundColor, setCommentBackgroundColor] = useState("");
     const [popperBorderColor, setPopperBorderColor] = useState("");
 
+    // 座席にカーソルを合わせた場合
     const handleMouseEnter = useCallback(async (e: React.MouseEvent<HTMLElement>, user: User) => {
         setAnchorEl(e.currentTarget);
         setPopperComment(user.comment);
@@ -220,7 +222,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
         }
         setPopperImageUrl(imageUrl);
     }, [queryClient, tenantId]);
-
+    // 座席からカーソルを話した場合
     const handleMouseLeave = useCallback((_e: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(null);
         setPopperComment("");
