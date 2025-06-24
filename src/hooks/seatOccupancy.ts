@@ -15,7 +15,7 @@ type UseSeatOccupancyValue = {
     allSeats: Seat[],
     allFloors: Floor[],
     seatOccupancyMap: Map<string, SeatOccupancy>,    
-    refetchOccupancies: () => Promise<any>, // 座席情報最新化
+    refetchOccupancies: () => Promise<unknown>, // 座席情報最新化
 
 };
 const defaultValue: UseSeatOccupancyValue = {
