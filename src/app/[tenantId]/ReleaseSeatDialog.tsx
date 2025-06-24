@@ -18,7 +18,7 @@ export default function ReleaseSeatDialog(state: ConfirmDialogState<Seat>) {
     const mutation = useMutation({
         async mutationFn() {
             if (!state.data) {
-                throw new Error("解放する座席が設定されていません。");
+                throw new Error("解放を行う座席が設定されていません。");
             }
             return await releaseSeat(state.data);
             //return await updateSeat(state.data);

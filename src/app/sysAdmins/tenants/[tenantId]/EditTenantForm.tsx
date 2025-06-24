@@ -74,7 +74,7 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
                 maxUserCount: values.maxUserCount,
                 initialPassword: values.initialPassword,
                 email: values.email,
-                prefix: values.prefix,
+                prefix: values.prefix.toLocaleLowerCase(),
                 retentionPeriodDays: values.retentionPeriodDays,
                 isSuspended: values.isSuspended,
             });

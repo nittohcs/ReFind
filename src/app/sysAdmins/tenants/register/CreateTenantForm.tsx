@@ -99,7 +99,7 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
                 retentionPeriodDays: values.retentionPeriodDays,
                 isSuspended: values.isSuspended,
                 email: values.email,
-                prefix: values.prefix,
+                prefix: values.prefix.toLocaleLowerCase(),
             });
 
             try {

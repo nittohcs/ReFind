@@ -84,10 +84,16 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
                 throw new Error("ユーザーが最大数まで作成されています。");
             }
 
-            // IDを全て小文字に変換する
-            if(!values.id?.endsWith("@" + qTenant.data?.prefix))
+            // 末尾にプレフィックスが入力されている場合
+            // if(!values.id?.endsWith("@" + qTenant.data?.prefix))
+            // {
+            //     values.id = values.id + "@" + qTenant.data?.prefix;   
+            // }
+
+            // 入力値のどこかにプレフィックスが入力されている場合
+            if(values.id?.toLocaleLowerCase().includes("@" + qTenant.data?.prefix))
             {
-                values.id = values.id + "@" + qTenant.data?.prefix;   
+                throw new Error(("@" + qTenant.data?.prefix) + "の入力は不要です。");
             }           
             //values.id = values.id.toLowerCase();
 
