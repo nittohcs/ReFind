@@ -12,7 +12,6 @@ import { useTenantId } from "../../hook";
 import QRCodeReader from "@/components/QRCodeReader";
 import { useRouter } from "next/navigation";
 import { useSeatOccupancy } from "@/hooks/seatOccupancy";
-import { useAuthState } from "@/hooks/auth";
 import { useSeatOccupanciesByDateAndTenantId, useUsersByTenantId } from "@/services/graphql";
 
 export type UserQRCodeDialogData = {
@@ -38,8 +37,7 @@ export const UserQRCodeDialog: FC<UserQRCodeDialogProps> = ({
     const tenantId = useTenantId();
     const today = useTodayYYYYMMDD();
 
-    const authState = useAuthState();
-    const { isReady, myOccupancy, mySeat, myFloor, allSeats, seatOccupancyMap, allFloors } = useSeatOccupancy();    
+    const { isReady, allSeats, allFloors } = useSeatOccupancy();    
     const router = useRouter();
     const qUsers = useUsersByTenantId(tenantId);
     const qOccupancies = useSeatOccupanciesByDateAndTenantId(today, tenantId);
@@ -119,7 +117,7 @@ export const UserQRCodeDialog: FC<UserQRCodeDialogProps> = ({
         close();
 
         return true;
-    }, [allSeats, authState.name, authState.username, myOccupancy, mySeat, router, seatOccupancyMap, queryClient, today, allFloors, myFloor, tenantId, dialogData]);
+    }, [allSeats, router, queryClient, today, allFloors, tenantId, dialogData,close, enqueueSnackbar, qOccupancies.data, qUsers.data]);
     
     // onReadの後に連続でmutationを呼び出す
     return (
