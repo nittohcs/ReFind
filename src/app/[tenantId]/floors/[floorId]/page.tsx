@@ -51,13 +51,13 @@ export default function Page({ params }: { params: { floorId: string } }) {
 
     // 座席クリック時
     // const handleSeatClick = useCallback((seat: Seat, occupancy: SeatOccupancy | null) => {
-    const handleSeatClick = useCallback((seat: Seat) => {
+    const handleSeatClick = useCallback(async (seat: Seat) => {
 
         // 同期が失敗している場合の対処法
         // ①DB検索
 
         // ②キャッシュの最新化
-        refetchOccupancies();
+        await refetchOccupancies();
         const seatOccupancy = seatOccupancyMap.get(seat.id);
         // 座席が取得中の場合、メッセージ？を表示する。
         if(seatOccupancy?.seatAvailability)
