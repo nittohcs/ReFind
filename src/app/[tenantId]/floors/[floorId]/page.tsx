@@ -50,7 +50,8 @@ export default function Page({ params }: { params: { floorId: string } }) {
     const enqueueSnackbar = useEnqueueSnackbar();
 
     // 座席クリック時
-    const handleSeatClick = useCallback((seat: Seat, occupancy: SeatOccupancy | null) => {
+    // const handleSeatClick = useCallback((seat: Seat, occupancy: SeatOccupancy | null) => {
+    const handleSeatClick = useCallback((seat: Seat) => {
 
         // 同期が失敗している場合の対処法
         // ①DB検索
@@ -71,8 +72,8 @@ export default function Page({ params }: { params: { floorId: string } }) {
         }
 
         // 既に座席が使用中
-        if (occupancy && occupancy.userId) {
-            if (occupancy === myOccupancy) {
+        if (seatOccupancy && seatOccupancy.userId) {
+            if (seatOccupancy === myOccupancy) {
                 // 自分が使用中
                 //enqueueSnackbar("選択した座席を使用中です。", { variant: "info" });
             } else {
@@ -82,7 +83,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
                     // タブレット使用時にクリックした時にコメントを表示させるため。
                 } else {
                     // 一般ユーザーが他人の座席をクリックした場合、メッセージを表示する。
-                    enqueueSnackbar(`選択した座席は${occupancy.userName}が使用中です。`, { variant: "error" });
+                    enqueueSnackbar(`選択した座席は${seatOccupancy.userName}が使用中です。`, { variant: "error" });
                 }
             }            
             return;
@@ -126,11 +127,18 @@ export default function Page({ params }: { params: { floorId: string } }) {
     }, [myOccupancy, mySeat, confirmDialogState , userQRCodeDialogState, authState.username, authState.name, authState.groups?.admins, myFloor, floor?.name]);
 
     // ダブルクリック時のイベント実装する
-    const handleSeatDoubleClick = useCallback((seat: Seat, occupancy: SeatOccupancy | null) => {
+    // const handleSeatDoubleClick = useCallback((seat: Seat, occupancy: SeatOccupancy | null) => {
+    const handleSeatDoubleClick = useCallback((seat: Seat) => {
+
+        // ②キャッシュの最新化
+        // 座席をクリック毎に最新化される
+        // ダブルクリックされるとダイアログが開くので連打される恐れは低い？
+        refetchOccupancies();
+        const seatOccupancy = seatOccupancyMap.get(seat.id);
 
         // 既に座席が使用中
-        if (occupancy && occupancy.userId) {
-            if (occupancy === myOccupancy) {
+        if (seatOccupancy && seatOccupancy.userId) {
+            if (seatOccupancy === myOccupancy) {
                 // 自分が使用中
                 confirmDialogState.open({
                     title: "座席解放",
@@ -147,7 +155,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
                     // 管理者の場合、強制解放確認画面を表示する。
                     confirmDialogState.open({
                         title: "座席強制解放",
-                        message: `選択した座席は${occupancy.userName}が使用中です。座席を強制解放します。`,
+                        message: `選択した座席は${seatOccupancy.userName}が使用中です。座席を強制解放します。`,
                         newSeat: null,
                         oldSeat: seat,
                         userId: authState.username ?? "",
@@ -319,8 +327,10 @@ export default function Page({ params }: { params: { floorId: string } }) {
                                     key={seat.id}
                                     seat={seat}
                                     isChangeColor={!!name}
-                                    onClick={() => handleSeatClick(seat, occupancy)}
-                                    onDoubleClick={() => handleSeatDoubleClick(seat, occupancy)} // 実装中
+                                    // onClick={() => handleSeatClick(seat, occupancy)}
+                                    // onDoubleClick={() => handleSeatDoubleClick(seat, occupancy)}
+                                    onClick={() => handleSeatClick(seat)}
+                                    onDoubleClick={() => handleSeatDoubleClick(seat)}
                                     onMouseEnter={(e) => user && handleMouseEnter(e, user)}
                                     onMouseLeave={(e) => handleMouseLeave(e)}
                                 >
