@@ -10,7 +10,7 @@ import PrintIcon from "@mui/icons-material/Print";
 import DownloadIcon from "@mui/icons-material/Download";
 import { useQueryClient } from "@tanstack/react-query";
 import { useReactToPrint } from "react-to-print";
-import { Seat, SeatOccupancy, User } from "@/API";
+import { Seat, User } from "@/API";
 import MiraCalBreadcrumbs from "@/components/MiraCalBreadcrumbs";
 import DebouncedTextField from "@/components/DebouncedTextField";
 import { SeatBox } from "@/components/SeatBox";
