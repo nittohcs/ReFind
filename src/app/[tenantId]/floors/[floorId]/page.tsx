@@ -124,7 +124,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
                 userName: authState.name ?? "",
             });
         }
-    }, [myOccupancy, mySeat, confirmDialogState , userQRCodeDialogState, authState.username, authState.name, authState.groups?.admins, myFloor, floor?.name]);
+    }, [myOccupancy, mySeat, confirmDialogState , userQRCodeDialogState, authState.username, authState.name, authState.groups?.admins, myFloor, floor?.name, enqueueSnackbar, refetchOccupancies, seatOccupancyMap]);
 
     // ダブルクリック時のイベント実装する
     // const handleSeatDoubleClick = useCallback((seat: Seat, occupancy: SeatOccupancy | null) => {
@@ -165,7 +165,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
                 return;
             }
         }
-    }, [myOccupancy, confirmDialogState, authState.username, authState.name, authState.groups?.admins]);
+    }, [myOccupancy, confirmDialogState, authState.username, authState.name, authState.groups?.admins, refetchOccupancies, seatOccupancyMap]);
 
 
     const imageQuery = useStorageFileURL(floor?.imagePath ?? "");

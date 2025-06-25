@@ -68,7 +68,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
         image: yup.string().required().default(ImageUploadState.Unchange),
         comment: yup.string().default(""),
         isAdmin: yup.bool().required().default(false),
-    }), []);
+    }), [qTenant.data?.email, qTenant.data?.prefix]);
 
     const initialValues: FormValues = useMemo(() => validationSchema.cast({
     }), [validationSchema]);
