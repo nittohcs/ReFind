@@ -14,7 +14,7 @@ export default function Page() {
             <MiraCalBreadcrumbs>
                 <Link href={`/${tenantId}`}>ホーム</Link>
                 <Link href={`/${tenantId}/management`}>管理</Link>
-                <Typography>ユーザー編集</Typography>
+                <Typography>ユーザー設定</Typography>
             </MiraCalBreadcrumbs>
             <Box pt={2}>
                 <UsersTable />

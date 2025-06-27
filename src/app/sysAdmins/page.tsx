@@ -13,11 +13,11 @@ export default function Page() {
                 <Link href="/sysAdmins/tenants">
                     <Card>
                         <CardContent>
-                            <Typography variant="h6">テナント</Typography>
-                            <Typography variant="caption">テナントの一覧を表示を行う</Typography>
+                            <Typography variant="h6">テナント設定</Typography>
+                            <Typography variant="caption">テナントの一覧表示を行う</Typography>
                         </CardContent>
                         <CardActions>
-                            <Button size="small">管理者専用</Button>
+                            <Button size="small">システム管理者専用</Button>
                         </CardActions>
                     </Card>
                 </Link>
@@ -28,7 +28,7 @@ export default function Page() {
                             <Typography variant="caption">ヘルプの設定を行う</Typography>
                         </CardContent>
                         <CardActions>
-                            <Button size="small">管理者専用</Button>
+                            <Button size="small">システム管理者専用</Button>
                         </CardActions>
                     </Card>
                 </Link>

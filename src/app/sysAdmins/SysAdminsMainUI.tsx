@@ -163,7 +163,7 @@ export const SysAdminsMainUI: FC<PropsWithChildren> = ({
                     />
                     <LinkItem
                         href="/sysAdmins/tenants"
-                        text="テナント"
+                        text="テナント設定"
                         icon={<BusinessIcon />}
                     />
                     <LinkItem

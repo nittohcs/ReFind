@@ -14,7 +14,7 @@ export default function Page({ params }: { params: { tenantId: string } }) {
         <>
             <MiraCalBreadcrumbs>
                 <Link href="/sysAdmins">ホーム</Link>
-                <Link href="/sysAdmins/tenants">テナント</Link>
+                <Link href="/sysAdmins/tenants">テナント設定</Link>
                 <Typography>{tenantId}</Typography>
             </MiraCalBreadcrumbs>
             <Box pt={2}>

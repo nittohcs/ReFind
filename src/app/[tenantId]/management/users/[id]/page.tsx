@@ -19,7 +19,7 @@ export default function Page({ params }: { params: { id: string } }) {
             <MiraCalBreadcrumbs>
                 <Link href={`/${tenantId}`}>ホーム</Link>
                 <Link href={`/${tenantId}/management`}>管理</Link>
-                <Link href={`/${tenantId}/management/users/`}>ユーザー編集</Link>
+                <Link href={`/${tenantId}/management/users/`}>ユーザー設定</Link>
                 <Typography>{id}</Typography>
             </MiraCalBreadcrumbs>
             <Box pt={2}>

@@ -114,7 +114,7 @@ export const BulkEditUserDialog: FC<BulkEditUserDialogProps> = ({
 
     return (
         <Dialog fullWidth maxWidth="sm" open={isOpened} onClose={() => !mutation.isPending && close()}>
-            <DialogTitle>ユーザー一括編集</DialogTitle>
+            <DialogTitle>ユーザー一括設定</DialogTitle>
             <Formik<FormValues>
                 validationSchema={validationSchema}
                 initialValues={initialValues}

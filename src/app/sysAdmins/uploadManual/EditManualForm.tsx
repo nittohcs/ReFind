@@ -18,6 +18,7 @@ type FormValues = {
     userManual: string,
     adminManual: string,
     sysAdminManual: string,
+    termsOfUse: string,
 };
 
 type EditManualFormProps = {
@@ -31,12 +32,14 @@ export const EditManualForm: FC<EditManualFormProps> = ({
         userManual: yup.string().required(),
         adminManual: yup.string().required(),
         sysAdminManual: yup.string().required(),
+        termsOfUse: yup.string().required(),
     }), []);
 
     const initialValues: FormValues = useMemo(() => validationSchema.cast({
         userManual: FileUploadState.Unchange,
         adminManual: FileUploadState.Unchange,
         sysAdminManual: FileUploadState.Unchange,
+        termsOfUse: FileUploadState.Unchange,
     }), [validationSchema]);
 
     const userManualFileRef = useRef<HTMLInputElement>(null);
@@ -70,6 +73,10 @@ export const EditManualForm: FC<EditManualFormProps> = ({
                 const file = getFile(sysAdminManualFileRef);
                 await uploadManual(sysAdminManualPath, file!);
             }
+            if (values.termsOfUse === FileUploadState.Upload) {
+                const file = getFile(termsOfUseFileRef);
+                await uploadManual(termsOfUsePath, file!);
+            }
         },
         onSuccess(_data, variables, _context) {
             enqueueSnackbar("保存しました。", { variant: "success" });
@@ -83,6 +90,9 @@ export const EditManualForm: FC<EditManualFormProps> = ({
             }
             if (variables.sysAdminManual === FileUploadState.Upload) {
                 queryClient.invalidateQueries({ queryKey: queryKeys.storage(sysAdminManualPath) });
+            }
+            if (variables.termsOfUse === FileUploadState.Upload) {
+                queryClient.invalidateQueries({ queryKey: queryKeys.storage(termsOfUsePath) });
             }
 
             // コンポーネントを再生成
