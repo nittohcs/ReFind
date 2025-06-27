@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Box, colors, Divider, IconButton, Menu, MenuItem, Typography } from "@mui/material";
+import { Box, Divider, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import CheckCircle from "@mui/icons-material/CheckCircleTwoTone";
 import { signOut } from "aws-amplify/auth";
