@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import { Box, Button, Card, CardActions, CardContent, Typography } from "@mui/material";
+import { useAuthState } from "@/hooks/auth";
 
 export default function Page() {
+    const authState = useAuthState();
     return (
         <>
-            <Typography variant="h5">システム管理者ページ</Typography>
+            <Typography variant="h5">{`ようこそ、${authState.name}さん！`}</Typography>
             <Box display="flex" flexDirection="row" flexWrap="wrap" gap={2} pt={2}>
                 <Link href="/sysAdmins/tenants">
                     <Card>
@@ -15,7 +17,7 @@ export default function Page() {
                             <Typography variant="caption">テナントの一覧を表示を行う</Typography>
                         </CardContent>
                         <CardActions>
-                            <Button size="small">表示を行う</Button>
+                            <Button size="small">管理者専用</Button>
                         </CardActions>
                     </Card>
                 </Link>
@@ -26,7 +28,7 @@ export default function Page() {
                             <Typography variant="caption">ヘルプの設定を行う</Typography>
                         </CardContent>
                         <CardActions>
-                            <Button size="small">表示を行う</Button>
+                            <Button size="small">管理者専用</Button>
                         </CardActions>
                     </Card>
                 </Link>
