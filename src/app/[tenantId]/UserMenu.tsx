@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Box, Divider, IconButton, Menu, MenuItem, Typography } from "@mui/material";
+import { Box, colors, Divider, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import CheckCircle from "@mui/icons-material/CheckCircleTwoTone";
 import { signOut } from "aws-amplify/auth";
@@ -62,8 +62,8 @@ export function UserMenu() {
                 {!!authState.name && (
                     <Box width={200}>
                         <Box px={2} py={1}>
-                            <Typography variant="caption">ユーザー</Typography>
-                            <Typography variant="body1">{authState.name}</Typography>
+                            <Typography variant="caption" color="rgb(104, 104, 104)">ユーザー</Typography>
+                            <Typography variant="body1" color="rgb(104, 104, 104)">{authState.name}</Typography>
                         </Box>
                         {/* 販売に向けて削除 */}
                         {/* {isReady && mySeat && myFloor && (
@@ -92,6 +92,7 @@ export function UserMenu() {
                 
                 {/* ログアウト */}
                 <MenuItem onClick={() => signOut()}>ログアウト</MenuItem>   
+                <Divider sx={{ mb: 1 }} />
 
                 {/* 一般ユーザー様ヘルプ */}
                 {authState.groups?.users && (
@@ -106,7 +107,7 @@ export function UserMenu() {
                     <MenuItem onClick={menu.withClose(async () => await download(adminManualPath))}>利用規約</MenuItem>
                 )}
                 <Box px={2} py={1}>
-                    <Typography variant="body1">ver 1.0.0</Typography>
+                    <Typography variant="body1" color="rgb(104, 104, 104)" >ver 1.0.0</Typography>
                 </Box>
             </Menu>
             <ReleaseSeatDialog {...confirmDialogState} />

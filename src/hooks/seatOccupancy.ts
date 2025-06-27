@@ -79,6 +79,10 @@ export const useSeatOccupancyValue = (tenantId: string): UseSeatOccupancyValue =
         return allFloors.find(x => x.id === floorId) ?? null;
     }, [isReady, mySeat, allFloors]);
 
+    async function refetchSeatoccupancies(){
+        await qOccupancies.refetch();
+    }
+
     return {
         isReady,
         myOccupancy,
@@ -87,6 +91,6 @@ export const useSeatOccupancyValue = (tenantId: string): UseSeatOccupancyValue =
         allSeats,
         allFloors,
         seatOccupancyMap,
-        refetchOccupancies: qOccupancies.refetch, // ← 追加
+        refetchOccupancies: refetchSeatoccupancies, // ← 追加
     };
 };

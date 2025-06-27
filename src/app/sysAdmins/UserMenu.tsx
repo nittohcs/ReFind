@@ -22,21 +22,21 @@ export function UserMenu() {
                 {!!authState.name && (
                     <Box width={200}>
                         <Box px={2} py={1}>
-                            <Typography variant="caption">ユーザー</Typography>
-                            <Typography variant="body1">{authState.name}</Typography>
+                            <Typography variant="caption" color="rgb(104, 104, 104)">ユーザー</Typography>
+                            <Typography variant="body1" color="rgb(104, 104, 104)">{authState.name}</Typography>
                         </Box>
                         <Divider sx={{ mb: 1 }} />
                     </Box>
                 )}
-                <MenuItem onClick={menu.withClose(async () => await download(sysAdminManualPath))}>ヘルプ</MenuItem>
                 <MenuItem onClick={() => signOut()}>ログアウト</MenuItem>
                 <Divider sx={{ mb: 1 }} />
+                <MenuItem onClick={menu.withClose(async () => await download(sysAdminManualPath))}>ヘルプ</MenuItem>
                 {/* 利用規約 */}
                 {authState.groups?.admins && (
                     <MenuItem onClick={menu.withClose(async () => await download(sysAdminManualPath))}>利用規約</MenuItem>
                 )}
                 <Box px={2} py={1}>
-                    <Typography variant="body1">ver 1.0.0</Typography>
+                    <Typography variant="body1" color="rgb(104, 104, 104)">ver 1.0.0</Typography>
                 </Box>
             </Menu>
         </Box>
