@@ -53,6 +53,11 @@ export default function Page({ params }: { params: { floorId: string } }) {
     // const handleSeatClick = useCallback((seat: Seat, occupancy: SeatOccupancy | null) => {
     const handleSeatClick = useCallback(async (seat: Seat) => {
 
+        // システム管理者が座席を選択した場合は何も処理をしない
+        if(authState.groups?.sysAdmins){
+            return;
+        }
+
         // 同期が失敗している場合の対処法
         // ①DB検索
 
@@ -60,6 +65,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
         await refetchOccupancies();
         const seatOccupancy = seatOccupancyMap.get(seat.id);
         // 座席が取得中の場合、メッセージ？を表示する。
+        // nullでも一番下のelseではなく真ん中の処理を走る。
         if(seatOccupancy?.seatAvailability)
         {
             enqueueSnackbar(`座席は取得されています(動作確認)`, { variant: "error" });
@@ -290,7 +296,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
                                         </IconButton>
                                     </Tooltip>
                                     <Link href={`/${tenantId}/floors/${floor.id}/edit`}>
-                                        <Tooltip title="座席編集">
+                                        <Tooltip title="座席設定">
                                             <IconButton>
                                                 <EditIcon />
                                             </IconButton>

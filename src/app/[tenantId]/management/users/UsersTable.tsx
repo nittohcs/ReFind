@@ -162,7 +162,7 @@ export default function UsersTable() {
                                         <EditIcon />
                                     </ListItemIcon>
                                     <ListItemText>
-                                        一括編集
+                                        一括設定
                                     </ListItemText>
                                 </MenuItem>
                                 <MenuItem onClick={withClose(() => resetPasswordDialogState.open(selectedUsers))}>

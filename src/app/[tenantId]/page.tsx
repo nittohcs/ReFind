@@ -24,12 +24,7 @@ export default function Page() {
                             <Typography variant="caption">座席確認、座席確保を行う</Typography>
                         </CardContent>
                         <CardActions>
-                            {authState.groups?.admins && (
-                                <Button size="small">管理者専用</Button>
-                            )}
-                            {authState.groups?.users && (
-                                <Button size="small">　</Button>
-                            )}
+                            <Button size="small">　</Button>
                         </CardActions>
                     </Card>
                 </Link>
@@ -40,12 +35,7 @@ export default function Page() {
                             <Typography variant="caption">座席QRコードを読込して座席確保を行う</Typography>
                         </CardContent>
                         <CardActions>
-                            {authState.groups?.admins && (
-                                <Button size="small">管理者専用</Button>
-                            )}
-                            {authState.groups?.users && (
-                                <Button size="small">　</Button>
-                            )}
+                            <Button size="small">　</Button>
                         </CardActions>
                     </Card>
                 </Link>
@@ -56,12 +46,7 @@ export default function Page() {
                             <Typography variant="caption">ユーザーの所在確認を行う</Typography>
                         </CardContent>
                         <CardActions>
-                            {authState.groups?.admins && (
-                                <Button size="small">管理者専用</Button>
-                            )}
-                            {authState.groups?.users && (
-                                <Button size="small">　</Button>
-                            )}
+                            <Button size="small">　</Button>
                         </CardActions>
                     </Card>
                 </Link>

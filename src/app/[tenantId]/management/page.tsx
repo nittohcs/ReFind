@@ -19,45 +19,45 @@ export default function Page() {
                 <Link href={`/${tenantId}/management/editFloors`}>
                     <Card>
                         <CardContent>
-                            <Typography variant="h6">フロア編集</Typography>
-                            <Typography variant="caption">マップ、座席サイズの設定を行う</Typography>
+                            <Typography variant="h6">フロア設定</Typography>
+                            <Typography variant="caption">座席の設定を行う</Typography>
                         </CardContent>
                         <CardActions>
-                            <Button size="small">設定を行う</Button>
+                            <Button size="small">管理者専用</Button>
                         </CardActions>
                     </Card>
                 </Link>
                 <Link href={`/${tenantId}/management/users`}>
                     <Card>
                         <CardContent>
-                            <Typography variant="h6">ユーザー編集</Typography>
+                            <Typography variant="h6">ユーザー設定</Typography>
                             <Typography variant="caption">ユーザーの設定を行う</Typography>
                         </CardContent>
                         <CardActions>
-                            <Button size="small">設定を行う</Button>
+                            <Button size="small">管理者専用</Button>
                         </CardActions>
                     </Card>
                 </Link>
-                <Link href={`/${tenantId}/management/seatQRCode`} hidden>
+                {/* <Link href={`/${tenantId}/management/seatQRCode`} >
                     <Card>
                         <CardContent>
                             <Typography variant="h6">座席のQRコード一覧</Typography>
                             <Typography variant="caption">座席QRコードの印刷を行う</Typography>
                         </CardContent>
                         <CardActions>
-                            <Button size="small">設定を行う</Button>
+                            <Button size="small">管理者専用</Button>
                         </CardActions>
                     </Card>
-                </Link>
+                </Link> */}
                 {authState.groups?.sysAdmins && (
                 <Link href={`/${tenantId}/management/seatOccupancies`}>
                     <Card>
                         <CardContent>
-                            <Typography variant="h6">座席確保履歴一覧</Typography>
-                            <Typography variant="caption">座席確保履歴の一覧を表示を行う</Typography>
+                            <Typography variant="h6">座席確保履歴</Typography>
+                            <Typography variant="caption">座席確保履歴の表示を行う</Typography>
                         </CardContent>
                         <CardActions>
-                            <Button size="small">設定を行う</Button>
+                            <Button size="small">システム管理者専用</Button>
                         </CardActions>
                     </Card>
                 </Link>

@@ -17,7 +17,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
             <MiraCalBreadcrumbs>
                 <Link href={`/${tenantId}`}>ホーム</Link>
                 <Link href={`/${tenantId}/management`}>管理</Link>
-                <Link href={`/${tenantId}/management/editFloors`}>フロア編集</Link>
+                <Link href={`/${tenantId}/management/editFloors`}>フロア設定</Link>
                 <Typography>{floorId}</Typography>
             </MiraCalBreadcrumbs>
             <Box pt={2}>

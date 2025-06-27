@@ -88,7 +88,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
                 <Link href={`/${tenantId}`}>ホーム</Link>
                 <Link href={`/${tenantId}/floors`}>座席</Link>
                 <Link href={`/${tenantId}/floors/${floor?.id}`}>{floor?.name}</Link>
-                <Typography>座席編集</Typography>
+                <Typography>座席設定</Typography>
             </MiraCalBreadcrumbs>
             <Box display="flex" flexDirection="row" flexWrap="wrap" gap={1} pt={2} ref={elementRef}>
                 {/* <Button

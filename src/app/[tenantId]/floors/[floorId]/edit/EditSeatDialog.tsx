@@ -106,7 +106,7 @@ export const EditSeatDialog: FC<EditSeatDialogProps> = ({
     return (
         <>
             <Dialog fullWidth maxWidth="sm" open={isOpened} onClose={() => !mutation.isPending && close()}>
-                <DialogTitle>座席編集</DialogTitle>
+                <DialogTitle>座席設定</DialogTitle>
                 <Formik<FormValues>
                     validationSchema={validationSchema}
                     initialValues={initialValues}
