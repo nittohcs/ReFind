@@ -59,7 +59,7 @@ export default function UsersTable() {
     const qTenant = useGetTenant(tenantId);
     const qUsers = useReFindUsers();
     
-    const selectedFields = ["id", "name", "isAdminString"];
+    const selectedFields = useMemo(() => ["id", "name", "isAdminString"], []);
     const data = useMemo(() => (qUsers.data ?? []).map(x => ToTableRow(x, selectedFields)), [qUsers.data, selectedFields]);
     
     const columns = useMemo(() => [
