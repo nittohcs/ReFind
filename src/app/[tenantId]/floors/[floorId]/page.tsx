@@ -43,7 +43,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
 
     // CSV出力項目
     function ToTableData(Seats: Seat[]) {
-        return Seats.map((seat, index) => ({ ...seat, sortId: index }));
+        return Seats.map((seat) => ({ ...seat}));
     }    
     const [data, _setData] = useState(() => ToTableData(tenantSeats ?? []));
 
@@ -62,7 +62,9 @@ export default function Page({ params }: { params: { floorId: string } }) {
         // ①DB検索
 
         // ②キャッシュの最新化
-        await refetchOccupancies();
+        await refetchOccupancies();        
+
+        // Mapが最新になってない   
         const seatOccupancy = seatOccupancyMap.get(seat.id);
         // 座席が取得中の場合、メッセージ？を表示する。
         // nullでも一番下のelseではなく真ん中の処理を走る。

@@ -20,7 +20,7 @@ export default function Page() {
                     <Card>
                         <CardContent>
                             <Typography variant="h6">フロア設定</Typography>
-                            <Typography variant="caption">座席の設定を行う</Typography>
+                            <Typography variant="caption">フロアの設定を行う</Typography>
                         </CardContent>
                         <CardActions>
                             <Button size="small">管理者専用</Button>
