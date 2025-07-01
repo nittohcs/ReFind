@@ -14,7 +14,7 @@ export default function Page() {
                     <Card>
                         <CardContent>
                             <Typography variant="h6">テナント設定</Typography>
-                            <Typography variant="caption">テナントの一覧表示を行う</Typography>
+                            <Typography variant="caption">テナントの設定を行う</Typography>
                         </CardContent>
                         <CardActions>
                             <Button size="small">システム管理者専用</Button>
@@ -25,7 +25,7 @@ export default function Page() {
                     <Card>
                         <CardContent>
                             <Typography variant="h6">ドキュメント設定</Typography>
-                            <Typography variant="caption">ヘルプの設定を行う</Typography>
+                            <Typography variant="caption">ドキュメントの設定を行う</Typography>
                         </CardContent>
                         <CardActions>
                             <Button size="small">システム管理者専用</Button>
