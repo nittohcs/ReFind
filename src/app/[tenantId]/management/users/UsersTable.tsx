@@ -40,7 +40,7 @@ function ToTableRow(user: ReFindUser, fields: string[]): TableRow {
     //     ...user,
     //     isAdminString: user.isAdmin ? "管理者" : "",
     // };
-    const row: any = {};
+    const row: TableRow = {} as TableRow;
 
     if (fields.includes("id")) row.id = user.id;
     if (fields.includes("name")) row.name = user.name;
