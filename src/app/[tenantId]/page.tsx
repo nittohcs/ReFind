@@ -55,7 +55,7 @@ export default function Page() {
                         <Card>
                             <CardContent>
                                 <Typography variant="h6">管理</Typography>
-                                <Typography variant="caption">システムの設定を行う</Typography>
+                                <Typography variant="caption">システムの各種設定を行う</Typography>
                             </CardContent>
                             <CardActions>
                                 {authState.groups?.admins && (

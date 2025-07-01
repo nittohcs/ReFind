@@ -35,11 +35,20 @@ type TableRow = ReFindUser & {
     isAdminString: string,
 };
 
-function ToTableRow(user: ReFindUser): TableRow {
-    return {
-        ...user,
-        isAdminString: user.isAdmin ? "管理者" : "",
-    };
+function ToTableRow(user: ReFindUser, fields: string[]): TableRow {
+    // return {
+    //     ...user,
+    //     isAdminString: user.isAdmin ? "管理者" : "",
+    // };
+    const row: any = {};
+
+    if (fields.includes("id")) row.id = user.id;
+    if (fields.includes("name")) row.name = user.name;
+    if (fields.includes("email")) row.email = user.email;
+    if (fields.includes("isAdmin")) row.isAdmin = user.isAdmin;
+    if (fields.includes("isAdminString")) row.isAdminString = user.isAdmin ? "管理者" : "";
+    
+    return row;    
 }
 
 const columnHelper = createColumnHelper<TableRow>();
@@ -49,7 +58,9 @@ export default function UsersTable() {
     const router = useRouter();
     const qTenant = useGetTenant(tenantId);
     const qUsers = useReFindUsers();
-    const data = useMemo(() => (qUsers.data ?? []).map(x => ToTableRow(x)), [qUsers.data]);
+    
+    const selectedFields = ["id", "name", "isAdminString"];
+    const data = useMemo(() => (qUsers.data ?? []).map(x => ToTableRow(x, selectedFields)), [qUsers.data, selectedFields]);
     
     const columns = useMemo(() => [
         columnHelper.display({
@@ -91,6 +102,7 @@ export default function UsersTable() {
     });
 
     const table = useTable({ data, columns, options });
+    
     const handleDownload = useCallback(() => {
         if (data.length === 0) {
             return;
