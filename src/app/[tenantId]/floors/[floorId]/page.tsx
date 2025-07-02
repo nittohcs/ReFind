@@ -72,11 +72,8 @@ export default function Page({ params }: { params: { floorId: string } }) {
         {
             enqueueSnackbar(`座席は取得されています(動作確認)`, { variant: "error" });
         }
-        else if(!seatOccupancy?.seatAvailability){
-            enqueueSnackbar(`空席です(動作確認)`, { variant: "success" });
-        }
         else{
-            enqueueSnackbar(`まだ座席が取られてない`, { variant: "success" });
+            enqueueSnackbar(`空席です(動作確認)`, { variant: "success" });
         }
 
         // 既に座席が使用中

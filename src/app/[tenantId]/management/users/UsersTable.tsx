@@ -110,9 +110,10 @@ export default function UsersTable() {
         isAdmin: "管理者フラグ",
         isAdminString: "権限"
     };    
+
     const convertToJapaneseHeaders = (data: TableRow[]) => {
-        return data.map(row => {
-            const newRow: Record<string, any> = {};
+        return data.map(row => {            
+            const newRow: Record<string, TableRow[keyof TableRow]> = {};
             (Object.keys(row) as (keyof TableRow)[]).forEach(key => {
                 const header = headerMap[key];
                 if (header) {
@@ -130,7 +131,7 @@ export default function UsersTable() {
         
         const convertedData = convertToJapaneseHeaders(data);
         downloadCSV(convertedData, "ユーザ一覧.csv");
-    }, [data]);
+    }, [data,convertToJapaneseHeaders]);
 
     const isSelected = table.getIsSomeRowsSelected() || table.getIsAllRowsSelected();
     const { menuProps, openHandler, withClose } = useMenu();
