@@ -22,27 +22,20 @@ import { downloadCSV } from "@/services/util";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/services/queryKeys";
 
-// type TableRow = Floor & {
-//     // Floorにソート用の項目が無いので、ここで追加
-//     tmpSortValue: number,
-// };
-
 function ToTableData(floors: Floor[]) {
     return floors.map((floor, index) => ({ ...floor, sortId: index }));
-    //return floors.map((floor, index) => ({ ...floor, tmpSortValue: index }));
 }
 
 const columnHelper = createColumnHelper<Floor>();
 
 export default function FloorsTable() {
     const tenantId = useTenantId();
-    const router = useRouter();
+    const router = useRouter();    
 
     const query = useFloorsByTenantId(tenantId);
     const [data, setData] = useState(() => ToTableData(query.data ?? []));
     useEffect(() => {
         setData((query.data ?? []).map((floor, _index) => ({ ...floor})));
-        //setData((query.data ?? []).map((floor, index) => ({ ...floor, tmpSortValue: index })));
     }, [query.data]);
 
     const columns = useMemo(() => [
@@ -78,7 +71,7 @@ export default function FloorsTable() {
         if (data.length === 0) {
             return;
         }
-        downloadCSV(data, "フロア一覧.csv");
+        downloadCSV(data, "Floor.csv");
     }, [data]);
 
     const [updatedAt, update] = useUpdatedAt("table");

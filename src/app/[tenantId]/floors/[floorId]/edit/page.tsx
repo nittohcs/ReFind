@@ -18,13 +18,15 @@ import ImportCSVDialog from "./ImportCSVDialog";
 import DownloadIcon from "@mui/icons-material/Download";
 import UploadIcon from "@mui/icons-material/Upload";
 import ClearIcon from '@mui/icons-material/Clear';
+import { useAuthState } from "@/hooks/auth";
 
 export default function Page({ params }: { params: { floorId: string } }) {
     const tenantId = useTenantId();
     const floorId = decodeURIComponent(params.floorId);
     const {isReady, allFloors, allSeats} = useSeatOccupancy();
     const floor = useMemo(() => allFloors.find(x => x.id === floorId) ?? null, [allFloors, floorId]);
-    const seats = useMemo(() => allSeats.filter(x => x.floorId === floorId), [allSeats, floorId]);
+    const seats = useMemo(() => allSeats.filter(x => x.floorId === floorId), [allSeats, floorId]);    
+    const authState = useAuthState();
 
     const createDialogState = useDialogStateWithData<Seat>();
     const editDialogState = useDialogStateWithData<Seat>();
@@ -65,11 +67,38 @@ export default function Page({ params }: { params: { floorId: string } }) {
 
     const imageQuery = useStorageFileURL(floor?.imagePath ?? "");
 
+    // CSV出力 ヘッダー部を日本語変換
+    const headerMap: Record<string, string> = {
+        name: "座席名",
+        posX: "X座標",
+        posY: "Y座標",
+    };
+    // ヘッダー変換(英語 => 日本語)
+    const convertToJapaneseHeaders = (data: Seat[]) => {
+        return data.map(row => {            
+            const newRow: Record<string, Seat[keyof Seat]> = {};
+            (Object.keys(row) as (keyof Seat)[]).forEach(key => {
+                const header = headerMap[key];
+                if (header) {
+                    newRow[header] = row[key];
+                }
+            });
+            return newRow;
+        });
+    };
+
     const handleCSVExport = useCallback(() => {
         if (seats.length === 0) {
             return;
         }
-        downloadCSV(seats, `座席一覧_${floor?.name ?? ""}.csv`);
+        if(authState.groups?.sysAdmins){
+            downloadCSV(seats, `Seat_${floor?.name ?? ""}.csv`);
+        }
+        else if(authState.groups?.admins){
+            const convertSeats = convertToJapaneseHeaders(seats)
+            downloadCSV(convertSeats, `座席一覧_${floor?.name ?? ""}.csv`);
+        }
+        
     }, [seats, floor?.name]);
 
     const state = useDialogState();

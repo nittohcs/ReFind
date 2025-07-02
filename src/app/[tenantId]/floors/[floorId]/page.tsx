@@ -68,7 +68,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
         const seatOccupancy = seatOccupancyMap.get(seat.id);
         // 座席が取得中の場合、メッセージ？を表示する。
         // nullでも一番下のelseではなく真ん中の処理を走る。
-        if(seatOccupancy?.seatAvailability)
+        if(seatOccupancy)
         {
             enqueueSnackbar(`座席は取得されています(動作確認)`, { variant: "error" });
         }
@@ -253,7 +253,7 @@ export default function Page({ params }: { params: { floorId: string } }) {
         if (data.length === 0) {
             return;
         }
-        downloadCSV(data, "座席一覧.csv");
+        downloadCSV(data, "Seat.csv");
     }, [data]);
 
     useEffect(() => {
@@ -301,11 +301,13 @@ export default function Page({ params }: { params: { floorId: string } }) {
                                             </IconButton>
                                         </Tooltip>
                                     </Link>
+                                    {authState.groups?.sysAdmins && (
                                     <Tooltip title="CSVダウンロード">
                                         <IconButton onClick={() => handleDownload()}>
                                             <DownloadIcon />
                                         </IconButton>
                                     </Tooltip>
+                                    )}
                                 </>
                             )}
                         </Toolbar>

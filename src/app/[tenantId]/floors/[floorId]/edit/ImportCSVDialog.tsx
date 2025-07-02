@@ -85,9 +85,9 @@ export const ImportCSVDialog: FC<ImportCSVDialogProps> = ({
                             id: row["id"] ?? "",
                             tenantId: row["tenantId"] ?? "",
                             floorId: row["floorId"] ?? "",
-                            name: row["name"] ?? "",
-                            posX: parseInt(row["posX"] ?? ""),
-                            posY: parseInt(row["posY"] ?? ""),
+                            name: row["name"] ?? row["座席名"] ?? "",
+                            posX: parseInt(row["posX"] ?? row["X座標"] ?? ""),
+                            posY: parseInt(row["posY"] ?? row["Y座標"] ?? ""),
                             createdAt: row["createdAt"] ?? "",
                             updatedAt: row["updatedAt"] ?? "",
                         };
