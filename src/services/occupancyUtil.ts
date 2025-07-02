@@ -20,7 +20,12 @@ export function getLatestOccupancyMap(data: SeatOccupancy[]) {
             return [seatId, latestOccupancy];
         })
     );
+    // ユーザーIDが入力されているデータを取得している
     return new Map([...latestOccupancyMap].filter(([_, value]) => value !== null && value.userId) as [string, SeatOccupancy][]);
+    // 座席取得状況で判断する
+    //return new Map([...latestOccupancyMap].filter(([_, value]) => value !== null && value.seatAvailability === true) as [string, SeatOccupancy][]);
+    // return new Map([...latestOccupancyMap].filter(([_, value]) => value !== null) as [string, SeatOccupancy][]);
+
 }
 
 export async function occupySeat(seat: Seat, userId: string, userName: string) {

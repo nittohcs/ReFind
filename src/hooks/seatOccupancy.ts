@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { Floor, Seat, SeatOccupancy } from "@/API";
 import { useFloorsByTenantId, useSeatOccupanciesByDateAndTenantId, useSeatsByTenantId } from "@/services/graphql";
 import { getLatestOccupancyMap } from "@/services/occupancyUtil";
@@ -41,7 +41,15 @@ export const useSeatOccupancyValue = (tenantId: string): UseSeatOccupancyValue =
     const isReady = qOccupancies.isFetched && qSeats.isFetched && qFloors.isFetched;
     const allSeats = useMemo(() => qSeats.data ?? [], [qSeats.data]);
     const allFloors = useMemo(() => qFloors.data ?? [], [qFloors.data]);
-    const seatOccupancyMap = useMemo(() => getLatestOccupancyMap(qOccupancies.data ?? []), [qOccupancies.data]);
+    //const seatOccupancyMap = useMemo(() => getLatestOccupancyMap(qOccupancies.data ?? []), [qOccupancies.data]);
+    const [seatOccupancyMap, setSeatOccupancyMap] = useState<Map<string, SeatOccupancy>>(new Map());
+    useEffect(() => {
+        if(qOccupancies.data){
+            const latestMap = getLatestOccupancyMap(qOccupancies.data);
+            setSeatOccupancyMap(latestMap);
+        }
+    }, [qOccupancies.data])
+
     const seatOccupancies = useMemo(() => Array.from(seatOccupancyMap.values()), [seatOccupancyMap]);
     const myOccupancy = useMemo(() => {
         if (!isReady) {
@@ -79,8 +87,11 @@ export const useSeatOccupancyValue = (tenantId: string): UseSeatOccupancyValue =
         return allFloors.find(x => x.id === floorId) ?? null;
     }, [isReady, mySeat, allFloors]);
 
-    async function refetchSeatoccupancies(){
-        await qOccupancies.refetch();
+    async function refetchSeatoccupancies(){        
+        //await qOccupancies.refetch();
+        const { data } = await qOccupancies.refetch();
+        const latestMap = getLatestOccupancyMap(data ?? []);
+        setSeatOccupancyMap(latestMap);
     }
 
     return {

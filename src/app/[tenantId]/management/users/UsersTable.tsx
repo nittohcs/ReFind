@@ -41,8 +41,7 @@ function ToTableRow(user: ReFindUser, fields: string[]): TableRow {
     //     isAdminString: user.isAdmin ? "管理者" : "",
     // };
     const row: TableRow = {} as TableRow;
-
-    if (fields.includes("id")) row.id = user.id;
+    if (fields.includes("ユーザーID")) row.id = user.id;
     if (fields.includes("name")) row.name = user.name;
     if (fields.includes("email")) row.email = user.email;
     if (fields.includes("isAdmin")) row.isAdmin = user.isAdmin;
@@ -59,7 +58,7 @@ export default function UsersTable() {
     const qTenant = useGetTenant(tenantId);
     const qUsers = useReFindUsers();
     
-    const selectedFields = useMemo(() => ["id", "name", "isAdminString"], []);
+    const selectedFields = useMemo(() => ["ユーザーID", "name", "isAdminString"], []);
     const data = useMemo(() => (qUsers.data ?? []).map(x => ToTableRow(x, selectedFields)), [qUsers.data, selectedFields]);
     
     const columns = useMemo(() => [
@@ -102,12 +101,35 @@ export default function UsersTable() {
     });
 
     const table = useTable({ data, columns, options });
-    
+
+    // CSV出力 ヘッダー部を日本語変換
+    const headerMap: Record<string, string> = {
+        id: "ユーザーID",
+        name: "名前",
+        email: "メールアドレス",
+        isAdmin: "管理者フラグ",
+        isAdminString: "権限"
+    };    
+    const convertToJapaneseHeaders = (data: TableRow[]) => {
+        return data.map(row => {
+            const newRow: Record<string, any> = {};
+            (Object.keys(row) as (keyof TableRow)[]).forEach(key => {
+                const header = headerMap[key];
+                if (header) {
+                    newRow[header] = row[key];
+                }
+            });
+            return newRow;
+        });
+    };
+
     const handleDownload = useCallback(() => {
         if (data.length === 0) {
             return;
         }
-        downloadCSV(data, "ユーザ一覧.csv");
+        
+        const convertedData = convertToJapaneseHeaders(data);
+        downloadCSV(convertedData, "ユーザ一覧.csv");
     }, [data]);
 
     const isSelected = table.getIsSomeRowsSelected() || table.getIsAllRowsSelected();
