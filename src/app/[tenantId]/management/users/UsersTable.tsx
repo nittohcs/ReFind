@@ -30,24 +30,24 @@ import ResetPasswordDialog from "./ResetPasswordDialog";
 import { QRCodeSVG } from "qrcode.react";
 import { useReactToPrint } from "react-to-print";
 import { downloadCSV } from "@/services/util";
+import { useAuthState } from "@/hooks/auth";
 
 type TableRow = ReFindUser & {
     isAdminString: string,
 };
 
-function ToTableRow(user: ReFindUser, fields: string[]): TableRow {
-    // return {
-    //     ...user,
-    //     isAdminString: user.isAdmin ? "管理者" : "",
-    // };
-    const row: TableRow = {} as TableRow;
-    if (fields.includes("ユーザーID")) row.id = user.id;
-    if (fields.includes("name")) row.name = user.name;
-    if (fields.includes("email")) row.email = user.email;
-    if (fields.includes("isAdmin")) row.isAdmin = user.isAdmin;
-    if (fields.includes("isAdminString")) row.isAdminString = user.isAdmin ? "管理者" : "";
-    
-    return row;    
+function ToTableRow(user: ReFindUser): TableRow {
+    return {
+        ...user,
+        isAdminString: user.isAdmin ? "管理者" : "",
+    };
+    // const row: TableRow = {} as TableRow;
+    // if (fields.includes("id")) row.id = user.id;
+    // if (fields.includes("name")) row.name = user.name;
+    // if (fields.includes("comment")) row.comment = user.comment;
+    // if (fields.includes("isAdminString")) row.isAdminString = user.isAdmin ? "管理者" : "";
+
+    // return row;
 }
 
 const columnHelper = createColumnHelper<TableRow>();
@@ -57,10 +57,12 @@ export default function UsersTable() {
     const router = useRouter();
     const qTenant = useGetTenant(tenantId);
     const qUsers = useReFindUsers();
-    
-    const selectedFields = useMemo(() => ["ユーザーID", "name", "isAdminString"], []);
-    const data = useMemo(() => (qUsers.data ?? []).map(x => ToTableRow(x, selectedFields)), [qUsers.data, selectedFields]);
-    
+    const authState = useAuthState();
+
+    // const selectedFields = useMemo(() => ["id", "name", "comment", "isAdminString"], []);
+    // const data = useMemo(() => (qUsers.data ?? []).map(x => ToTableRow(x, selectedFields)), [qUsers.data, selectedFields]);
+    const data = useMemo(() => (qUsers.data ?? []).map(x => ToTableRow(x)), [qUsers.data]);
+
     const columns = useMemo(() => [
         columnHelper.display({
             id: "select",
@@ -104,15 +106,13 @@ export default function UsersTable() {
 
     // CSV出力 ヘッダー部を日本語変換
     const headerMap: Record<string, string> = {
-        id: "ユーザーID",
-        name: "名前",
-        email: "メールアドレス",
-        isAdmin: "管理者フラグ",
-        isAdminString: "権限"
-    };    
-
+        id: "ID",
+        name: "氏名",
+        comment: "コメント",
+        isAdminString: "管理者"
+    };
     const convertToJapaneseHeaders = (data: TableRow[]) => {
-        return data.map(row => {            
+        return data.map(row => {
             const newRow: Record<string, TableRow[keyof TableRow]> = {};
             (Object.keys(row) as (keyof TableRow)[]).forEach(key => {
                 const header = headerMap[key];
@@ -128,9 +128,16 @@ export default function UsersTable() {
         if (data.length === 0) {
             return;
         }
-        
-        const convertedData = convertToJapaneseHeaders(data);
-        downloadCSV(convertedData, "ユーザ一覧.csv");
+
+        if (authState.groups?.sysAdmins)
+        {
+            downloadCSV(data, "User.csv");
+        }
+        else if(authState.groups?.admins)
+        {
+            const convertedData = convertToJapaneseHeaders(data);
+            downloadCSV(convertedData, "ユーザ一覧.csv");
+        }
     }, [data,convertToJapaneseHeaders]);
 
     const isSelected = table.getIsSomeRowsSelected() || table.getIsAllRowsSelected();
@@ -170,7 +177,7 @@ export default function UsersTable() {
                                 <Box>{`${table.getSelectedRowModel().rows.length}件選択中`}</Box>
                                 <Button variant="outlined" onClick={() => table.resetRowSelection()}>選択解除</Button>
                             </Box>
-                            <Button variant="outlined" onClick={() => handlePrint()} 
+                            <Button variant="outlined" onClick={() => handlePrint()}
                                 sx={{ whiteSpace: 'nowrap', width: '65px', height: '36px', fontSize: '14px'}}>
                                     QR印刷
                             </Button>
@@ -206,7 +213,7 @@ export default function UsersTable() {
                                     </ListItemIcon>
                                     <ListItemText>
                                         パスワードリセット
-                                    </ListItemText>                                    
+                                    </ListItemText>
                                 </MenuItem>
                                 <MenuItem onClick={withClose(() => deleteDialogState.open(selectedUsers))}>
                                     <ListItemIcon>
@@ -263,7 +270,7 @@ export default function UsersTable() {
                         table={table}
                         onRowClick={user => { router.push(`/${tenantId}/management/users/${user.id}`); }}
                     />
-                </Box>                
+                </Box>
                 <Box ref={contentRef} sx={{ "@media print": { display: "flex" }, display: "none" }} flexDirection="row" flexWrap="wrap" gap={2} pt={2}>
                     {selectedUsers.map(user => (
                         <Card key={user.id} sx={{ pageBreakInside: "avoid" }}>
