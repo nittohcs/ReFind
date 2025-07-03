@@ -15,12 +15,12 @@ export function getCreateUserInputsFromCsv(csv: string, tenantId: string) {
 
         for(const row of rows) {
             const user: CreateUserInput = {
-                id: row["ID"] ?? "",
-                name: row["氏名"] ?? "",
+                id: row["ID"] ?? row["id"] ??  "",
+                name: row["氏名"] ?? row["name"] ?? "",
                 email: row["メールアドレス"] ?? "",
-                comment: row["コメント"] ?? "",
+                comment: row["コメント"] ?? row["comment"] ?? "",
                 tenantId: tenantId,
-                isAdmin: !!row["管理者"]?.trim(),
+                isAdmin: !!row["管理者"]?.trim() ? !!row["管理者"] : !!row["isAdminString"]?.trim(),
             };
             ret.push(user);
         }
