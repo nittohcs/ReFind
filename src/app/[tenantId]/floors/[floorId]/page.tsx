@@ -244,11 +244,6 @@ export default function Page({ params }: { params: { floorId: string } }) {
     }, []);
 
     // CSV出力
-    // useMemoでメモ化(キャッシュ)
-    // useMemo(() => (処理内容), [依存する値]);
-    // 重い処理の結果をキャッシュで保持する。
-    // 依存する値が変更するたびに中の処理が実行されて、キャッシュを更新する。
-    // 依存する値が変わらない限り、キャッシュの値を返し続ける。
     const handleDownload = useCallback(() => {
         if (data.length === 0) {
             return;

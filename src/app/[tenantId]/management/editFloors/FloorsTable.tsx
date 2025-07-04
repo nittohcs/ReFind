@@ -21,6 +21,7 @@ import { enqueueSnackbar } from "notistack";
 import { downloadCSV } from "@/services/util";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/services/queryKeys";
+import { useAuthState } from "@/hooks/auth";
 
 function ToTableData(floors: Floor[]) {
     return floors.map((floor, index) => ({ ...floor, sortId: index }));
@@ -30,7 +31,8 @@ const columnHelper = createColumnHelper<Floor>();
 
 export default function FloorsTable() {
     const tenantId = useTenantId();
-    const router = useRouter();    
+    const router = useRouter();
+    const authState = useAuthState();
 
     const query = useFloorsByTenantId(tenantId);
     const [data, setData] = useState(() => ToTableData(query.data ?? []));
@@ -198,11 +200,13 @@ export default function FloorsTable() {
                                         </IconButton>
                                     </Tooltip>
                                 </Link>
-                                <Tooltip title="CSVダウンロード">
-                                    <IconButton onClick={handleDownload}>
-                                        <DownloadIcon />
-                                    </IconButton>
-                                </Tooltip>
+                                {authState.groups?.sysAdmins && (
+                                    <Tooltip title="CSVダウンロード">
+                                        <IconButton onClick={handleDownload}>
+                                            <DownloadIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                )}
                             </Toolbar>
                         </Box>
                         <Box>

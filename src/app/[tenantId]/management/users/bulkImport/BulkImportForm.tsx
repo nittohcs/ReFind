@@ -38,6 +38,11 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
     // ユーザーID存在チェック結果のキャッシュ用
     const cacheRef = useRef(new Map<string, boolean>());
 
+    // useMemoでメモ化(キャッシュ)
+    // useMemo(() => (処理内容), [依存する値]);
+    // 重い処理の結果をキャッシュで保持する。
+    // 依存する値が変更するたびに中の処理が実行されて、キャッシュを更新する。
+    // 依存する値が変わらない限り、キャッシュの値を返し続ける。
     const validationSchema = useMemo(() => yup.object().shape({
         csv: yup.string().required().default(""),
     }), []);
@@ -111,9 +116,11 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
                 // プレフィックスの入力チェック
                 if(user.id?.includes("@" + qTenant.data?.prefix))
                 {
+                    // 入力値に含まれている場合
                     const prefixCount = user.id.split("@" + qTenant.data?.prefix).length - 1;
                     if(prefixCount > 1)
                     {
+                        // 入力値に複数プレフィックスが入力されている場合
                         errors.push(("@" + qTenant.data?.prefix) + "が複数入力されています。");
                     }
                 }           
@@ -197,7 +204,7 @@ export const BulkImportForm: FC<BulkImportFormProps> = ({ update }) => {
                 <MiraCalCsvField
                     name="csv"
                     label="CSV"
-                    sampleUrl="/csv/createUsers.csv"
+                    sampleUrl="/csv/ユーザ一覧_テンプレート.csv"
                 />
                 {inputErrors.length > 0 && (
                     <Stack direction="column" gap={1}>
