@@ -62,6 +62,7 @@ export const UserQRCodeDialog: FC<UserQRCodeDialogProps> = ({
             // ダイアログを閉じる
             close();
         }
+        
         // 座席の存在チェック
         const seat = allSeats.find(x => x.id === dialogData?.newSeat?.id) ?? null;
         if (!seat) {
