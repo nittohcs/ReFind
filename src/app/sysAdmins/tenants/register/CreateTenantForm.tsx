@@ -104,7 +104,7 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
 
             try {
                 const adminUser = {
-                    id: values.adminUserId,
+                    id: values.adminUserId + "@" + values.prefix,
                     tenantId: tenant.id,
                     email: values.email,
                     name: values.adminName,
