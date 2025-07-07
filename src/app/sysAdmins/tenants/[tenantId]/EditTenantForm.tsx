@@ -40,7 +40,6 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
 }) => {
     const query = useListAllTenants();
     const tenant = useMemo(() => (query.data ?? []).find(x => x.id === tenantId) ?? null, [query.data, tenantId]);    
-    const tenants = useMemo(() => (query.data ?? null), [query.data]);
 
     const validationSchema = useMemo(() => yup.object().shape({
         id: yup.string().required(),
@@ -69,14 +68,10 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
     const mutation = useMutation({
         async mutationFn(values: FormValues) {
 
-            let isExist = tenants?.some(t => t.id === values.id)
-
-            const a = (query.data ?? []).filter(x => x.prefix === values.prefix && x.id != values.id) ?? null;
             // 自身のテナントIDは除くようにする
-            
+            const a = (query.data ?? []).filter(x => x.prefix === values.prefix && x.id != values.id) ?? null;            
 
             // テナント識別子が既に登録されている場合はエラー
-            isExist = tenants?.some(t => t.prefix === values.prefix)
             if (a.length > 0) {
                 throw new Error("入力されたテナント識別子は既に使用されています。");
             }
