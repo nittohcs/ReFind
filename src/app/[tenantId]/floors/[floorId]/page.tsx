@@ -58,14 +58,11 @@ export default function Page({ params }: { params: { floorId: string } }) {
             return;
         }
 
-        // 同期が失敗している場合の対処法
-        // ①DB検索
-
         // ②キャッシュの最新化
-        await refetchOccupancies();        
+        const latestMap = await refetchOccupancies();
 
         // Mapが最新になってない   
-        const seatOccupancy = seatOccupancyMap.get(seat.id);
+        const seatOccupancy = latestMap.get(seat.id);
         // 座席が取得中の場合、メッセージ？を表示する。
         // nullでも一番下のelseではなく真ん中の処理を走る。
         if(seatOccupancy)
