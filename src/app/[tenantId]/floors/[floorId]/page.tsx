@@ -58,20 +58,11 @@ export default function Page({ params }: { params: { floorId: string } }) {
             return;
         }
 
-        // ②キャッシュの最新化
+        // キャッシュの最新化
         const latestMap = await refetchOccupancies();
 
         // Mapが最新になってない   
         const seatOccupancy = latestMap.get(seat.id);
-        // 座席が取得中の場合、メッセージ？を表示する。
-        // nullでも一番下のelseではなく真ん中の処理を走る。
-        if(seatOccupancy)
-        {
-            enqueueSnackbar(`座席は取得されています(動作確認)`, { variant: "error" });
-        }
-        else{
-            enqueueSnackbar(`空席です(動作確認)`, { variant: "success" });
-        }
 
         // 既に座席が使用中
         if (seatOccupancy && seatOccupancy.userId) {
@@ -130,13 +121,13 @@ export default function Page({ params }: { params: { floorId: string } }) {
 
     // ダブルクリック時のイベント実装する
     // const handleSeatDoubleClick = useCallback((seat: Seat, occupancy: SeatOccupancy | null) => {
-    const handleSeatDoubleClick = useCallback((seat: Seat) => {
+    const handleSeatDoubleClick = useCallback(async (seat: Seat) => {
 
         // ②キャッシュの最新化
         // 座席をクリック毎に最新化される
         // ダブルクリックされるとダイアログが開くので連打される恐れは低い？
-        refetchOccupancies();
-        const seatOccupancy = seatOccupancyMap.get(seat.id);
+        const latestMap = await refetchOccupancies();
+        const seatOccupancy = latestMap.get(seat.id);
 
         // 既に座席が使用中
         if (seatOccupancy && seatOccupancy.userId) {
