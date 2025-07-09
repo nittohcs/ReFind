@@ -114,9 +114,19 @@ export const useSeatOccupancyValue = (tenantId: string): UseSeatOccupancyValue =
         const latestMap = getLatestOccupancyMap(data ?? []);
         // occupansiesMapに反映する。
         setSeatOccupancyMap(latestMap);
+
+        //
+        const filtered = Array.from(latestMap.values()).filter(x => x.userId === authState.username);
+        if (filtered.length === 0) {
+            return {map: latestMap, mySeatOccupansy: null};
+        }
+        // 最新データを取得(filteredには1要素しか含まれないはずだが一応)
+        filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        const mySeatOccupansy = filtered[0];
+
         // 呼び出し元に返す。
         // setSeatOccupancyMapで更新されるタイミングがレンダリング後？のため、最新のデータを渡す。
-        return {map: latestMap, mySeatOccupansy: myOccupancy};
+        return {map: latestMap, mySeatOccupansy: mySeatOccupansy};
     }
 
     return {
