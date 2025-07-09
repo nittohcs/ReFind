@@ -76,6 +76,11 @@ export const EditTenantForm: FC<EditTenantFormProps> = ({
                 throw new Error("入力されたテナント識別子は既に使用されています。");
             }
 
+            // "@"が入力されている場合はエラー
+            if (values.prefix.includes("@")) {
+                throw new Error("入力されたテナント識別子に\"@\"が含まれています。");
+            }
+
             // テーブル更新
             return await graphqlUpdateTenant({
                 id: values.id,

@@ -1,8 +1,8 @@
 "use client";
 
 import { FC, useCallback, useMemo } from "react";
-import { Box } from "@mui/material";
-import { Formik } from "formik";
+import { Box, Typography } from "@mui/material";
+import { Formik, useFormikContext } from "formik";
 import * as yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import MiraCalTextField from "@/components/MiraCalTextField";
@@ -68,7 +68,7 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
     }), [validationSchema]);
 
     const enqueueSnackbar = useEnqueueSnackbar();
-    const queryClient = useQueryClient();
+    const queryClient = useQueryClient();    
     const mutation = useMutation({
         async mutationFn(values: FormValues) {
             
@@ -84,11 +84,22 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
                 throw new Error("入力されたテナント識別子は既に使用されています。");
             }
 
+            // "@"が入力されている場合はエラー
+            if (values.prefix.includes("@")) {
+                throw new Error("入力されたテナント識別子に\"@\"が含まれています。");
+            }
+
             // 管理者IDが既に登録されている場合はエラー
             isExist = users?.some(u => u.id === values.adminUserId)
             if (isExist) {
                 throw new Error("入力された管理者IDは既に使用されています。");
             }
+
+            // 入力値のどこかにプレフィックスが入力されている場合
+            if(values.adminUserId?.toLocaleLowerCase().includes("@" + values.prefix))
+            {
+                throw new Error(("@" + values.prefix) + "の入力は不要です。");
+            }       
 
             // テーブルに登録
             const tenant = await graphqlCreateTenant({
@@ -154,9 +165,19 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
     });
     const onSubmit = useCallback((values: FormValues) => mutation.mutate(values), [mutation]);
 
+    const PrefixPreview = () => {
+        const { values } = useFormikContext<FormValues>();
+        return (
+            <Typography color="rgb(121, 121, 121)" margin={1}>
+            @{values.prefix ?? ""}
+            </Typography>
+        );
+    };
+      
     return (
         <Box maxWidth="sm">
-            <Formik<FormValues>
+            
+            <Formik<FormValues>                
                 validationSchema={validationSchema}
                 initialValues={initialValues}
                 onSubmit={onSubmit}
@@ -201,11 +222,21 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
                         name="isSuspended"
                         label="利用停止中"
                     />
-                    <MiraCalTextField
+                    {/* <MiraCalTextField
                         name="adminUserId"
                         label="管理者ID"
                         type="text"
-                    />
+                    /> */}
+
+                    <Box display="flex" alignItems="baseline">
+                        <MiraCalTextField
+                            name="adminUserId"
+                            label="管理者ID"
+                            type="text"
+                        />
+                        <PrefixPreview />
+                    </Box>
+
                     {/* これは非表示にして、メールアドレス登録時に管理者にも同じものを割り当てる */}
                     {/* <MiraCalTextField
                         name="adminEmail"

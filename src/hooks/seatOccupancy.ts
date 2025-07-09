@@ -33,6 +33,7 @@ export const useSeatOccupancy = () => useContext(SeatOccupancyContext);
 
 export const useSeatOccupancyValue = (tenantId: string): UseSeatOccupancyValue => {
     const today = useTodayYYYYMMDD();
+    // DBからデータを取得してキャッシュに保存する。
     const qOccupancies = useSeatOccupanciesByDateAndTenantId(today, tenantId);
     const qSeats = useSeatsByTenantId(tenantId);
     const qFloors = useFloorsByTenantId(tenantId);
@@ -42,6 +43,8 @@ export const useSeatOccupancyValue = (tenantId: string): UseSeatOccupancyValue =
     const allSeats = useMemo(() => qSeats.data ?? [], [qSeats.data]);
     const allFloors = useMemo(() => qFloors.data ?? [], [qFloors.data]);
     //const seatOccupancyMap = useMemo(() => getLatestOccupancyMap(qOccupancies.data ?? []), [qOccupancies.data]);
+    // seatOccupancyMapを監視する。
+    // setSeatOccupancyMapが呼び出されるとseatOccupancyMapが更新される。
     const [seatOccupancyMap, setSeatOccupancyMap] = useState<Map<string, SeatOccupancy>>(new Map());
     useEffect(() => {
         if(qOccupancies.data){
@@ -50,7 +53,12 @@ export const useSeatOccupancyValue = (tenantId: string): UseSeatOccupancyValue =
         }
     }, [qOccupancies.data])
 
+    // seatOccupancyMapの値を配列に変換して、キャッシュに保存する。
+    // seatOccupancyMapが更新されるとキャッシュも更新する。
     const seatOccupancies = useMemo(() => Array.from(seatOccupancyMap.values()), [seatOccupancyMap]);
+
+    // seatOccupanciesまたはログインユーザーが変わるとキャッシュを更新する。
+    // 取得している座席の状態を保持する。
     const myOccupancy = useMemo(() => {
         if (!isReady) {
             return null;
@@ -64,6 +72,8 @@ export const useSeatOccupancyValue = (tenantId: string): UseSeatOccupancyValue =
         filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         return filtered[0];
     }, [isReady, seatOccupancies, authState.username]);
+
+    // 取得している座席の情報をキャッシュで保存する。
     const mySeat = useMemo(() => {
         if (!isReady) {
             return null;
@@ -75,6 +85,8 @@ export const useSeatOccupancyValue = (tenantId: string): UseSeatOccupancyValue =
         }
         return allSeats.find(x => x.id === seatId) ?? null;
     }, [isReady, myOccupancy, allSeats]);
+
+    // 取得している座席のフロアの情報をキャッシュで保存する。
     const myFloor = useMemo(() => {
         if (!isReady) {
             return null;
@@ -89,9 +101,14 @@ export const useSeatOccupancyValue = (tenantId: string): UseSeatOccupancyValue =
 
     async function refetchSeatoccupancies(): Promise<Map<string, SeatOccupancy>> {        
         //await qOccupancies.refetch();
+        // テナントの座席取得状況を再取得する。
         const { data } = await qOccupancies.refetch();
+        // 再取得したデータから座席が取得されているデータのみ取得する。
         const latestMap = getLatestOccupancyMap(data ?? []);
+        // occupansiesMapに反映する。
         setSeatOccupancyMap(latestMap);
+        // 呼び出し元に返す。
+        // setSeatOccupancyMapで更新されるタイミングがレンダリング後？のため、最新のデータを渡す。
         return latestMap;
     }
 
@@ -103,6 +120,6 @@ export const useSeatOccupancyValue = (tenantId: string): UseSeatOccupancyValue =
         allSeats,
         allFloors,
         seatOccupancyMap,
-        refetchOccupancies: refetchSeatoccupancies, // ← 追加
+        refetchOccupancies: refetchSeatoccupancies,
     };
 };
