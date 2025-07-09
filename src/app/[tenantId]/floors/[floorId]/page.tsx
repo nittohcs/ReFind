@@ -62,11 +62,13 @@ export default function Page({ params }: { params: { floorId: string } }) {
         const latestMap = await refetchOccupancies();
 
         // クリックした座席の最新情報を取得 
-        const seatOccupancy = latestMap.get(seat.id);
+        const seatOccupancy = latestMap.map.get(seat.id);        
+        // 自身の最新の座席取得状況を取得 
+        const mySeatOccupancy = latestMap.mySeatOccupansy;
 
         // 既に座席が使用中
         if (seatOccupancy && seatOccupancy.userId) {
-            if (seatOccupancy.id === myOccupancy?.id) {
+            if (seatOccupancy.id === mySeatOccupancy?.id) {
                 // 自分が使用中
                 //enqueueSnackbar("選択した座席を使用中です。", { variant: "info" });
             } else {
@@ -127,11 +129,14 @@ export default function Page({ params }: { params: { floorId: string } }) {
         // 座席をクリック毎に最新化される
         // ダブルクリックされるとダイアログが開くので連打される恐れは低い？
         const latestMap = await refetchOccupancies();
-        const seatOccupancy = latestMap.get(seat.id);
+        // クリックした座席の最新情報を取得 
+        const seatOccupancy = latestMap.map.get(seat.id);        
+        // 自身の最新の座席取得状況を取得 
+        const mySeatOccupancy = latestMap.mySeatOccupansy;
 
         // 既に座席が使用中
         if (seatOccupancy && seatOccupancy.userId) {
-            if (seatOccupancy === myOccupancy) {
+            if (seatOccupancy === mySeatOccupancy) {
                 // 自分が使用中
                 confirmDialogState.open({
                     title: "座席解放",

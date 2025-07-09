@@ -15,7 +15,9 @@ type UseSeatOccupancyValue = {
     allSeats: Seat[],
     allFloors: Floor[],
     seatOccupancyMap: Map<string, SeatOccupancy>,    
-    refetchOccupancies: () => Promise<Map<string, SeatOccupancy>>, // 座席情報最新化
+    refetchOccupancies: () => Promise<{
+        map: Map<string, SeatOccupancy>;  mySeatOccupansy: SeatOccupancy | null; 
+}>, // 座席情報最新化
 
 };
 const defaultValue: UseSeatOccupancyValue = {
@@ -26,7 +28,12 @@ const defaultValue: UseSeatOccupancyValue = {
     allSeats: [],
     allFloors: [],
     seatOccupancyMap: new Map<string, SeatOccupancy>(),
-    refetchOccupancies: async () => new Map<string, SeatOccupancy>(),
+    refetchOccupancies: async () => 
+    ({
+        map: new Map<string, SeatOccupancy>(),
+        mySeatOccupansy: null
+    }),
+        
 };
 export const SeatOccupancyContext = createContext<UseSeatOccupancyValue>(defaultValue);
 export const useSeatOccupancy = () => useContext(SeatOccupancyContext);
@@ -99,7 +106,7 @@ export const useSeatOccupancyValue = (tenantId: string): UseSeatOccupancyValue =
         return allFloors.find(x => x.id === floorId) ?? null;
     }, [isReady, mySeat, allFloors]);
 
-    async function refetchSeatoccupancies(): Promise<Map<string, SeatOccupancy>> {        
+    async function refetchSeatoccupancies(): Promise<{map: Map<string, SeatOccupancy>, mySeatOccupansy: SeatOccupancy | null}> {        
         //await qOccupancies.refetch();
         // テナントの座席取得状況を再取得する。
         const { data } = await qOccupancies.refetch();
@@ -109,7 +116,7 @@ export const useSeatOccupancyValue = (tenantId: string): UseSeatOccupancyValue =
         setSeatOccupancyMap(latestMap);
         // 呼び出し元に返す。
         // setSeatOccupancyMapで更新されるタイミングがレンダリング後？のため、最新のデータを渡す。
-        return latestMap;
+        return {map: latestMap, mySeatOccupansy: myOccupancy};
     }
 
     return {
