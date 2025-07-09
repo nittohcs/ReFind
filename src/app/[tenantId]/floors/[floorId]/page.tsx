@@ -61,12 +61,12 @@ export default function Page({ params }: { params: { floorId: string } }) {
         // キャッシュの最新化
         const latestMap = await refetchOccupancies();
 
-        // Mapが最新になってない   
+        // クリックした座席の最新情報を取得 
         const seatOccupancy = latestMap.get(seat.id);
 
         // 既に座席が使用中
         if (seatOccupancy && seatOccupancy.userId) {
-            if (seatOccupancy === myOccupancy) {
+            if (seatOccupancy.id === myOccupancy?.id) {
                 // 自分が使用中
                 //enqueueSnackbar("選択した座席を使用中です。", { variant: "info" });
             } else {
