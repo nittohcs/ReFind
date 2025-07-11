@@ -17,7 +17,6 @@ import MiraCalButton from "@/components/MiraCalButton";
 import { useReFindUsers } from "@/hooks/ReFindUser";
 import { uploadFile } from "@/hooks/storage";
 import { useEnqueueSnackbar } from "@/hooks/ui";
-import { isUsernameAvailable } from "@/services/AdminQueries";
 import { useGetTenant, useListAllUsers } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
 import { convertBMPtoPNG } from "@/services/util";
@@ -44,7 +43,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
     const qUser = useListAllUsers();
     const users = useMemo(() => (qUser.data ?? null), [qUser.data]);
     // ユーザーID存在チェック結果のキャッシュ用
-    const cacheRef = useRef(new Map<string, boolean>());
+    // const cacheRef = useRef(new Map<string, boolean>());
 
     const imageFileRef = useRef<HTMLInputElement>(null);
 
@@ -105,7 +104,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
             }
 
             // 管理者IDが既に登録されている場合はエラー            
-            let isExist = users?.some(u => u.id === values?.id)
+            const isExist = users?.some(u => u.id === values?.id)
             if (isExist) {
                 throw new Error("入力されたIDは既に使用されています。");
             }
