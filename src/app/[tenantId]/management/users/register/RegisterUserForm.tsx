@@ -18,7 +18,7 @@ import { useReFindUsers } from "@/hooks/ReFindUser";
 import { uploadFile } from "@/hooks/storage";
 import { useEnqueueSnackbar } from "@/hooks/ui";
 import { isUsernameAvailable } from "@/services/AdminQueries";
-import { useGetTenant } from "@/services/graphql";
+import { useGetTenant, useListAllUsers } from "@/services/graphql";
 import { queryKeys } from "@/services/queryKeys";
 import { convertBMPtoPNG } from "@/services/util";
 import { createReFindUser } from "../user";
@@ -40,29 +40,37 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
     const tenantId = useTenantId();
     const qTenant = useGetTenant(tenantId);
     const qUsers = useReFindUsers();
+
+    const qUser = useListAllUsers();
+    const users = useMemo(() => (qUser.data ?? null), [qUser.data]);
     // ユーザーID存在チェック結果のキャッシュ用
     const cacheRef = useRef(new Map<string, boolean>());
 
     const imageFileRef = useRef<HTMLInputElement>(null);
 
     const validationSchema = useMemo(() => yup.object().shape({
-        id: yup.string().required().default("").test("isAvailable", "このIDは既に使用されています。", async (value) => {
-            if (!value) {
-                return false;
-            }
+        // id: yup.string().required().default("").test("isAvailable", "このIDは既に使用されています。", async (value) => {
+        //     if (!value) {
+        //         return false;
+        //     }
 
-            if(!value.endsWith("@" + qTenant.data?.prefix))
-            {
-                value = value + "@" + qTenant.data?.prefix;   
-            }
+        //     let editValue = "";
 
-            if (cacheRef.current.has(value)) {
-                return cacheRef.current.get(value)!;
-            }
-            const isAvailable = await isUsernameAvailable(value);
-            cacheRef.current.set(value, isAvailable);
-            return isAvailable;
-        }),
+        //     if(!value.endsWith("@" + qTenant.data?.prefix))
+        //     {
+        //         editValue = value + "@" + qTenant.data?.prefix;   
+        //     }
+           
+        //     const cachedValue = cacheRef.current.get(editValue);
+        //     if (cachedValue !== undefined) {
+        //         return cachedValue;
+        //     }
+
+        //     const isAvailable = await isUsernameAvailable(editValue);
+        //     cacheRef.current.set(editValue, isAvailable);
+        //     return isAvailable;
+        // }),
+        id: yup.string().required().default(""),
         name: yup.string().required().default(""),
         email: yup.string().required().email().default(qTenant.data?.email ?? ""),
         image: yup.string().required().default(ImageUploadState.Unchange),
@@ -83,18 +91,24 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
             if (currentUserCount >= maxUserCount) {
                 throw new Error("ユーザーが最大数まで作成されています。");
             }
-
-            // 末尾にプレフィックスが入力されている場合
-            // if(!values.id?.endsWith("@" + qTenant.data?.prefix))
-            // {
-            //     values.id = values.id + "@" + qTenant.data?.prefix;   
-            // }
-
+            
             // 入力値のどこかにプレフィックスが入力されている場合
             if(values.id?.toLocaleLowerCase().includes("@" + qTenant.data?.prefix))
             {
                 throw new Error(("@" + qTenant.data?.prefix) + "の入力は不要です。");
             }           
+
+            // 末尾にプレフィックスが入力されている場合
+            if(!values.id?.endsWith("@" + qTenant.data?.prefix))
+            {
+                values.id = values.id + "@" + qTenant.data?.prefix;   
+            }
+
+            // 管理者IDが既に登録されている場合はエラー            
+            let isExist = users?.some(u => u.id === values?.id)
+            if (isExist) {
+                throw new Error("入力されたIDは既に使用されています。");
+            }
             //values.id = values.id.toLowerCase();
 
             // ユーザー登録処理
