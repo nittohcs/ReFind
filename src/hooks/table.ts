@@ -6,7 +6,7 @@ import { ColumnDef, ColumnFiltersState, FilterFn, PaginationState, RowSelectionS
 
 // 部分一致
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const _fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+const _fuzzyFilter = <TData>(): FilterFn<TData> => (row, columnId, value, addMeta) => {
     const itemRank = rankItem(row.getValue(columnId), value);
     addMeta({ itemRank });
     return itemRank.passed;
@@ -14,20 +14,20 @@ const _fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 
 // 前方一致
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const startsWith: FilterFn<any> = (row, columnId, filterValue, _addMeta) => {
+export const startsWith = <TData>(): FilterFn<TData> =>  (row, columnId, filterValue, _addMeta) => {
     const value = row.getValue(columnId) as string;
     return value.startsWith(filterValue);
 };
 
 // 前方・後方一致
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const includesText: FilterFn<any> = (row, columnId, filterValue, _addMeta) => {
+export const includesText = <TData>(): FilterFn<TData> => (row, columnId, filterValue, _addMeta) => {
     const value = row.getValue(columnId) as string;
     return value?.toLowerCase().includes(filterValue.toLowerCase());
 };
 
 // 前方・後方一致(AND複数条件)
-export const multiKeywordIncludesAllColumns: FilterFn<any> = (row, _columnId, filterValue) => {
+export const multiKeywordIncludesAllColumns = <TData>(): FilterFn<TData> => (row, _columnId, filterValue) => {
     const keywords = filterValue.toLowerCase().split(/\s+/);
   
     return keywords.every((keyword: string) =>
@@ -97,7 +97,7 @@ export function useTable<TData,>({
         data,
         columns,
         ...options,
-        globalFilterFn: includesText,
+        globalFilterFn: includesText(),
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
