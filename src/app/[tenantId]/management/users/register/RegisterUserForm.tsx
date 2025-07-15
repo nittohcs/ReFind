@@ -1,6 +1,8 @@
 "use client";
 
 import { FC, RefObject, useCallback, useMemo, useRef } from "react";
+// import { Box, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Typography } from "@mui/material";
+// import { Formik, useFormikContext } from "formik";
 import { Box, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -29,6 +31,8 @@ type FormValues = {
     image: string,
     comment: string,
     isAdmin: boolean,
+    isQRCodeScan: boolean,
+    isOutsideCamera: boolean,
 };
 
 type RegisterUserFormProps = {
@@ -75,6 +79,8 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
         image: yup.string().required().default(ImageUploadState.Unchange),
         comment: yup.string().default(""),
         isAdmin: yup.bool().required().default(false),
+        isQRCodeScan: yup.bool().required().default(false),
+        isOutsideCamera: yup.bool().required().oneOf([true, false]).default(true),
     }), [qTenant.data?.email, qTenant.data?.prefix]);
 
     const initialValues: FormValues = useMemo(() => validationSchema.cast({
@@ -90,7 +96,7 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
             if (currentUserCount >= maxUserCount) {
                 throw new Error("ユーザーが最大数まで作成されています。");
             }
-            
+
             // 入力値のどこかにプレフィックスが入力されている場合
             if(values.id?.toLocaleLowerCase().includes("@" + qTenant.data?.prefix))
             {
@@ -194,6 +200,33 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
         return null;
     }
 
+    // const _IsQRCodeScanPreview = () => {
+    //     const { values } = useFormikContext<FormValues>();
+    //     if (!values.isAdmin) return null;
+
+    //     return (
+    //         <MiraCalCheckbox
+    //             name="isQRCodeScan"
+    //             label="QRコード読取モード"
+    //         />
+    //     );
+    // };
+
+    // const _IsOutsideCameraPreview = () => {
+    //     const { values } = useFormikContext<FormValues>();
+    //     if (!values.isAdmin) return null;
+
+    //     return (
+    //         <FormControl component="fieldset">
+    //             <FormLabel component="legend">QRコード読取</FormLabel>
+    //             <RadioGroup name="isOutsideCamera" row>
+    //                 <FormControlLabel value={true} control={<Radio />} label="外カメラ" />
+    //                 <FormControlLabel value={false} control={<Radio />} label="内カメラ" />
+    //             </RadioGroup>
+    //         </FormControl>
+    //     );
+    // };
+
     return (
         <Box maxWidth="sm">
             <Formik<FormValues>
@@ -241,13 +274,18 @@ export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
                         name="comment"
                         label="コメント"
                         type="text"
-                        inputProps={{ maxLength: 100 }}
+                        inputProps={{ maxLength: 100 }}
                         // sx={{ width: '450px', height: '56px', marginTop: 2, marginBottom: 1 }}
                     />
                     <MiraCalCheckbox
                         name="isAdmin"
                         label="管理者"
                     />
+
+                    {/* <IsQRCodeScanPreview />
+
+                    <IsOutsideCameraPreview /> */}
+
                     <MiraCalFormAction>
                         <MiraCalButton
                             variant="contained"

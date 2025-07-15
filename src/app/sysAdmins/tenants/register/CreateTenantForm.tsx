@@ -121,6 +121,8 @@ export const CreateTenantForm: FC<CreateTenantFormProps> = ({
                     name: values.adminName,
                     comment: "",
                     isAdmin: true,
+                    isQRCodeScan: true,
+                    isOutsideCamera: false,
                 };
 
                 // テナントの管理者ユーザーを追加

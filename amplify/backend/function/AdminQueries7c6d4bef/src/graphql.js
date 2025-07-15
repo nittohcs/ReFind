@@ -22,6 +22,8 @@ const createUser = /* GraphQL */ `mutation CreateUser(
     commentForegroundColor
     commentBackgroundColor
     isAdmin
+    isQRCodeScan
+    isOutsideCamera
     confirmingEmail
     createdAt
     updatedAt
@@ -42,7 +44,9 @@ const updateUser = /* GraphQL */ `mutation UpdateUser(
     comment
     commentForegroundColor
     commentBackgroundColor
-    isAdmin
+    isAdmin    
+    isQRCodeScan
+    isOutsideCamera
     confirmingEmail
     createdAt
     updatedAt

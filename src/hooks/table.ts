@@ -4,18 +4,40 @@ import { useState } from "react";
 import { rankItem } from "@tanstack/match-sorter-utils";
 import { ColumnDef, ColumnFiltersState, FilterFn, PaginationState, RowSelectionState, SortingState, TableOptions, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 
+// 部分一致
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+const _fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
     const itemRank = rankItem(row.getValue(columnId), value);
     addMeta({ itemRank });
     return itemRank.passed;
 };
 
+// 前方一致
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const startsWith: FilterFn<any> = (row, columnId, filterValue, _addMeta) => {
     const value = row.getValue(columnId) as string;
     return value.startsWith(filterValue);
 };
+
+// 前方・後方一致
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const includesText: FilterFn<any> = (row, columnId, filterValue, _addMeta) => {
+    const value = row.getValue(columnId) as string;
+    return value?.toLowerCase().includes(filterValue.toLowerCase());
+};
+
+// 前方・後方一致(AND複数条件)
+export const multiKeywordIncludesAllColumns: FilterFn<any> = (row, _columnId, filterValue) => {
+    const keywords = filterValue.toLowerCase().split(/\s+/);
+  
+    return keywords.every((keyword: string) =>
+      row.getAllCells().some(cell => {
+        const value = cell.getValue() as string;
+        return value?.toLowerCase().includes(keyword);
+      })
+    );
+};
+  
 
 export type UseTableOptions = {
     columnFilters?: ColumnFiltersState | (() => ColumnFiltersState),
@@ -75,7 +97,7 @@ export function useTable<TData,>({
         data,
         columns,
         ...options,
-        globalFilterFn: fuzzyFilter,
+        globalFilterFn: includesText,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getFilteredRowModel: getFilteredRowModel(),

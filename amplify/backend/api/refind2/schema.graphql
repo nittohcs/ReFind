@@ -93,6 +93,12 @@ type User @model @auth (
 
   # 検証待ちメールアドレス
   confirmingEmail: String
+
+  # 管理者がQRを読取するか否か
+  isQRCodeScan: Boolean
+
+  # 外カメラか内カメラか
+  isOutsideCamera: Boolean
 }
 
 # フロアマスタ
