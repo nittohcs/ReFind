@@ -213,6 +213,8 @@ export async function createUser(user: CreateUserInput, isSuppress: boolean = tr
             tenantId: user.tenantId,
             groupname: user.isAdmin ? "admins" : "users",
             comment: user.comment,
+            isQRCodeScan: user.isQRCodeScan == true ? true : false,
+            isOutsideCamera: user.isOutsideCamera == true ? true : false,
 
             // SUPPRESSで初回ログイン用パスワードのお知らせメールが送信されなくなる
             ...(isSuppress && { messageAction: "SUPPRESS" }),

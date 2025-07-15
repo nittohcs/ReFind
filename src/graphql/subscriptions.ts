@@ -94,6 +94,8 @@ export const onCreateUser = /* GraphQL */ `subscription OnCreateUser($filter: Mo
     commentBackgroundColor
     isAdmin
     confirmingEmail
+    isQRCodeScan
+    isOutsideCamera
     createdAt
     updatedAt
     __typename
@@ -114,6 +116,8 @@ export const onUpdateUser = /* GraphQL */ `subscription OnUpdateUser($filter: Mo
     commentBackgroundColor
     isAdmin
     confirmingEmail
+    isQRCodeScan
+    isOutsideCamera
     createdAt
     updatedAt
     __typename
@@ -134,6 +138,8 @@ export const onDeleteUser = /* GraphQL */ `subscription OnDeleteUser($filter: Mo
     commentBackgroundColor
     isAdmin
     confirmingEmail
+    isQRCodeScan
+    isOutsideCamera
     createdAt
     updatedAt
     __typename
