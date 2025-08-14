@@ -1,0 +1,68 @@
+"use client";
+
+import Link from "next/link";
+import { Box, Button, Card, CardActions, CardContent, Typography } from "@mui/material";
+import MiraCalBreadcrumbs from "@/components/MiraCalBreadcrumbs";
+import { useTenantId } from "../hook";
+import { useAuthState } from "@/hooks/auth";
+
+export default function Page() {
+    const tenantId = useTenantId();    
+    const authState = useAuthState();
+    return (
+        <>
+            <MiraCalBreadcrumbs>
+                <Link href={`/${tenantId}`}>ホーム</Link>
+                <Typography>管理</Typography>
+            </MiraCalBreadcrumbs>
+            <Box display="flex" flexDirection="row" flexWrap="wrap" gap={2} pt={2}>
+                <Link href={`/${tenantId}/management/editFloors`}>
+                    <Card>
+                        <CardContent>
+                            <Typography variant="h6">フロア設定</Typography>
+                            <Typography variant="caption">フロアの設定を行う</Typography>
+                        </CardContent>
+                        <CardActions>
+                            <Button size="small">管理者専用</Button>
+                        </CardActions>
+                    </Card>
+                </Link>
+                <Link href={`/${tenantId}/management/users`}>
+                    <Card>
+                        <CardContent>
+                            <Typography variant="h6">ユーザー設定</Typography>
+                            <Typography variant="caption">ユーザーの設定を行う</Typography>
+                        </CardContent>
+                        <CardActions>
+                            <Button size="small">管理者専用</Button>
+                        </CardActions>
+                    </Card>
+                </Link>
+                {/* <Link href={`/${tenantId}/management/seatQRCode`} >
+                    <Card>
+                        <CardContent>
+                            <Typography variant="h6">座席のQRコード一覧</Typography>
+                            <Typography variant="caption">座席QRコードの印刷を行う</Typography>
+                        </CardContent>
+                        <CardActions>
+                            <Button size="small">管理者専用</Button>
+                        </CardActions>
+                    </Card>
+                </Link> */}
+                {authState.groups?.sysAdmins && (
+                <Link href={`/${tenantId}/management/seatOccupancies`}>
+                    <Card>
+                        <CardContent>
+                            <Typography variant="h6">座席確保履歴</Typography>
+                            <Typography variant="caption">座席確保履歴の表示を行う</Typography>
+                        </CardContent>
+                        <CardActions>
+                            <Button size="small">システム管理者専用</Button>
+                        </CardActions>
+                    </Card>
+                </Link>
+                )}
+            </Box>
+        </>
+    )
+}

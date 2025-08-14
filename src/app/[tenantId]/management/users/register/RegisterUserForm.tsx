@@ -1,0 +1,303 @@
+"use client";
+
+import { FC, RefObject, useCallback, useMemo, useRef } from "react";
+// import { Box, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Typography } from "@mui/material";
+// import { Formik, useFormikContext } from "formik";
+import { Box, Typography } from "@mui/material";
+import { Formik } from "formik";
+import * as yup from "yup";
+import { useMutation, useQueryClient  } from "@tanstack/react-query";
+import { fileTypeFromBlob } from "file-type";
+import { User } from "@/API";
+import { useTenantId } from "@/app/[tenantId]/hook";
+import MiraCalForm from "@/components/MiraCalForm";
+import MiraCalTextField from "@/components/MiraCalTextField";
+import MiraCalCheckbox from "@/components/MiraCalCheckbox";
+import { ImageUploadState, MiraCalImageUpload } from "@/components/MiraCalImageUpload";
+import MiraCalFormAction from "@/components/MiraCalFormAction";
+import MiraCalButton from "@/components/MiraCalButton";
+import { useReFindUsers } from "@/hooks/ReFindUser";
+import { uploadFile } from "@/hooks/storage";
+import { useEnqueueSnackbar } from "@/hooks/ui";
+import { useGetTenant, useListAllUsers } from "@/services/graphql";
+import { queryKeys } from "@/services/queryKeys";
+import { convertBMPtoPNG } from "@/services/util";
+import { createReFindUser } from "../user";
+
+type FormValues = {
+    id: string,
+    name: string,
+    email: string,
+    image: string,
+    comment: string,
+    isAdmin: boolean,
+    isQRCodeScan: boolean,
+    isOutsideCamera: boolean,
+};
+
+type RegisterUserFormProps = {
+    update: () => void,
+};
+
+export const RegisterUserForm: FC<RegisterUserFormProps> = ({ update }) => {
+    const tenantId = useTenantId();
+    const qTenant = useGetTenant(tenantId);
+    const qUsers = useReFindUsers();
+
+    const qUser = useListAllUsers();
+    const users = useMemo(() => (qUser.data ?? null), [qUser.data]);
+    // ユーザーID存在チェック結果のキャッシュ用
+    // const cacheRef = useRef(new Map<string, boolean>());
+
+    const imageFileRef = useRef<HTMLInputElement>(null);
+
+    const validationSchema = useMemo(() => yup.object().shape({
+        // id: yup.string().required().default("").test("isAvailable", "このIDは既に使用されています。", async (value) => {
+        //     if (!value) {
+        //         return false;
+        //     }
+
+        //     let editValue = "";
+
+        //     if(!value.endsWith("@" + qTenant.data?.prefix))
+        //     {
+        //         editValue = value + "@" + qTenant.data?.prefix;   
+        //     }
+           
+        //     const cachedValue = cacheRef.current.get(editValue);
+        //     if (cachedValue !== undefined) {
+        //         return cachedValue;
+        //     }
+
+        //     const isAvailable = await isUsernameAvailable(editValue);
+        //     cacheRef.current.set(editValue, isAvailable);
+        //     return isAvailable;
+        // }),
+        id: yup.string().required().default(""),
+        name: yup.string().required().default(""),
+        email: yup.string().required().email().default(qTenant.data?.email ?? ""),
+        image: yup.string().required().default(ImageUploadState.Unchange),
+        comment: yup.string().default(""),
+        isAdmin: yup.bool().required().default(false),
+        isQRCodeScan: yup.bool().required().default(false),
+        isOutsideCamera: yup.bool().required().oneOf([true, false]).default(true),
+    }), [qTenant.data?.email, qTenant.data?.prefix]);
+
+    const initialValues: FormValues = useMemo(() => validationSchema.cast({
+    }), [validationSchema]);
+
+    const enqueueSnackbar = useEnqueueSnackbar();
+    const queryClient = useQueryClient();
+    const mutation = useMutation({
+        async mutationFn(values: FormValues) {
+            // 最大ユーザー数をチェック
+            const maxUserCount = qTenant.data?.maxUserCount ?? 0;
+            const currentUserCount = qUsers.data.length;
+            if (currentUserCount >= maxUserCount) {
+                throw new Error("ユーザーが最大数まで作成されています。");
+            }
+
+            // 入力値のどこかにプレフィックスが入力されている場合
+            if(values.id?.toLocaleLowerCase().includes("@" + qTenant.data?.prefix))
+            {
+                throw new Error(("@" + qTenant.data?.prefix) + "の入力は不要です。");
+            }           
+
+            // 末尾にプレフィックスが入力されている場合
+            if(!values.id?.endsWith("@" + qTenant.data?.prefix))
+            {
+                values.id = values.id + "@" + qTenant.data?.prefix;   
+            }
+
+            // 管理者IDが既に登録されている場合はエラー            
+            const isExist = users?.some(u => u.id === values?.id)
+            if (isExist) {
+                throw new Error("入力されたIDは既に使用されています。");
+            }
+            //values.id = values.id.toLowerCase();
+
+            // ユーザー登録処理
+            const ret = await createReFindUser({
+                ...values,
+                tenantId: tenantId,
+            });
+
+            // 画像をアップロード
+            function getFile(ref: RefObject<HTMLInputElement>) {
+                return ref.current?.files && ref.current?.files.length > 0 ? ref.current.files[0] : undefined;
+            }
+            let file = getFile(imageFileRef);
+
+            // ファイル容量チェック                
+            const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+            if (file && file?.size > MAX_FILE_SIZE) {
+                throw new Error("1MB以下のファイルを選択してください。");
+            }
+            
+            const allowedImageTypes = ["image/png", "image/webp", "image/jpeg", "image/bmp", "image/gif"];
+    
+            if (values.image === ImageUploadState.Upload && file) {
+                const imagePath = `public/${tenantId}/users/${values.id}`;
+
+                // 拡張子チェック
+                const fileType = await fileTypeFromBlob(file);                
+                if (fileType?.mime && !allowedImageTypes.includes(fileType.mime)) {                    
+                    throw new Error("画像ファイルを選択してください。");
+                }
+                
+                // BMPの場合、PNGに変換
+                if (fileType?.mime === "image/bmp") {
+                    const blob = await convertBMPtoPNG(file);
+                    file = new File([blob], `${file.name}.png`, { type: "image/png" });
+                }
+
+                const _response = await uploadFile(imagePath, file);
+                // if (!_response.ok) {
+                //     throw new Error("登録に失敗しました。");
+                // }
+            }
+
+            return ret;
+        },
+        onSuccess(data, variables, _context) {
+            enqueueSnackbar("登録しました。", { variant: "success" });
+
+            // クエリのキャッシュを更新する
+            queryClient.setQueryData<User[]>(queryKeys.graphqlUsersByTenantId(tenantId), items => {
+                if (!items) {
+                    return items;
+                }
+                return [...items, data];
+            });
+
+            // 画像URLのクエリを無効化して再取得されるようにする
+            if (variables.image === ImageUploadState.Upload) {
+                const imagePath = `public/${tenantId}/users/${data.id}`;
+                queryClient.invalidateQueries({ queryKey: queryKeys.storage(imagePath) })
+            }
+
+            // 入力欄を初期化するため、このコンポーネントを再表示する
+            update();
+        },
+        onError(error, _variables, _context) {
+            if (!!error.message) {
+                enqueueSnackbar(error.message, { variant: "error" });
+                return;
+            }
+
+            // Error型以外でエラーが飛んでくる場合に対応
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const tmp = error as any;
+            for(const e of tmp.errors) {
+                enqueueSnackbar(e.message, { variant: "error" });
+            }
+        },
+    });
+
+    const onSubmit = useCallback((values: FormValues) => mutation.mutate(values), [mutation]);
+
+    if (!qTenant.isFetched || !qUsers.isFetched) {
+        return null;
+    }
+
+    // const _IsQRCodeScanPreview = () => {
+    //     const { values } = useFormikContext<FormValues>();
+    //     if (!values.isAdmin) return null;
+
+    //     return (
+    //         <MiraCalCheckbox
+    //             name="isQRCodeScan"
+    //             label="QRコード読取モード"
+    //         />
+    //     );
+    // };
+
+    // const _IsOutsideCameraPreview = () => {
+    //     const { values } = useFormikContext<FormValues>();
+    //     if (!values.isAdmin) return null;
+
+    //     return (
+    //         <FormControl component="fieldset">
+    //             <FormLabel component="legend">QRコード読取</FormLabel>
+    //             <RadioGroup name="isOutsideCamera" row>
+    //                 <FormControlLabel value={true} control={<Radio />} label="外カメラ" />
+    //                 <FormControlLabel value={false} control={<Radio />} label="内カメラ" />
+    //             </RadioGroup>
+    //         </FormControl>
+    //     );
+    // };
+
+    return (
+        <Box maxWidth="sm">
+            <Formik<FormValues>
+                validationSchema={validationSchema}
+                initialValues={initialValues}
+                onSubmit={onSubmit}
+            >
+                <MiraCalForm>
+                    <Box display="flex" alignItems="baseline">
+                        <MiraCalTextField
+                            name="id"
+                            label="ID"
+                            type="text"
+                            debounceTime={300}
+                            inputProps={{ maxLength: 100 ,placeholder: `末尾に@${qTenant.data?.prefix ?? ""}が付与されます。`}}
+                            // sx={{ width: '450px', height: '56px'}}
+                        />
+                        <Typography color="rgb(121, 121, 121)" margin={1}>@{qTenant.data?.prefix ?? ""}</Typography>
+                    </Box>
+                    {/* システムで未使用 */}
+                    {/* <MiraCalTextField
+                        name="email"
+                        label="メールアドレス"
+                        type="email"
+                    /> */}
+                    <MiraCalTextField
+                        name="name"
+                        label="氏名"
+                        type="text"
+                        inputProps={{ maxLength: 100 }}                        
+                        // sx={{ width: '450px', height: '56px'}}
+                    />
+                    <MiraCalImageUpload
+                        name="image"
+                        label="画像"
+                        currentFilePath={null}
+                        // 拡張子の制限
+                        accept="image/png, image/webp, image/jpeg, image/bmp, image/gif"
+                        fileRef={imageFileRef}
+                        previewImageWidth={48}
+                        previewImageHeight={48}
+                        
+                    />
+                    <MiraCalTextField
+                        name="comment"
+                        label="コメント"
+                        type="text"
+                        inputProps={{ maxLength: 100 }}
+                        // sx={{ width: '450px', height: '56px', marginTop: 2, marginBottom: 1 }}
+                    />
+                    <MiraCalCheckbox
+                        name="isAdmin"
+                        label="管理者"
+                    />
+
+                    {/* <IsQRCodeScanPreview />
+
+                    <IsOutsideCameraPreview /> */}
+
+                    <MiraCalFormAction>
+                        <MiraCalButton
+                            variant="contained"
+                            type="submit"
+                            disabled={mutation.isPending}
+                        >
+                            登録
+                        </MiraCalButton>
+                    </MiraCalFormAction>
+                </MiraCalForm>
+            </Formik>
+        </Box>
+    );
+}
+export default RegisterUserForm;

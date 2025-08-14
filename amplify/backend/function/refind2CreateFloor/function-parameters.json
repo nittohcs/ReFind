@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "api": {
+      "refind2": [
+        "Mutation"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}

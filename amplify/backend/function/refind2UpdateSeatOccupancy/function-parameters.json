@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "api": {
+      "refind2": [
+        "Mutation"
+      ]
+    },
+    "storage": {
+      "SeatOccupancy:@model(appsync)": [
+        "update"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}
