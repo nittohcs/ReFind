@@ -1,7 +1,7 @@
 {
-  "resourceName": "ReFind2Storage",
+  "resourceName": "refindStorage",
   "policyUUID": "94d915ed",
-  "bucketName": "refind266091c0821a8489db49f16b2384bf227",
+  "bucketName": "refind66091c0821a8489db49f16b2384bf227",
   "storageAccess": "auth",
   "guestAccess": [],
   "authAccess": [],

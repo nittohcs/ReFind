@@ -1,10 +1,10 @@
 {
-  "AppSyncApiName": "refind2",
+  "AppSyncApiName": "refind",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
   "DynamoDBEnableServerSideEncryption": false,
   "AuthCognitoUserPoolId": {
     "Fn::GetAtt": [
-      "authrefind2a0622a88",
+      "authrefinda0622a88",
       "Outputs.UserPoolId"
     ]
   }

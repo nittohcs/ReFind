@@ -16,13 +16,13 @@
     "s3Key": {
       "Type": "String"
     },
-    "apirefind2GraphQLAPIIdOutput": {
+    "apirefindGraphQLAPIIdOutput": {
       "Type": "String",
-      "Default": "apirefind2GraphQLAPIIdOutput"
+      "Default": "apirefindGraphQLAPIIdOutput"
     },
-    "apirefind2GraphQLAPIEndpointOutput": {
+    "apirefindGraphQLAPIEndpointOutput": {
       "Type": "String",
-      "Default": "apirefind2GraphQLAPIEndpointOutput"
+      "Default": "apirefindGraphQLAPIEndpointOutput"
     }
   },
   "Conditions": {
@@ -55,12 +55,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "refind2UpdateSeat",
+            "refindUpdateSeat",
             {
               "Fn::Join": [
                 "",
                 [
-                  "refind2UpdateSeat",
+                  "refindUpdateSeat",
                   "-",
                   {
                     "Ref": "env"
@@ -78,11 +78,11 @@
             "REGION": {
               "Ref": "AWS::Region"
             },
-            "API_REFIND2_GRAPHQLAPIIDOUTPUT": {
-              "Ref": "apirefind2GraphQLAPIIdOutput"
+            "API_refind_GRAPHQLAPIIDOUTPUT": {
+              "Ref": "apirefindGraphQLAPIIdOutput"
             },
-            "API_REFIND2_GRAPHQLAPIENDPOINTOUTPUT": {
-              "Ref": "apirefind2GraphQLAPIEndpointOutput"
+            "API_refind_GRAPHQLAPIENDPOINTOUTPUT": {
+              "Ref": "apirefindGraphQLAPIEndpointOutput"
             }
           }
         },
@@ -103,12 +103,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "refind2LambdaRole6fac26e4",
+            "refindLambdaRole6fac26e4",
             {
               "Fn::Join": [
                 "",
                 [
-                  "refind2LambdaRole6fac26e4",
+                  "refindLambdaRole6fac26e4",
                   "-",
                   {
                     "Ref": "env"
@@ -214,7 +214,7 @@
                       },
                       ":apis/",
                       {
-                        "Ref": "apirefind2GraphQLAPIIdOutput"
+                        "Ref": "apirefindGraphQLAPIIdOutput"
                       },
                       "/types/Query/*"
                     ]
@@ -234,7 +234,7 @@
                       },
                       ":apis/",
                       {
-                        "Ref": "apirefind2GraphQLAPIIdOutput"
+                        "Ref": "apirefindGraphQLAPIIdOutput"
                       },
                       "/types/Mutation/*"
                     ]

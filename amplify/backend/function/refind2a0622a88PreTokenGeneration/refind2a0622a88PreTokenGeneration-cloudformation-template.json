@@ -63,12 +63,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "refind2a0622a88PreTokenGeneration",
+            "refinda0622a88PreTokenGeneration",
             {
               "Fn::Join": [
                 "",
                 [
-                  "refind2a0622a88PreTokenGeneration",
+                  "refinda0622a88PreTokenGeneration",
                   "-",
                   {
                     "Ref": "env"
@@ -115,12 +115,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "refind2a0622a88PreTokenGeneration",
+            "refinda0622a88PreTokenGeneration",
             {
               "Fn::Join": [
                 "",
                 [
-                  "refind2a0622a88PreTokenGeneration",
+                  "refinda0622a88PreTokenGeneration",
                   "-",
                   {
                     "Ref": "env"

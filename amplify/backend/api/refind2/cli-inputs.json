@@ -1,11 +1,11 @@
 {
   "version": 1,
   "serviceConfiguration": {
-    "apiName": "refind2",
+    "apiName": "refind",
     "serviceName": "AppSync",
     "defaultAuthType": {
       "mode": "AMAZON_COGNITO_USER_POOLS",
-      "cognitoUserPoolId": "authrefind2a0622a88"
+      "cognitoUserPoolId": "authrefinda0622a88"
     },
     "additionalAuthTypes": [
       {

@@ -1,8 +1,8 @@
 /* Amplify Params - DO NOT EDIT
-	API_REFIND2_GRAPHQLAPIENDPOINTOUTPUT
-	API_REFIND2_GRAPHQLAPIIDOUTPUT
-	API_REFIND2_SEATOCCUPANCYTABLE_ARN
-	API_REFIND2_SEATOCCUPANCYTABLE_NAME
+	API_refind_GRAPHQLAPIENDPOINTOUTPUT
+	API_refind_GRAPHQLAPIIDOUTPUT
+	API_refind_SEATOCCUPANCYTABLE_ARN
+	API_refind_SEATOCCUPANCYTABLE_NAME
 	ENV
 	REGION
 Amplify Params - DO NOT EDIT */
@@ -13,7 +13,7 @@ import { SignatureV4 } from '@aws-sdk/signature-v4';
 import { HttpRequest } from '@aws-sdk/protocol-http';
 import { default as fetch, Request } from 'node-fetch';
 
-const GRAPHQL_ENDPOINT = process.env.API_REFIND2_GRAPHQLAPIENDPOINTOUTPUT;
+const GRAPHQL_ENDPOINT = process.env.API_refind_GRAPHQLAPIENDPOINTOUTPUT;
 const AWS_REGION = process.env.AWS_REGION || 'us-east-1';
 const { Sha256 } = crypto;
 

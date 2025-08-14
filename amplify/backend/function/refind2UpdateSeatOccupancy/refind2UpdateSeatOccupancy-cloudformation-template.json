@@ -16,13 +16,13 @@
     "s3Key": {
       "Type": "String"
     },
-    "apirefind2GraphQLAPIIdOutput": {
+    "apirefindGraphQLAPIIdOutput": {
       "Type": "String",
-      "Default": "apirefind2GraphQLAPIIdOutput"
+      "Default": "apirefindGraphQLAPIIdOutput"
     },
-    "apirefind2GraphQLAPIEndpointOutput": {
+    "apirefindGraphQLAPIEndpointOutput": {
       "Type": "String",
-      "Default": "apirefind2GraphQLAPIEndpointOutput"
+      "Default": "apirefindGraphQLAPIEndpointOutput"
     }
   },
   "Conditions": {
@@ -55,12 +55,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "refind2UpdateSeatOccupancy",
+            "refindUpdateSeatOccupancy",
             {
               "Fn::Join": [
                 "",
                 [
-                  "refind2UpdateSeatOccupancy",
+                  "refindUpdateSeatOccupancy",
                   "-",
                   {
                     "Ref": "env"
@@ -78,18 +78,18 @@
             "REGION": {
               "Ref": "AWS::Region"
             },
-            "API_REFIND2_GRAPHQLAPIIDOUTPUT": {
-              "Ref": "apirefind2GraphQLAPIIdOutput"
+            "API_refind_GRAPHQLAPIIDOUTPUT": {
+              "Ref": "apirefindGraphQLAPIIdOutput"
             },
-            "API_REFIND2_GRAPHQLAPIENDPOINTOUTPUT": {
-              "Ref": "apirefind2GraphQLAPIEndpointOutput"
+            "API_refind_GRAPHQLAPIENDPOINTOUTPUT": {
+              "Ref": "apirefindGraphQLAPIEndpointOutput"
             },
-            "API_REFIND2_SEATOCCUPANCYTABLE_NAME": {
+            "API_refind_SEATOCCUPANCYTABLE_NAME": {
               "Fn::ImportValue": {
-                "Fn::Sub": "${apirefind2GraphQLAPIIdOutput}:GetAtt:SeatOccupancyTable:Name"
+                "Fn::Sub": "${apirefindGraphQLAPIIdOutput}:GetAtt:SeatOccupancyTable:Name"
               }
             },
-            "API_REFIND2_SEATOCCUPANCYTABLE_ARN": {
+            "API_refind_SEATOCCUPANCYTABLE_ARN": {
               "Fn::Join": [
                 "",
                 [
@@ -104,7 +104,7 @@
                   ":table/",
                   {
                     "Fn::ImportValue": {
-                      "Fn::Sub": "${apirefind2GraphQLAPIIdOutput}:GetAtt:SeatOccupancyTable:Name"
+                      "Fn::Sub": "${apirefindGraphQLAPIIdOutput}:GetAtt:SeatOccupancyTable:Name"
                     }
                   }
                 ]
@@ -129,12 +129,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "refind2LambdaRoleb580885e",
+            "refindLambdaRoleb580885e",
             {
               "Fn::Join": [
                 "",
                 [
-                  "refind2LambdaRoleb580885e",
+                  "refindLambdaRoleb580885e",
                   "-",
                   {
                     "Ref": "env"
@@ -240,7 +240,7 @@
                       },
                       ":apis/",
                       {
-                        "Ref": "apirefind2GraphQLAPIIdOutput"
+                        "Ref": "apirefindGraphQLAPIIdOutput"
                       },
                       "/types/Mutation/*"
                     ]
@@ -271,7 +271,7 @@
                       ":table/",
                       {
                         "Fn::ImportValue": {
-                          "Fn::Sub": "${apirefind2GraphQLAPIIdOutput}:GetAtt:SeatOccupancyTable:Name"
+                          "Fn::Sub": "${apirefindGraphQLAPIIdOutput}:GetAtt:SeatOccupancyTable:Name"
                         }
                       }
                     ]
@@ -292,7 +292,7 @@
                       ":table/",
                       {
                         "Fn::ImportValue": {
-                          "Fn::Sub": "${apirefind2GraphQLAPIIdOutput}:GetAtt:SeatOccupancyTable:Name"
+                          "Fn::Sub": "${apirefindGraphQLAPIIdOutput}:GetAtt:SeatOccupancyTable:Name"
                         }
                       },
                       "/index/*"

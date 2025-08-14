@@ -1,13 +1,13 @@
 /* Amplify Params - DO NOT EDIT
 	ENV
 	REGION
-	STORAGE_REFIND2STORAGE_BUCKETNAME
+	STORAGE_refindSTORAGE_BUCKETNAME
 Amplify Params - DO NOT EDIT */
 
 import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
 
 const REGION = process.env.REGION;
-const BUCKETNAME = process.env.STORAGE_REFIND2STORAGE_BUCKETNAME;
+const BUCKETNAME = process.env.STORAGE_refindSTORAGE_BUCKETNAME;
 
 /**
  * @type {import('@types/aws-lambda').AppSyncResolverHandler}

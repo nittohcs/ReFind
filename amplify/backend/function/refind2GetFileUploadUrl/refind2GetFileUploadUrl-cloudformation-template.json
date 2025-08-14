@@ -16,9 +16,9 @@
     "s3Key": {
       "Type": "String"
     },
-    "storageReFind2StorageBucketName": {
+    "storagerefindStorageBucketName": {
       "Type": "String",
-      "Default": "storageReFind2StorageBucketName"
+      "Default": "storagerefindStorageBucketName"
     }
   },
   "Conditions": {
@@ -51,12 +51,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "refind2GetFileUploadUrl",
+            "refindGetFileUploadUrl",
             {
               "Fn::Join": [
                 "",
                 [
-                  "refind2GetFileUploadUrl",
+                  "refindGetFileUploadUrl",
                   "-",
                   {
                     "Ref": "env"
@@ -74,8 +74,8 @@
             "REGION": {
               "Ref": "AWS::Region"
             },
-            "STORAGE_REFIND2STORAGE_BUCKETNAME": {
-              "Ref": "storageReFind2StorageBucketName"
+            "STORAGE_refindSTORAGE_BUCKETNAME": {
+              "Ref": "storagerefindStorageBucketName"
             }
           }
         },
@@ -96,12 +96,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "refind2LambdaRoleb2cd2ad2",
+            "refindLambdaRoleb2cd2ad2",
             {
               "Fn::Join": [
                 "",
                 [
-                  "refind2LambdaRoleb2cd2ad2",
+                  "refindLambdaRoleb2cd2ad2",
                   "-",
                   {
                     "Ref": "env"
@@ -197,7 +197,7 @@
                     [
                       "arn:aws:s3:::",
                       {
-                        "Ref": "storageReFind2StorageBucketName"
+                        "Ref": "storagerefindStorageBucketName"
                       }
                     ]
                   ]
@@ -217,7 +217,7 @@
                     [
                       "arn:aws:s3:::",
                       {
-                        "Ref": "storageReFind2StorageBucketName"
+                        "Ref": "storagerefindStorageBucketName"
                       },
                       "/*"
                     ]

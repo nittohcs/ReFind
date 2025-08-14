@@ -16,17 +16,17 @@
     "s3Key": {
       "Type": "String"
     },
-    "apirefind2GraphQLAPIIdOutput": {
+    "apirefindGraphQLAPIIdOutput": {
       "Type": "String",
-      "Default": "apirefind2GraphQLAPIIdOutput"
+      "Default": "apirefindGraphQLAPIIdOutput"
     },
-    "apirefind2GraphQLAPIEndpointOutput": {
+    "apirefindGraphQLAPIEndpointOutput": {
       "Type": "String",
-      "Default": "apirefind2GraphQLAPIEndpointOutput"
+      "Default": "apirefindGraphQLAPIEndpointOutput"
     },
-    "authrefind2a0622a88UserPoolId": {
+    "authrefinda0622a88UserPoolId": {
       "Type": "String",
-      "Default": "authrefind2a0622a88UserPoolId"
+      "Default": "authrefinda0622a88UserPoolId"
     }
   },
   "Conditions": {
@@ -59,12 +59,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "refind2VerifyUserAttribute",
+            "refindVerifyUserAttribute",
             {
               "Fn::Join": [
                 "",
                 [
-                  "refind2VerifyUserAttribute",
+                  "refindVerifyUserAttribute",
                   "-",
                   {
                     "Ref": "env"
@@ -82,14 +82,14 @@
             "REGION": {
               "Ref": "AWS::Region"
             },
-            "API_REFIND2_GRAPHQLAPIIDOUTPUT": {
-              "Ref": "apirefind2GraphQLAPIIdOutput"
+            "API_refind_GRAPHQLAPIIDOUTPUT": {
+              "Ref": "apirefindGraphQLAPIIdOutput"
             },
-            "API_REFIND2_GRAPHQLAPIENDPOINTOUTPUT": {
-              "Ref": "apirefind2GraphQLAPIEndpointOutput"
+            "API_refind_GRAPHQLAPIENDPOINTOUTPUT": {
+              "Ref": "apirefindGraphQLAPIEndpointOutput"
             },
-            "AUTH_REFIND2A0622A88_USERPOOLID": {
-              "Ref": "authrefind2a0622a88UserPoolId"
+            "AUTH_refindA0622A88_USERPOOLID": {
+              "Ref": "authrefinda0622a88UserPoolId"
             }
           }
         },
@@ -110,12 +110,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "refind2LambdaRole19e0dce4",
+            "refindLambdaRole19e0dce4",
             {
               "Fn::Join": [
                 "",
                 [
-                  "refind2LambdaRole19e0dce4",
+                  "refindLambdaRole19e0dce4",
                   "-",
                   {
                     "Ref": "env"
@@ -221,7 +221,7 @@
                       },
                       ":apis/",
                       {
-                        "Ref": "apirefind2GraphQLAPIIdOutput"
+                        "Ref": "apirefindGraphQLAPIIdOutput"
                       },
                       "/types/Query/*"
                     ]
@@ -241,7 +241,7 @@
                       },
                       ":apis/",
                       {
-                        "Ref": "apirefind2GraphQLAPIIdOutput"
+                        "Ref": "apirefindGraphQLAPIIdOutput"
                       },
                       "/types/Mutation/*"
                     ]
@@ -269,7 +269,7 @@
                       },
                       ":userpool/",
                       {
-                        "Ref": "authrefind2a0622a88UserPoolId"
+                        "Ref": "authrefinda0622a88UserPoolId"
                       }
                     ]
                   ]
