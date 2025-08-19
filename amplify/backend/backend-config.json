@@ -119,8 +119,244 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "deleteOldSeatOccupancy": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "refind56920dcfPreTokenGeneration": {
       "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refindClearSeatOccupanciesByTenantId": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refindCreateFloor": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refindCreateSeat": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refindCreateSeatOccupancy": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refindDeleteFile": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "BucketName"
+          ],
+          "category": "storage",
+          "resourceName": "ReFindStorage"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refindDeleteFloor": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refindDeleteSeat": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refindGetFileDownloadUrl": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "BucketName"
+          ],
+          "category": "storage",
+          "resourceName": "ReFindStorage"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refindGetFileUploadUrl": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "BucketName"
+          ],
+          "category": "storage",
+          "resourceName": "ReFindStorage"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refindUpdateFloor": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refindUpdateSeat": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refindUpdateSeatOccupancy": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refindUpdateUserAttributes": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "refind56920dcf"
+        },
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "refindVerifyUserAttribute": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "refind56920dcf"
+        },
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "refind"
+        }
+      ],
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     }
@@ -142,6 +378,22 @@
         }
       ]
     },
+    "AMPLIFY_function_deleteOldSeatOccupancy_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "deleteOldSeatOccupancy"
+        }
+      ]
+    },
+    "AMPLIFY_function_deleteOldSeatOccupancy_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "deleteOldSeatOccupancy"
+        }
+      ]
+    },
     "AMPLIFY_function_refind56920dcfPreTokenGeneration_deploymentBucketName": {
       "usedBy": [
         {
@@ -155,6 +407,230 @@
         {
           "category": "function",
           "resourceName": "refind56920dcfPreTokenGeneration"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindClearSeatOccupanciesByTenantId_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindClearSeatOccupanciesByTenantId"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindClearSeatOccupanciesByTenantId_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindClearSeatOccupanciesByTenantId"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindCreateFloor_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindCreateFloor"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindCreateFloor_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindCreateFloor"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindCreateSeatOccupancy_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindCreateSeatOccupancy"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindCreateSeatOccupancy_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindCreateSeatOccupancy"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindCreateSeat_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindCreateSeat"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindCreateSeat_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindCreateSeat"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindDeleteFile_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindDeleteFile"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindDeleteFile_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindDeleteFile"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindDeleteFloor_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindDeleteFloor"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindDeleteFloor_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindDeleteFloor"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindDeleteSeat_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindDeleteSeat"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindDeleteSeat_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindDeleteSeat"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindGetFileDownloadUrl_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindGetFileDownloadUrl"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindGetFileDownloadUrl_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindGetFileDownloadUrl"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindGetFileUploadUrl_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindGetFileUploadUrl"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindGetFileUploadUrl_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindGetFileUploadUrl"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindUpdateFloor_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindUpdateFloor"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindUpdateFloor_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindUpdateFloor"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindUpdateSeatOccupancy_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindUpdateSeatOccupancy"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindUpdateSeatOccupancy_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindUpdateSeatOccupancy"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindUpdateSeat_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindUpdateSeat"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindUpdateSeat_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindUpdateSeat"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindUpdateUserAttributes_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindUpdateUserAttributes"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindUpdateUserAttributes_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindUpdateUserAttributes"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindVerifyUserAttribute_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindVerifyUserAttribute"
+        }
+      ]
+    },
+    "AMPLIFY_function_refindVerifyUserAttribute_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "refindVerifyUserAttribute"
         }
       ]
     }

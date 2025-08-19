@@ -25,6 +25,66 @@
         "AdminQueries62758162": {
           "deploymentBucketName": "amplify-refind-main-d319f-deployment",
           "s3Key": "amplify-builds/AdminQueries62758162-5647756c6d6951755a37-build.zip"
+        },
+        "refindCreateFloor": {
+          "deploymentBucketName": "amplify-refind-main-d319f-deployment",
+          "s3Key": "amplify-builds/refindCreateFloor-4b4e4b6d625538577071-build.zip"
+        },
+        "refindCreateSeat": {
+          "deploymentBucketName": "amplify-refind-main-d319f-deployment",
+          "s3Key": "amplify-builds/refindCreateSeat-523749732f6861746b77-build.zip"
+        },
+        "refindCreateSeatOccupancy": {
+          "deploymentBucketName": "amplify-refind-main-d319f-deployment",
+          "s3Key": "amplify-builds/refindCreateSeatOccupancy-576653774b6c676d6a4a-build.zip"
+        },
+        "refindClearSeatOccupanciesByTenantId": {
+          "deploymentBucketName": "amplify-refind-main-d319f-deployment",
+          "s3Key": "amplify-builds/refindClearSeatOccupanciesByTenantId-70655a6a6c396f475758-build.zip"
+        },
+        "refindDeleteFloor": {
+          "deploymentBucketName": "amplify-refind-main-d319f-deployment",
+          "s3Key": "amplify-builds/refindDeleteFloor-6c706172416d55424d36-build.zip"
+        },
+        "refindDeleteSeat": {
+          "deploymentBucketName": "amplify-refind-main-d319f-deployment",
+          "s3Key": "amplify-builds/refindDeleteSeat-546d4f32684f6655666d-build.zip"
+        },
+        "refindDeleteFile": {
+          "deploymentBucketName": "amplify-refind-main-d319f-deployment",
+          "s3Key": "amplify-builds/refindDeleteFile-554c417544543462476a-build.zip"
+        },
+        "refindUpdateFloor": {
+          "deploymentBucketName": "amplify-refind-main-d319f-deployment",
+          "s3Key": "amplify-builds/refindUpdateFloor-2f4b75633266664c7373-build.zip"
+        },
+        "refindUpdateSeat": {
+          "deploymentBucketName": "amplify-refind-main-d319f-deployment",
+          "s3Key": "amplify-builds/refindUpdateSeat-4a70527332676d656d5a-build.zip"
+        },
+        "refindUpdateSeatOccupancy": {
+          "deploymentBucketName": "amplify-refind-main-d319f-deployment",
+          "s3Key": "amplify-builds/refindUpdateSeatOccupancy-65542f6358684e723732-build.zip"
+        },
+        "refindUpdateUserAttributes": {
+          "deploymentBucketName": "amplify-refind-main-d319f-deployment",
+          "s3Key": "amplify-builds/refindUpdateUserAttributes-437866512f5237676f69-build.zip"
+        },
+        "refindVerifyUserAttribute": {
+          "deploymentBucketName": "amplify-refind-main-d319f-deployment",
+          "s3Key": "amplify-builds/refindVerifyUserAttribute-3449423577666979746d-build.zip"
+        },
+        "refindGetFileDownloadUrl": {
+          "deploymentBucketName": "amplify-refind-main-d319f-deployment",
+          "s3Key": "amplify-builds/refindGetFileDownloadUrl-566343766e4e7777304c-build.zip"
+        },
+        "refindGetFileUploadUrl": {
+          "deploymentBucketName": "amplify-refind-main-d319f-deployment",
+          "s3Key": "amplify-builds/refindGetFileUploadUrl-70704348772b466b3752-build.zip"
+        },
+        "deleteOldSeatOccupancy": {
+          "deploymentBucketName": "amplify-refind-main-d319f-deployment",
+          "s3Key": "amplify-builds/deleteOldSeatOccupancy-74735037577658747568-build.zip"
         }
       },
       "api": {

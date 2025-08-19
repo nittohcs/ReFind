@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "storage": {
+      "ReFindStorage": [
+        "read"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}

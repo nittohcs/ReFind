@@ -34,6 +34,12 @@ type Tenant @model @auth (
 
   # 利用停止中かどうか
   isSuspended: Boolean!
+
+  # テナント識別子
+  prefix: String!
+  
+  # テナント共通のメールアドレス
+  email: String!
 }
 
 # ユーザーマスタ
@@ -86,6 +92,12 @@ type User @model @auth (
 
   # 検証待ちメールアドレス
   confirmingEmail: String
+  
+  # ユーザQRコード読取フラグ
+  isQRCodeScan: Boolean
+
+  # 初期カメラフラグ
+  isOutsideCamera: Boolean
 }
 
 # フロアマスタ

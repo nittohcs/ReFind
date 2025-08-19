@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "api": {
+      "refind": [
+        "Query",
+        "Mutation"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}
