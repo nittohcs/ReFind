@@ -9,7 +9,31 @@
       "UnauthRoleName": "amplify-refind-main-d319f-unauthRole",
       "StackName": "amplify-refind-main-d319f",
       "StackId": "arn:aws:cloudformation:ap-northeast-3:408421298568:stack/amplify-refind-main-d319f/94d51620-7be7-11f0-9339-0eebf4a1569b",
-      "AmplifyAppId": "d11i9u849f1xr5"
+      "AmplifyAppId": "d11i9u849f1xr5",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-refind-main-d319f-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
+    },
+    "categories": {
+      "auth": {
+        "refind56920dcf": {},
+        "userPoolGroups": {}
+      },
+      "function": {
+        "refind56920dcfPreTokenGeneration": {
+          "deploymentBucketName": "amplify-refind-main-d319f-deployment",
+          "s3Key": "amplify-builds/refind56920dcfPreTokenGeneration-4f454f70676355463158-build.zip"
+        },
+        "AdminQueries62758162": {
+          "deploymentBucketName": "amplify-refind-main-d319f-deployment",
+          "s3Key": "amplify-builds/AdminQueries62758162-5647756c6d6951755a37-build.zip"
+        }
+      },
+      "api": {
+        "refind": {},
+        "AdminQueries": {}
+      },
+      "storage": {
+        "ReFindStorage": {}
+      }
     }
   }
 }

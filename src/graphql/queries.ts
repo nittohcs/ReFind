@@ -28,8 +28,6 @@ export const getTenant = /* GraphQL */ `query GetTenant($id: ID!) {
     name
     maxUserCount
     initialPassword
-    email
-    prefix
     retentionPeriodDays
     isSuspended
     createdAt
@@ -49,8 +47,6 @@ export const listTenants = /* GraphQL */ `query ListTenants(
       name
       maxUserCount
       initialPassword
-      email
-      prefix
       retentionPeriodDays
       isSuspended
       createdAt
@@ -76,8 +72,6 @@ export const getUser = /* GraphQL */ `query GetUser($id: ID!) {
     commentBackgroundColor
     isAdmin
     confirmingEmail
-    isQRCodeScan
-    isOutsideCamera
     createdAt
     updatedAt
     __typename
@@ -100,8 +94,6 @@ export const listUsers = /* GraphQL */ `query ListUsers(
       commentBackgroundColor
       isAdmin
       confirmingEmail
-      isQRCodeScan
-      isOutsideCamera
       createdAt
       updatedAt
       __typename
@@ -135,8 +127,6 @@ export const usersByTenantId = /* GraphQL */ `query UsersByTenantId(
       commentBackgroundColor
       isAdmin
       confirmingEmail
-      isQRCodeScan
-      isOutsideCamera
       createdAt
       updatedAt
       __typename

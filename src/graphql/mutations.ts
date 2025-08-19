@@ -191,8 +191,6 @@ export const funcUpdateUserAttributes = /* GraphQL */ `mutation FuncUpdateUserAt
       commentBackgroundColor
       isAdmin
       confirmingEmail
-      isQRCodeScan
-      isOutsideCamera
       createdAt
       updatedAt
       __typename
@@ -220,8 +218,6 @@ export const createTenant = /* GraphQL */ `mutation CreateTenant(
     name
     maxUserCount
     initialPassword
-    email
-    prefix
     retentionPeriodDays
     isSuspended
     createdAt
@@ -242,8 +238,6 @@ export const updateTenant = /* GraphQL */ `mutation UpdateTenant(
     name
     maxUserCount
     initialPassword
-    email
-    prefix
     retentionPeriodDays
     isSuspended
     createdAt
@@ -264,8 +258,6 @@ export const deleteTenant = /* GraphQL */ `mutation DeleteTenant(
     name
     maxUserCount
     initialPassword
-    email
-    prefix
     retentionPeriodDays
     isSuspended
     createdAt
@@ -291,8 +283,6 @@ export const createUser = /* GraphQL */ `mutation CreateUser(
     commentBackgroundColor
     isAdmin
     confirmingEmail
-    isQRCodeScan
-    isOutsideCamera
     createdAt
     updatedAt
     __typename
@@ -316,8 +306,6 @@ export const updateUser = /* GraphQL */ `mutation UpdateUser(
     commentBackgroundColor
     isAdmin
     confirmingEmail
-    isQRCodeScan
-    isOutsideCamera
     createdAt
     updatedAt
     __typename
@@ -341,8 +329,6 @@ export const deleteUser = /* GraphQL */ `mutation DeleteUser(
     commentBackgroundColor
     isAdmin
     confirmingEmail
-    isQRCodeScan
-    isOutsideCamera
     createdAt
     updatedAt
     __typename
