@@ -5,6 +5,10 @@
   "main": "index.js",
   "license": "Apache-2.0",
   "dependencies": {
+    "@aws-crypto/sha256-js": "^5.2.0",
+    "@aws-sdk/credential-provider-node": "^3.744.0",
+    "@aws-sdk/protocol-http": "^3.374.0",
+    "@aws-sdk/signature-v4": "^3.374.0",
     "aws-serverless-express": "^3.3.5",
     "body-parser": "^1.17.2",
     "express": "^4.17.1"
