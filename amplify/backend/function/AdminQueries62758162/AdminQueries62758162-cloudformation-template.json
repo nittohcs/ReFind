@@ -79,7 +79,7 @@
             "API_REFIND_GRAPHQLAPIENDPOINTOUTPUT": {
               "Ref": "apirefindGraphQLAPIEndpointOutput"
             },
-            "AUTH_REFINDA0622A88_USERPOOLID": {
+            "AUTH_REFIND56920DCF_USERPOOLID": {
               "Ref": "authrefind56920dcfUserPoolId"
             }
           }
