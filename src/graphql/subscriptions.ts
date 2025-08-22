@@ -32,6 +32,8 @@ export const onCreateTenant = /* GraphQL */ `subscription OnCreateTenant($filter
     name
     maxUserCount
     initialPassword
+    email
+    prefix
     retentionPeriodDays
     isSuspended
     createdAt
@@ -49,6 +51,8 @@ export const onUpdateTenant = /* GraphQL */ `subscription OnUpdateTenant($filter
     name
     maxUserCount
     initialPassword
+    email
+    prefix
     retentionPeriodDays
     isSuspended
     createdAt
@@ -66,6 +70,8 @@ export const onDeleteTenant = /* GraphQL */ `subscription OnDeleteTenant($filter
     name
     maxUserCount
     initialPassword
+    email
+    prefix
     retentionPeriodDays
     isSuspended
     createdAt
@@ -88,6 +94,8 @@ export const onCreateUser = /* GraphQL */ `subscription OnCreateUser($filter: Mo
     commentBackgroundColor
     isAdmin
     confirmingEmail
+    isQRCodeScan
+    isOutsideCamera
     createdAt
     updatedAt
     __typename
@@ -108,6 +116,8 @@ export const onUpdateUser = /* GraphQL */ `subscription OnUpdateUser($filter: Mo
     commentBackgroundColor
     isAdmin
     confirmingEmail
+    isQRCodeScan
+    isOutsideCamera
     createdAt
     updatedAt
     __typename
@@ -128,6 +138,8 @@ export const onDeleteUser = /* GraphQL */ `subscription OnDeleteUser($filter: Mo
     commentBackgroundColor
     isAdmin
     confirmingEmail
+    isQRCodeScan
+    isOutsideCamera
     createdAt
     updatedAt
     __typename

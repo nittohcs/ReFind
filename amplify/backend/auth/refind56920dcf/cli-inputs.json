@@ -27,10 +27,12 @@
     "userpoolClientGenerateSecret": false,
     "userpoolClientRefreshTokenValidity": 30,
     "userpoolClientWriteAttributes": [
-      "email"
+      "email",
+      "custom:tenantId"
     ],
     "userpoolClientReadAttributes": [
-      "email"
+      "email",
+      "custom:tenantId"
     ],
     "userpoolClientLambdaRole": "refind56920dcf_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,

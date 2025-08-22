@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "api": {
+      "refind": [
+        "Query",
+        "Mutation"
+      ]
+    },
+    "auth": {
+      "refind56920dcf": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    }
+  },
+  "environmentVariableList": []
+}
