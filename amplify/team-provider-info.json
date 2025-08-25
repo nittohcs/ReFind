@@ -36,7 +36,7 @@
         },
         "refindCreateSeatOccupancy": {
           "deploymentBucketName": "amplify-refind-main-d319f-deployment",
-          "s3Key": "amplify-builds/refindCreateSeatOccupancy-694f327938684d507530-build.zip"
+          "s3Key": "amplify-builds/refindCreateSeatOccupancy-685a6852566734625241-build.zip"
         },
         "refindClearSeatOccupanciesByTenantId": {
           "deploymentBucketName": "amplify-refind-main-d319f-deployment",

@@ -4,14 +4,19 @@ const nextConfig = {
         remotePatterns: [
             {
                 protocol: "https",
-                hostname: "refind66091c0821a8489db49f16b2384bf22778a18-staging.s3.ap-northeast-3.amazonaws.com",
+                hostname: "refind7d2f117c411a46f88dfeec91446e9545d319f-main.s3.ap-northeast-3.amazonaws.com",
                 pathname: "/**"
             },
-            {
-                protocol: "https",
-                hostname: "refind66091c0821a8489db49f16b2384bf227169f7-main.s3.ap-northeast-3.amazonaws.com",
-                pathname: "/**"
-            },
+            // {
+            //     protocol: "https",
+            //     hostname: "refind66091c0821a8489db49f16b2384bf227169f7-staging.s3.ap-northeast-3.amazonaws.com",
+            //     pathname: "/**"
+            // },
+            // {
+            //     protocol: "https",
+            //     hostname: "refind66091c0821a8489db49f16b2384bf227169f7-dev.s3.ap-northeast-3.amazonaws.com",
+            //     pathname: "/**"
+            // },
         ],
         unoptimized: true,
     },

@@ -1,6 +1,6 @@
 /* Amplify Params - DO NOT EDIT
-	API_REFIND_GRAPHQLAPIENDPOINTOUTPUT
-	API_REFIND_GRAPHQLAPIIDOUTPUT
+	API_refind_GRAPHQLAPIENDPOINTOUTPUT
+	API_refind_GRAPHQLAPIIDOUTPUT
 	ENV
 	REGION
 Amplify Params - DO NOT EDIT */
@@ -11,28 +11,55 @@ import { SignatureV4 } from '@aws-sdk/signature-v4';
 import { HttpRequest } from '@aws-sdk/protocol-http';
 import { default as fetch, Request } from 'node-fetch';
 
-const GRAPHQL_ENDPOINT = process.env.API_REFIND_GRAPHQLAPIENDPOINTOUTPUT;
+const GRAPHQL_ENDPOINT = process.env.API_refind_GRAPHQLAPIENDPOINTOUTPUT;
 const AWS_REGION = process.env.AWS_REGION || 'us-east-1';
 const { Sha256 } = crypto;
 
-const query = /* GraphQL */ `
-  query LIST_TODOS {
-    listTodos {
-      items {
-        id
-        name
-        description
-      }
-    }
+const createSeatOccupancy = /* GraphQL */ `mutation CreateSeatOccupancy(
+  $input: CreateSeatOccupancyInput!
+  $condition: ModelSeatOccupancyConditionInput
+) {
+  createSeatOccupancy(input: $input, condition: $condition) {
+    id
+    tenantId
+    seatId
+    userId
+    userName
+    date
+    createdAt
+    updatedAt
+    __typename
   }
+}
 `;
 
 /**
- * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
+ * @type {import('@types/aws-lambda').AppSyncResolverHandler}
  */
-
  export const handler = async (event) => {
   console.log(`EVENT: ${JSON.stringify(event)}`);
+
+  const input = event.arguments.input;
+  const groups = event.identity?.groups;
+  const isSysAdmins = groups.indexOf("sysAdmins") >= 0;
+
+  const tenantId = groups.find(x => x !== "sysAdmins" && x !== "admins" && x !== "users") ?? "";
+  if (!isSysAdmins && !tenantId) {
+    throw new Error("Empty tenantId");
+  }
+
+  // tenantIdをチェック
+  if (input.tenantId !== tenantId) {
+    // sysAdmins以外はtenantIdが違ってたらアウト
+    if (!isSysAdmins) {
+      throw new Error("Invalid tenantId");
+    }
+
+    // sysAdminsでも関係ないテナントで座席確保はできない
+    if (input.userId) {
+      throw new Error("Invalid tenantId");
+    }
+  }
 
   const endpoint = new URL(GRAPHQL_ENDPOINT);
 
@@ -50,39 +77,18 @@ const query = /* GraphQL */ `
       host: endpoint.host
     },
     hostname: endpoint.host,
-    body: JSON.stringify({ query }),
+    body: JSON.stringify({
+      query: createSeatOccupancy,
+      variables: {
+        input
+      }
+    }),
     path: endpoint.pathname
   });
 
   const signed = await signer.sign(requestToBeSigned);
   const request = new Request(endpoint, signed);
-
-  let statusCode = 200;
-  let body;
-  let response;
-
-  try {
-    response = await fetch(request);
-    body = await response.json();
-    if (body.errors) statusCode = 400;
-  } catch (error) {
-    statusCode = 500;
-    body = {
-      errors: [
-        {
-          message: error.message
-        }
-      ]
-    };
-  }
-
-  return {
-    statusCode,
-    //  Uncomment below to enable CORS requests
-    // headers: {
-    //   "Access-Control-Allow-Origin": "*",
-    //   "Access-Control-Allow-Headers": "*"
-    // }, 
-    body: JSON.stringify(body)
-  };
+  const response = await fetch(request);
+  const body = await response.json();
+  return body.data.createSeatOccupancy;
 };
