@@ -1,4 +1,3 @@
-
 # テナントマスタ
 type Tenant @model @auth (
   rules: [
@@ -29,18 +28,18 @@ type Tenant @model @auth (
 
   # 初期パスワード
   initialPassword: String!
-  
-  # メールアドレス
-  email: String!
-
-  # テナント識別子
-  prefix: String!
 
   # 座席確保情報の履歴保管日数
   retentionPeriodDays: Int!
 
   # 利用停止中かどうか
   isSuspended: Boolean!
+
+  # テナント識別子
+  prefix: String!
+  
+  # テナント共通のメールアドレス
+  email: String!
 }
 
 # ユーザーマスタ
@@ -93,11 +92,11 @@ type User @model @auth (
 
   # 検証待ちメールアドレス
   confirmingEmail: String
-
-  # 管理者がQRを読取するか否か
+  
+  # ユーザQRコード読取フラグ
   isQRCodeScan: Boolean
 
-  # 外カメラか内カメラか
+  # 初期カメラフラグ
   isOutsideCamera: Boolean
 }
 
@@ -332,61 +331,61 @@ input funcVerifyUserAttributeInput {
 type Query {
   # ファイルアップロード用URLの取得
   getFileUploadUrl(filePath: String!): String
-  @function(name: "refind2GetFileUploadUrl-${env}")
+  @function(name: "refindGetFileUploadUrl-${env}")
 
   # ファイルダウンロード用URLの取得
   getFileDownloadUrl(filePath: String!, expiresIn: Int): String
-  @function(name: "refind2GetFileDownloadUrl-${env}")
+  @function(name: "refindGetFileDownloadUrl-${env}")
 }
 
 type Mutation {
   # ファイル削除
   deleteFile(filePath: String!): Boolean
-  @function(name: "refind2DeleteFile-${env}")
+  @function(name: "refindDeleteFile-${env}")
 
   # フロア登録
   funcCreateFloor(input: funcCreateFloorInput!): Floor
-  @function(name: "refind2CreateFloor-${env}")
+  @function(name: "refindCreateFloor-${env}")
 
   # フロア更新
   funcUpdateFloor(input: funcUpdateFloorInput!): Floor
-  @function(name: "refind2UpdateFloor-${env}")
+  @function(name: "refindUpdateFloor-${env}")
 
   # フロア削除
   funcDeleteFloor(input: funcDeleteFloorInput!): Floor
-  @function(name: "refind2DeleteFloor-${env}")
+  @function(name: "refindDeleteFloor-${env}")
 
   # 座席登録
   funcCreateSeat(input: funcCreateSeatInput!): Seat
-  @function(name: "refind2CreateSeat-${env}")
+  @function(name: "refindCreateSeat-${env}")
 
   # 座席更新
   funcUpdateSeat(input: funcUpdateSeatInput!): Seat
-  @function(name: "refind2UpdateSeat-${env}")
+  @function(name: "refindUpdateSeat-${env}")
 
   # 座席削除
   funcDeleteSeat(input: funcDeleteSeatInput!): Seat
-  @function(name: "refind2DeleteSeat-${env}")
+  @function(name: "refindDeleteSeat-${env}")
 
   # 座席確保情報登録
   funcCreateSeatOccupancy(input: funcCreateSeatOccupancyInput!): SeatOccupancy
-  @function(name: "refind2CreateSeatOccupancy-${env}")
+  @function(name: "refindCreateSeatOccupancy-${env}")
 
   # 座席解放情報更新
   funcUpdateSeatOccupancy(input: funcUpdateSeatOccupancyInput!): SeatOccupancy
-  @function(name: "refind2UpdateSeatOccupancy-${env}")
+  @function(name: "refindUpdateSeatOccupancy-${env}")
 
   # テナント削除時の座席確保情報クリア
   funcClearSeatOccupanciesByTenantId(input: funcClearSeatOccupanciesByTenantIdInput!): [SeatOccupancy!]
-  @function(name: "refind2ClearSeatOccupanciesByTenantId-${env}")
+  @function(name: "refindClearSeatOccupanciesByTenantId-${env}")
 
   # ユーザー情報更新
   funcUpdateUserAttributes(input: funcUpdateUserAttributesInput): funcUpdateUserAttributesResponse
-  @function(name: "refind2UpdateUserAttributes-${env}")
+  @function(name: "refindUpdateUserAttributes-${env}")
 
   # ユーザー情報検証
   funcVerifyUserAttribute(input: funcVerifyUserAttributeInput): Boolean
-  @function(name: "refind2VerifyUserAttribute-${env}")
+  @function(name: "refindVerifyUserAttribute-${env}")
 }
 
 type Subscription {
