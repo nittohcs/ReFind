@@ -1,5 +1,5 @@
 projects:
-  refind2:
+  refind:
     schemaPath: src/graphql/schema.json
     includes:
       - src/graphql/**/*.ts

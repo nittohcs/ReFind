@@ -5,7 +5,7 @@ const { SignatureV4 } = require('@aws-sdk/signature-v4');
 const { HttpRequest } = require('@aws-sdk/protocol-http');
 //const fetch = require('node-fetch').default;
 
-const GRAPHQL_ENDPOINT = process.env.API_REFIND2_GRAPHQLAPIENDPOINTOUTPUT;
+const GRAPHQL_ENDPOINT = process.env.API_REFIND_GRAPHQLAPIENDPOINTOUTPUT;
 const AWS_REGION = process.env.AWS_REGION || 'us-east-1';
 const { Sha256 } = crypto;
 

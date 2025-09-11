@@ -5,9 +5,9 @@
     "env": {
       "Type": "String"
     },
-    "authrefind2a0622a88UserPoolId": {
+    "authrefinda0622a88UserPoolId": {
       "Type": "String",
-      "Default": "authrefind2a0622a88UserPoolId"
+      "Default": "authrefinda0622a88UserPoolId"
     },
     "deploymentBucketName": {
       "Type": "String"
@@ -15,13 +15,13 @@
     "s3Key": {
       "Type": "String"
     },
-    "apirefind2GraphQLAPIIdOutput": {
+    "apirefindGraphQLAPIIdOutput": {
       "Type": "String",
-      "Default": "apirefind2GraphQLAPIIdOutput"
+      "Default": "apirefindGraphQLAPIIdOutput"
     },
-    "apirefind2GraphQLAPIEndpointOutput": {
+    "apirefindGraphQLAPIEndpointOutput": {
       "Type": "String",
-      "Default": "apirefind2GraphQLAPIEndpointOutput"
+      "Default": "apirefindGraphQLAPIEndpointOutput"
     }
   },
   "Conditions": {
@@ -68,19 +68,19 @@
             },
             "GROUP": "admins",
             "USERPOOL": {
-              "Ref": "authrefind2a0622a88UserPoolId"
+              "Ref": "authrefinda0622a88UserPoolId"
             },
             "REGION": {
               "Ref": "AWS::Region"
             },
-            "API_REFIND2_GRAPHQLAPIIDOUTPUT": {
-              "Ref": "apirefind2GraphQLAPIIdOutput"
+            "API_REFIND_GRAPHQLAPIIDOUTPUT": {
+              "Ref": "apirefindGraphQLAPIIdOutput"
             },
-            "API_REFIND2_GRAPHQLAPIENDPOINTOUTPUT": {
-              "Ref": "apirefind2GraphQLAPIEndpointOutput"
+            "API_REFIND_GRAPHQLAPIENDPOINTOUTPUT": {
+              "Ref": "apirefindGraphQLAPIEndpointOutput"
             },
-            "AUTH_REFIND2A0622A88_USERPOOLID": {
-              "Ref": "authrefind2a0622a88UserPoolId"
+            "AUTH_REFINDA0622A88_USERPOOLID": {
+              "Ref": "authrefinda0622a88UserPoolId"
             }
           }
         },
@@ -213,7 +213,7 @@
                     },
                     ":userpool/",
                     {
-                      "Ref": "authrefind2a0622a88UserPoolId"
+                      "Ref": "authrefinda0622a88UserPoolId"
                     }
                   ]
                 ]
@@ -258,7 +258,7 @@
                       },
                       ":apis/",
                       {
-                        "Ref": "apirefind2GraphQLAPIIdOutput"
+                        "Ref": "apirefindGraphQLAPIIdOutput"
                       },
                       "/types/Query/*"
                     ]
@@ -278,7 +278,7 @@
                       },
                       ":apis/",
                       {
-                        "Ref": "apirefind2GraphQLAPIIdOutput"
+                        "Ref": "apirefindGraphQLAPIIdOutput"
                       },
                       "/types/Mutation/*"
                     ]
@@ -386,7 +386,7 @@
                       },
                       ":userpool/",
                       {
-                        "Ref": "authrefind2a0622a88UserPoolId"
+                        "Ref": "authrefinda0622a88UserPoolId"
                       }
                     ]
                   ]

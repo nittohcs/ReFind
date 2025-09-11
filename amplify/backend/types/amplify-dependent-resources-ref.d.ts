@@ -5,13 +5,13 @@ export type AmplifyDependentResourcesAttributes = {
       "ApiName": "string",
       "RootUrl": "string"
     },
-    "refind2": {
+    "refind": {
       "GraphQLAPIEndpointOutput": "string",
       "GraphQLAPIIdOutput": "string"
     }
   },
   "auth": {
-    "refind2a0622a88": {
+    "refinda0622a88": {
       "AppClientID": "string",
       "AppClientIDWeb": "string",
       "IdentityPoolId": "string",
@@ -34,49 +34,49 @@ export type AmplifyDependentResourcesAttributes = {
       "Name": "string",
       "Region": "string"
     },
-    "refind2ClearSeatOccupanciesByTenantId": {
+    "refindClearSeatOccupanciesByTenantId": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
-    "refind2CreateFloor": {
+    "refindCreateFloor": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
-    "refind2CreateSeat": {
+    "refindCreateSeat": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
-    "refind2CreateSeatOccupancy": {
+    "refindCreateSeatOccupancy": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
-    "refind2DeleteFile": {
+    "refindDeleteFile": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
-    "refind2DeleteFloor": {
+    "refindDeleteFloor": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
-    "refind2DeleteOldSeatOccupancy": {
+    "refindDeleteOldSeatOccupancy": {
       "Arn": "string",
       "CloudWatchEventRule": "string",
       "LambdaExecutionRole": "string",
@@ -84,63 +84,63 @@ export type AmplifyDependentResourcesAttributes = {
       "Name": "string",
       "Region": "string"
     },
-    "refind2DeleteSeat": {
+    "refindDeleteSeat": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
-    "refind2GetFileDownloadUrl": {
+    "refindGetFileDownloadUrl": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
-    "refind2GetFileUploadUrl": {
+    "refindGetFileUploadUrl": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
-    "refind2UpdateFloor": {
+    "refindUpdateFloor": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
-    "refind2UpdateSeat": {
+    "refindUpdateSeat": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
-    "refind2UpdateSeatOccupancy": {
+    "refindUpdateSeatOccupancy": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
-    "refind2UpdateUserAttributes": {
+    "refindUpdateUserAttributes": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
-    "refind2VerifyUserAttribute": {
+    "refindVerifyUserAttribute": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
-    "refind2a0622a88PreTokenGeneration": {
+    "refinda0622a88PreTokenGeneration": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
@@ -149,7 +149,7 @@ export type AmplifyDependentResourcesAttributes = {
     }
   },
   "storage": {
-    "ReFind2Storage": {
+    "ReFindStorage": {
       "BucketName": "string",
       "Region": "string"
     }

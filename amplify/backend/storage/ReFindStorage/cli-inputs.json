@@ -1,0 +1,15 @@
+{
+  "resourceName": "ReFindStorage",
+  "policyUUID": "94d915ed",
+  "bucketName": "refind66091c0821a8489db49f16b2384bf227",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [],
+  "groupAccess": {
+    "sysAdmins": [
+      "CREATE_AND_UPDATE",
+      "READ",
+      "DELETE"
+    ]
+  }
+}
