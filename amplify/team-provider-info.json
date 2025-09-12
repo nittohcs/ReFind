@@ -1,15 +1,15 @@
 {
   "staging": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-refind-staging-740ca-authRole",
-      "UnauthRoleArn": "arn:aws:iam::408421298568:role/amplify-refind-staging-740ca-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::408421298568:role/amplify-refind-staging-740ca-authRole",
+      "AuthRoleName": "amplify-refind-staging-f8ec5-authRole",
+      "UnauthRoleArn": "arn:aws:iam::408421298568:role/amplify-refind-staging-f8ec5-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::408421298568:role/amplify-refind-staging-f8ec5-authRole",
       "Region": "ap-northeast-3",
-      "DeploymentBucketName": "amplify-refind-staging-740ca-deployment",
-      "UnauthRoleName": "amplify-refind-staging-740ca-unauthRole",
-      "StackName": "amplify-refind-staging-740ca",
-      "StackId": "arn:aws:cloudformation:ap-northeast-3:408421298568:stack/amplify-refind-staging-740ca/5d741900-8e21-11f0-9f43-0a1872b949ff",
-      "AmplifyAppId": "d20nrl8o2rqc40"
+      "DeploymentBucketName": "amplify-refind-staging-f8ec5-deployment",
+      "UnauthRoleName": "amplify-refind-staging-f8ec5-unauthRole",
+      "StackName": "amplify-refind-staging-f8ec5",
+      "StackId": "arn:aws:cloudformation:ap-northeast-3:408421298568:stack/amplify-refind-staging-f8ec5/797ce630-8ec7-11f0-8e1e-0a136ec66ea5",
+      "AmplifyAppId": "d2kco3dfhe0ojb"
     },
     "categories": {
       "auth": {

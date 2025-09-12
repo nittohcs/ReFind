@@ -1,13 +1,13 @@
 {
   "permissions": {
     "api": {
-      "refind2": [
+      "refind": [
         "Query",
         "Mutation"
       ]
     },
     "auth": {
-      "refind2a0622a88": [
+      "refinda0622a88": [
         "read",
         "update"
       ]

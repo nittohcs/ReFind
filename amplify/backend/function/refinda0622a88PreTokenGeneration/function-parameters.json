@@ -3,14 +3,14 @@
   "modules": [
     "alter-claims"
   ],
-  "parentResource": "refind2a0622a88",
-  "functionName": "refind2a0622a88PreTokenGeneration",
-  "resourceName": "refind2a0622a88PreTokenGeneration",
+  "parentResource": "refinda0622a88",
+  "functionName": "refinda0622a88PreTokenGeneration",
+  "resourceName": "refinda0622a88PreTokenGeneration",
   "parentStack": "auth",
   "triggerEnvs": "[]",
   "triggerDir": "C:\\snapshot\\amplify-cli\\build\\node_modules\\@aws-amplify\\amplify-category-auth\\provider-utils\\awscloudformation\\triggers\\PreTokenGeneration",
   "triggerTemplate": "PreTokenGeneration.json.ejs",
   "triggerEventPath": "PreTokenGeneration.event.json",
-  "roleName": "refind2a0622a88PreTokenGeneration",
+  "roleName": "refinda0622a88PreTokenGeneration",
   "skipEdit": true
 }
